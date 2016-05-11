@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Component.js - Test file.</title>
+    <link rel="shortcut icon" type="image/png" href="../../bower_components/jasmine-core/images/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.css">
+
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+    <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../../dist/promise.js"></script>
+    <script type="text/javascript" src="../../dist/model.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/underscore.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/superagent.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/js.cookie.js"></script>
+</head>
+<body>
+
+<nav id="test"/>
+<script type="text/javascript">
+    window.Model = cargo.Model;
+    window.Promise = cargo.Promise;
+</script>
+<script type="text/javascript" src="Translation.js"></script>
+<script type="text/javascript">
+
+    describe("Constructor", function () {
+        it("returning a translation instance.", function () {
+            var trans = new Translation();
+            expect(trans).toBeDefined();
+            expect(typeof trans).toBe("function");
+        });
+    });
+
+    describe("Initial state", function () {
+        it("loads the default translation without any options.", function (done) {
+            Cookies.remove('cargo.lang');
+            var trans = new Translation();
+            trans.initialState()
+                    .then(function (state) {
+                        trans(function(state) {
+                            expect(state).toBeDefined();
+                            expect(typeof state).toBe("object");
+                            expect(state.GREETING).toBe("Hello World!");
+                            expect(state.READY).toBe("ready");
+                            done();
+                        });
+                    })
+                    .catch(function(error) {
+                        fail("Loading translation with default options failed.");
+                        done();
+                    });
+        });
+    });
+
+
+</script>
+
+
+</body>
+</html>

@@ -24,6 +24,8 @@ gulp.task('deps', function() {
             'bower_components/jquery/dist/jquery.js',
             'bower_components/virtual-dom/dist/virtual-dom.js',
             'bower_components/handlebars/handlebars.js',
+            'bower_components/underscore/underscore.js',
+            'bower_components/js-cookie/src/js.cookie.js',
             'dist/html2hscript.js',
             'node_modules/superagent/superagent.js'])
         .pipe(gulp.dest('dist/dependencies'));

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.css"/>
+</head>
+<body>
+<script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+<script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+<script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+
+<script type="text/javascript" src="promise.js"></script>
+<script type="text/javascript">
+
+    describe("Testing basic promise functionality.", function () {
+        var result;
+
+        beforeEach(function () {
+            result = undefined;
+        });
+
+        it("Constructor calls the action asynchronously.", function (done) {
+            new Promise(function (resolve, reject) {
+                result = "FINISHED";
+                done();
+            });
+            expect(result).toBeUndefined();
+        }, 1000);
+
+        it("Promise is resolved when calling resolve().", function (done) {
+            new Promise(function (resolve, reject) {
+                resolve("FINISHED");
+            }).then(function (r) {
+                        result = r;
+                        done();
+                    }
+            )
+        });
+
+        it("Promise is rejected when calling reject().", function (done) {
+            new Promise(function (resolve, reject) {
+                reject("FINISHED");
+            }).then(function (r) {
+                        result = "RESOLVE HANDLER WAS CALLED.";
+                        done();
+                    }, function (r) {
+                        result = r;
+                        done();
+                    }
+            )
+        });
+
+        it("Promise.then() returns another promise.", function () {
+            var promise = new Promise(undefined).then();
+            expect(promise instanceof Promise).toBeTruthy();
+            result = "FINISHED";
+        });
+
+        it("Promise.catch() returns another promise.", function () {
+            var promise = new Promise(undefined).catch();
+            expect(promise instanceof Promise).toBeTruthy();
+            result = "FINISHED";
+        });
+        it("Promise.finally() returns another promise.", function () {
+            var promise = new Promise(undefined).finally();
+            expect(promise instanceof Promise).toBeTruthy();
+            result = "FINISHED";
+        });
+
+        it("Promise cannot be rejected once it is resolved.", function (done) {
+            new Promise(function (resolve, reject) {
+                resolve("FINISHED");
+                reject("REJECTED");
+            }).then(function (r) {
+                        result = r;
+                        done();
+                    }, function (r) {
+                        result = r;
+                        done();
+                    }
+            )
+        });
+
+        it("Promise cannot be resolved once it is rejected.", function (done) {
+            new Promise(function (resolve, reject) {
+                reject("FINISHED");
+                resolve("RESOLVED");
+            }).then(function (r) {
+                        result = r;
+                        done();
+                    }, function (r) {
+                        result = r;
+                        done();
+                    }
+            )
+        });
+
+        afterEach(function () {
+            expect(result).toBe("FINISHED");
+        });
+    });
+
+    describe("Testing promise chaining functionality.", function () {
+
+        it("If then() returns a new promise, it is chained with the first promise.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                resolve("RETURN FROM 1st PROMISE.");
+            })
+                    .then(function (r) {
+                        return new Promise(function (resolve, reject) {
+                            resolve("DONE");
+                        });
+                    })
+                    .then(function (r) {
+                        expect(r).toBe("DONE");
+                        done();
+                    });
+        });
+
+        it("then()'s first argument is not called on rejected promises and catch() is called.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                reject("ERROR");
+            }).then(function () {
+                        done.fail("then()'s first argument was called.")
+                    })
+                    .catch(function (reason) {
+                        expect(reason).toBe("ERROR");
+                        done();
+                    });
+        });
+
+        it("catch() is called on rejected promises.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                reject("ERROR");
+            }).catch(function (reason) {
+                        expect(reason).toBe("ERROR");
+                        done();
+                    });
+        });
+
+        it("finally() is called on fulfilled promises.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                resolve("OK");
+            })
+                    .finally(function () {
+                        expect(true).toBeTruthy();
+                        done();
+                    });
+        });
+
+        it("finally() is called on rejected promises.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                reject("ERROR");
+            })
+                    .finally(function () {
+                        expect(true).toBeTruthy();
+                        done();
+                    });
+        });
+
+        it("Chained promises pass error through to last catch().", function (done) {
+            var p1 = new Promise(function (resolve, reject) {
+                reject("ERROR");
+            })
+                    .then(function () {
+                        done.fail("then()'s onFulfilled handler was called on rejected promise.")
+                    })
+                    .then(function () {
+                        done.fail("then()'s onFulfilled handler was called on rejected promise.")
+                    })
+                    .catch(function (error) {
+                        expect(error).toBe("ERROR");
+                        done();
+                    });
+
+        });
+
+
+    });
+
+    describe("Promise.when()", function () {
+
+        it("resolves when all promises have resolved and returns array with results.", function (done) {
+            var promises = [];
+            for (var idx = 0; idx < 5; idx++) {
+                (function () {
+                    var k = idx;
+                    var p = new Promise(function (resolve, reject) {
+                        resolve(k);
+                    });
+                    p.idx = idx;
+                    promises.push(p);
+                }());
+            }
+            Promise.when(promises).then(function (result) {
+                expect(result).toBeDefined();
+                expect(result.length).toBe(5);
+                for ( idx = 0; idx < 5; idx++ ) {
+                    expect(result[idx]).toBe(idx);
+                }
+                done();
+            });
+        });
+
+
+        it("rejects when one of the promises has rejected and returns the reason as a results.", function (done) {
+            var promises = [];
+            for (var idx = 0; idx < 5; idx++) {
+                (function () {
+                    var k = idx;
+                    var p = new Promise(function (resolve, reject) {
+                        k == 3 ? reject("ERROR") : resolve(k);
+                    });
+                    p.idx = idx;
+                    promises.push(p);
+                }());
+            }
+            Promise.when(promises).then(function (result) {
+                expect(result).toBeDefined();
+                done.fail("Promise.when() has resolved despite of one failing promise.");
+            }).catch(function (reason) {
+                expect(reason).toBe("ERROR");
+                done();
+            });
+        });
+
+    });
+
+</script>
+</body>
+</html>

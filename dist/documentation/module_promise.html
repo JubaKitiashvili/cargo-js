@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module: Promise &mdash; cargo-js 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="cargo-js 0.1.0 documentation" href="index.html"/>
+        <link rel="next" title="Module: Model" href="module_model.html"/>
+        <link rel="prev" title="General Usage" href="usage.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cargo-js
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Promise</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#promises">Promises</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chaining">Chaining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finally">Finally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arrays-of-promises">Arrays of promises</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_component.html">Module: Component</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">cargo-js</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Module: Promise</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/module_promise.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-promise">
+<h1>Module: Promise<a class="headerlink" href="#module-promise" title="Permalink to this headline">¶</a></h1>
+<p>A promise in Javascript provides a simple way to deal with asynchronous code and to prevent
+&#8220;rightward drift&#8221; in nested callbacks.</p>
+<p>Specifically, it is a tiny implementation of Promises/A+ from <a class="reference external" href="https://promisesaplus.com">https://promisesaplus.com</a></p>
+<div class="section" id="promises">
+<h2>Promises<a class="headerlink" href="#promises" title="Permalink to this headline">¶</a></h2>
+<p>This quote from the Promises/A+ specification catches the meaning of promises quite well:</p>
+<blockquote>
+<div>A promise represents the eventual result of an asynchronous operation. The primary
+way of interacting with a promise is through its then method, which registers callbacks
+to receive either a promise’s eventual value or the reason why the promise
+cannot be fulfilled.</div></blockquote>
+</div>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// succeed</span>
+    <span class="nx">resolve</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="c1">// or reject</span>
+    <span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// success</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// failure</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Once a promise has been resolved or rejected, it cannot be resolved or
+rejected again.</p>
+<p>Here is an example of a simple Ajax call with superagent using Promise:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">&quot;http://datenwelt.io/some-api&quot;</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">){</span>
+  <span class="nx">superagent</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">err</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">reject</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">resolve</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">text</span><span class="p">);</span>
+          <span class="p">}</span>
+      <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// continue</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// handle errors</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="chaining">
+<h2>Chaining<a class="headerlink" href="#chaining" title="Permalink to this headline">¶</a></h2>
+<p>One of the really awesome features of Promises/A+ promises are that they
+can be chained together. In other words, the return value of the first
+resolve handler will be passed to the second resolve handler.</p>
+<p>If you return a regular value, it will be passed, as is, to the next
+handler:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">json</span><span class="p">.</span><span class="nx">post</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// proceed</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The really awesome part comes when you return a promise from the first
+handler:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// save off post</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{...});</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">comments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// proceed with access to post and comments</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>This allows you to flatten out nested callbacks, and is the main feature
+of promises that prevents &#8220;rightward drift&#8221; in programs with a lot of
+asynchronous code.</p>
+<p>Errors also propagate:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">posts</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// since no rejection handler was passed to the</span>
+    <span class="c1">// first `.then`, the error propagates.</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>You can use this to emulate <cite>try/catch</cite> logic in synchronous code.
+Simply chain as many resolve callbacks as a you want, and add a failure
+handler at the end to catch errors:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(...);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">comments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// proceed with access to posts and comments</span>
+<span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// handle errors in either of the two requests</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>You can also use <code class="docutils literal"><span class="pre">catch</span></code> for error handling, which is a shortcut for
+<code class="docutils literal"><span class="pre">then(null,</span> <span class="pre">rejection)</span></code>, like so:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(...);</span>
+<span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// handle errors</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="finally">
+<h2>Finally<a class="headerlink" href="#finally" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">finally</span></code> will be invoked regardless of the promise&#8217;s fate, just as native
+try/catch/finally behaves:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">findAuthor</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">findOtherAuthor</span><span class="p">();</span>
+<span class="p">}).</span><span class="k">finally</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="c1">// author was either found, or not</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="arrays-of-promises">
+<h2>Arrays of promises<a class="headerlink" href="#arrays-of-promises" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you might want to work with many promises at once. If you
+pass an array of promises to the <code class="docutils literal"><span class="pre">when()</span></code> method it will return a new
+promise that will be fulfilled when all of the promises in the array
+have been fulfilled; or rejected immediately if any promise in the array
+is rejected.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">promises</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resolve</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nb">Promise</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="nx">promises</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">posts</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// posts contains an array of results for the given promises</span>
+<span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">){</span>
+    <span class="c1">// if any of the promises fails.</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The other useful function is <code class="docutils literal"><span class="pre">race()</span></code> which takes an array of promises as input similar
+to <code class="docutils literal"><span class="pre">when()</span></code> but fulfills with the first resolved promise from the array and fails early
+with the first rejected promise:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">promises</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resolve</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nb">Promise</span><span class="p">.</span><span class="nx">race</span><span class="p">(</span><span class="nx">promises</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// p is the resolved value of the first promise from the array.</span>
+<span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">){</span>
+    <span class="c1">// if any of the promises fails.</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="module_model.html" class="btn btn-neutral float-right" title="Module: Model" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="General Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Jan Obladen.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

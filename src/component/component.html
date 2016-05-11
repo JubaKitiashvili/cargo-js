@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Component.js - Test file.</title>
+    <link rel="shortcut icon" type="image/png" href="../../bower_components/jasmine-core/images/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.css">
+
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+    <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../../dist/promise.js"></script>
+    <script type="text/javascript" src="../../dist/model.js"></script>
+    <script type="text/javascript" src="../../bower_components/virtual-dom/dist/virtual-dom.js"></script>
+    <script type="text/javascript" src="../../node_modules/superagent/superagent.js"></script>
+    <script type="text/javascript" src="../../bower_components/handlebars/handlebars.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/html2hscript.js"></script>
+</head>
+<body>
+
+<nav id="test"/>
+<script type="text/javascript">
+    window.Model = cargo.Model;
+    window.Promise = cargo.Promise;
+</script>
+<script type="text/javascript" src="Component.js"></script>
+<script type="text/javascript">
+
+    function createModel() {
+        return new cargo.Model({
+            initialState: function () {
+                return {items: []}
+            },
+            addItem: function (item) {
+                var state = this.state();
+                state.items = state.items || [];
+                state.items.push(item);
+                return state;
+            },
+            removeItem: function (item) {
+                var state = this.state();
+                state = state || {};
+                var items = state.items || [];
+                var newItems = [];
+                for (var idx = 0; idx < items.length; idx++) {
+                    if (item != items[idx]) {
+                        newItems.push(items[idx]);
+                    }
+                }
+                state.items = newItems;
+                return state;
+            },
+            clearItems: function () {
+                var state = this.state();
+                state.items = [];
+                return state;
+            },
+            deadState: function () {
+                return new Error("Model already entered dead state.");
+            }
+        });
+    }
+    var testModel = createModel();
+
+    describe("Constructor", function () {
+        it("returning a builder instance.", function () {
+            var builder = new Component().withTemplate("test/TestComponent.html")
+                    .addAction("noop", function () {
+                    })
+                    .subscribe(function () {
+                    }, function () {
+                    });
+            expect(builder).toBeDefined();
+            expect(builder.build).toBeDefined();
+            expect(typeof builder.build).toBe("function");
+        });
+    });
+
+    describe("Builder", function () {
+        it("returning an instance even without using any options.", function () {
+            var builder = new Component();
+            var instance = builder.build();
+            expect(instance).toBeDefined();
+        });
+
+        it("loading a template from URL.", function (done) {
+            Component.template("test/TestComponent.html").then(function (template) {
+                expect(template).toBeDefined();
+                expect(template.attach).toBeDefined();
+                expect(template.detach).toBeDefined();
+                expect(template.update).toBeDefined();
+                done();
+            });
+        });
+    });
+
+    describe("Component", function () {
+
+        var template;
+        beforeEach(function (done) {
+            $('#test').replaceWith('<nav id="test" />');
+            testModel = createModel();
+            Component.template("test/TestComponent.html").then(function (result) {
+                template = result;
+                done();
+            }).catch(function (error) {
+                fail(error);
+                done();
+            });
+//            $('#test').clear();
+        });
+
+        it("renders the component to the target element.", function (done) {
+            var component = new Component()
+                    .withTemplate(template)
+                    .withActions({
+                        newState: function (state) {
+                            return state;
+                        }
+                    })
+                    .subscribe(testModel, function (state) {
+                        this.newState(state)
+                    }).build('#test');
+            expect(component).toBeDefined();
+
+            testModel.initialState().then(function (x) {
+                testModel.addItem("Item 1").then(function () {
+                    var interval = setInterval(function () {
+                                var target = $("#test");
+                                if ( target.find("ul").find("li").length ) {
+                                    clearInterval(interval);
+                                    expect(target.find("ul li").length).toBe(1);
+                                    expect(target.find("ul li").text()).toBe("Item 1");
+                                    done();
+                                }
+                            }, 100
+                    );
+                }).catch(function (error) {
+                    fail("addItem failed with error: " + error);
+                    done();
+                });
+            }).catch(function (error) {
+                fail("Initial state failed with error: " + error);
+                done();
+
+            });
+        });
+
+        it("destroys itself when its model enters dead state.", function(done) {
+            var component =  new Component().withTemplate(template)
+                    .withActions({
+                        newState: function (state) {
+                            return state;
+                        }
+                    })
+                    .subscribe(testModel, function (state) {
+                        this.newState(state)
+                    }).build('#test');
+            testModel.addItem("Item 1").then(function(){
+                testModel.deadState().then(function() {
+                    fail("Model should not resolve after entering dead state.");
+                    done();
+                }).catch(function(error) {
+                    expect(error instanceof Error).toBeTruthy();
+                    var interval = setInterval(function () {
+                                var target = $("#test");
+                                if ( target.length == 1 && target.is("nav") ) {
+                                    clearInterval(interval);
+                                    expect(target.is("nav")).toBeTruthy();
+                                    done();
+                                }
+                            }, 100
+                    );
+                });
+            }).catch(function(error) {
+                fail(error);
+                done();
+            });
+        });
+
+    });
+
+
+</script>
+
+
+</body>
+</html>

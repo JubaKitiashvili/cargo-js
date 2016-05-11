@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module: Model &mdash; cargo-js 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="cargo-js 0.1.0 documentation" href="index.html"/>
+        <link rel="next" title="Module: Component" href="module_component.html"/>
+        <link rel="prev" title="Module: Promise" href="module_promise.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cargo-js
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#define-state-transitions-actions-as-functions-and-bundle-them-in-an-object">Define state transitions (&#8220;actions&#8221;) as functions and bundle them in an object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pass-the-bundled-actions-to-the-constructor-method">Pass the bundled actions to the constructor method.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-actions-to-change-the-state">Use actions to change the state.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subscribe-to-state-changes">Subscribe to state changes.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unsubscribe-from-state-changes-later">Unsubscribe from state changes later.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#useful-helpers">Useful helpers.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_component.html">Module: Component</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">cargo-js</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Module: Model</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/module_model.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-model">
+<h1>Module: Model<a class="headerlink" href="#module-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a very simple Flux implementation with a lightweight publish / subscribe pattern. Flux is a design
+pattern for application data models created by Facebook.</p>
+<p>The basic idea of Flux is that in an application the data model should not be accessed directly. In Flux the data model
+defines the current state of the application. Only well-defined access methods (&#8220;actions&#8221;) change the application state.
+Subscribers get notifications of state changes an can react on the new state.</p>
+<p>See this page for a better understanding of Flux: <a class="reference external" href="https://facebook.github.io/flux/">https://facebook.github.io/flux/</a></p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This module depends on the Promise module (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>). In AMD-loader scenarios it should go by
+the alias &#8220;cargo.Promise&#8221;:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span> <span class="s1">&#39;cargo.Promise&#39;</span><span class="o">:</span> <span class="s1">&#39;path/to/promise&#39;</span> <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="define-state-transitions-actions-as-functions-and-bundle-them-in-an-object">
+<h3>Define state transitions (&#8220;actions&#8221;) as functions and bundle them in an object<a class="headerlink" href="#define-state-transitions-actions-as-functions-and-bundle-them-in-an-object" title="Permalink to this headline">¶</a></h3>
+<p>Model.js exports just one constructor method - <code class="docutils literal"><span class="pre">Model(actions)</span></code>. The parameter <code class="docutils literal"><span class="pre">actions</span></code> is an object defining the
+actions that change the state. Action are defined as methods returning the new state after the action has been performed.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span> <span class="nx">state_variable</span><span class="o">:</span> <span class="s2">&quot;...&quot;</span> <span class="p">};</span> <span class="c1">// &lt;- new state</span>
+    <span class="p">},</span>
+
+    <span class="nx">actions2</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">inputs</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="p">...;</span> <span class="c1">// Do something with inputs...</span>
+        <span class="k">return</span> <span class="p">{</span> <span class="nx">state_variable</span><span class="o">:</span> <span class="nx">value</span>  <span class="p">};</span> <span class="c1">// &lt;- new state</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pass-the-bundled-actions-to-the-constructor-method">
+<h3>Pass the bundled actions to the constructor method.<a class="headerlink" href="#pass-the-bundled-actions-to-the-constructor-method" title="Permalink to this headline">¶</a></h3>
+<p>When called as a constructor it returns an object which exposes the actions as properties. This &#8220;thing&#8221; is very
+similar to the object provided to the constructor. It provides all actions as methods:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-actions-to-change-the-state">
+<h3>Use actions to change the state.<a class="headerlink" href="#use-actions-to-change-the-state" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">();</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">(</span><span class="s2">&quot;example input&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="subscribe-to-state-changes">
+<h3>Subscribe to state changes.<a class="headerlink" href="#subscribe-to-state-changes" title="Permalink to this headline">¶</a></h3>
+<p>The methods <code class="docutils literal"><span class="pre">model.action1()</span></code>, <code class="docutils literal"><span class="pre">model.actions2()</span></code> do not return the current state directly. The current state can be
+accessed by &#8220;subscribing&#8221; to the model. A &#8220;subscriber&#8221; is a callback that can be added to the model by calling the model
+as a function and passing the callback as a parameter:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unsubscribe-from-state-changes-later">
+<h3>Unsubscribe from state changes later.<a class="headerlink" href="#unsubscribe-from-state-changes-later" title="Permalink to this headline">¶</a></h3>
+<p>The subscription function itself returns another function which can be used to unsubscribe from the model later:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+<span class="nx">unsubscribe</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="useful-helpers">
+<h3>Useful helpers.<a class="headerlink" href="#useful-helpers" title="Permalink to this headline">¶</a></h3>
+<p>Actions are called with a special <code class="docutils literal"><span class="pre">this</span></code> context. <code class="docutils literal"><span class="pre">this</span></code> within actions has a method <code class="docutils literal"><span class="pre">state()</span></code> which provides the
+current state.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">oldState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">oldState</span><span class="p">.</span><span class="nx">x</span> <span class="p">};</span>
+        <span class="k">return</span> <span class="nx">newState</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal"><span class="pre">state()</span></code> is called with an object as an argument, the provided object is merged with the new state.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="c1">// oldState = { a: &#39;b&#39; }</span>
+    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">({</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">&#39;y&#39;</span><span class="p">});</span>
+        <span class="c1">// newState = { a: &#39;b&#39;, x: &#39;y&#39; }</span>
+        <span class="k">return</span> <span class="nx">newState</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">this</span></code> context of an action also exposes the current model object within a propety <code class="docutils literal"><span class="pre">model</span></code>. This can be handy when
+calling another action from within an action.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+        <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">;</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="p">...</span> <span class="p">};</span>
+        <span class="p">}</span>
+
+    <span class="p">};</span>
+</pre></div>
+</div>
+<p>If an action returns <code class="docutils literal"><span class="pre">undefined</span></code>, the current state of the model keeps unchanged.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="cm">/* Do something... */</span>
+        <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span> <span class="c1">// State keeps the same.</span>
+    <span class="p">}</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Use <code class="docutils literal"><span class="pre">null</span></code> if you want to clear the state. Of course you can use an empty object <code class="docutils literal"><span class="pre">{}</span></code> as well to clear the state.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="cm">/* Do something... */</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span> <span class="c1">// Clear the state.</span>
+    <span class="p">}</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Calling an action returns a Promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) which is fulfilled with the new state as the result. If the model is in dead state,
+the promise is rejected with the error which was returned before entering the dead state.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ...</span>
+    <span class="p">});</span>
+</pre></div>
+</div>
+<p>Return an error if you want to destroy the model. If a model is destroyed, it enters the &#8220;dead state&#8221; unsubscribing all
+subscribers and rejecting all further action calls. Note that this is different from throwing an error within the action.
+Throwing an error within the action rejects the action but does not enter the model into dead state.:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+    <span class="nx">action1</span><span class="o">:</span> <span class="p">...,</span>
+    <span class="nx">destroy</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;I am in dead state now.&quot;</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span> <span class="c1">// prints &quot;I am in dead state now.&quot;</span>
+<span class="p">});</span>
+
+<span class="p">...</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span> <span class="c1">// prints &quot;I am in dead state now.&quot;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="module_component.html" class="btn btn-neutral float-right" title="Module: Component" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="module_promise.html" class="btn btn-neutral" title="Module: Promise" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Jan Obladen.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

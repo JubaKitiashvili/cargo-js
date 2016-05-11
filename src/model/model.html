@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Model.js - Test file.</title>
+    <link rel="shortcut icon" type="image/png" href="../../bower_components/jasmine-core/images/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.css">
+
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+</head>
+<body>
+
+
+<script type="text/javascript" src="../../dist/promise.js"></script>
+<script type="text/javascript" src="Model.js"></script>
+<script type="text/javascript">
+
+
+    describe("Basic model functions include", function () {
+        var currentState = undefined;
+        var exposedThis = undefined;
+
+        var testState = {
+            initialState: function () {
+                var state = {stage: "initial"};
+                return state;
+            },
+            state1: function () {
+                var state = {stage: "state2"}
+                return state;
+            },
+            keepState: function () {
+                var state = this.state();
+                return state;
+            },
+            returnsUndefined: function () {
+                return undefined;
+            },
+            returnsNull: function () {
+                return null;
+            },
+            mergeState: function (newState) {
+                var state = this.state(newState);
+                return state;
+            },
+            replaceState: function (newState) {
+                return newState;
+            },
+            deepMergeState: function (newState) {
+                var state = this.state(newState);
+                return state;
+            },
+            moreThanOneArgument: function (arg1, arg2) {
+                var state = {arg1: arg1, arg2: arg2};
+                return state;
+            },
+            exposeThis: function () {
+                var state = {
+                    stage: "exposeThis",
+                    exposedThis: this
+                };
+                exposedThis = this;
+                return state;
+            },
+            nestedState1: function () {
+                var state = {
+                    stage: "nestedState1"
+                };
+                this.model.nestedState2();
+                return state;
+            },
+            nestedState2: function () {
+                var state = {
+                    stage: "nestedState2"
+                };
+                return state;
+            },
+            finalState: function () {
+                var state = {stage: "final"};
+                return state;
+            },
+            deadState1: function () {
+                return new Error("This model has been destroyed by an Error.");
+            },
+            deadState2: function () {
+                return "This model has been destroyed with a silent notification.";
+            }
+        };
+
+        beforeEach(function () {
+            currentState = undefined;
+            exposedThis = undefined;
+        });
+
+        var subscriber = function (state) {
+            currentState = state;
+        };
+
+        it("a constructor returning a function", function () {
+            var model = new Model(testState);
+            expect(model).toBeDefined();
+            expect(typeof model === 'function').toBeTruthy();
+        });
+
+        it("subscribing to a model returns a function", function () {
+            var model = new Model(testState);
+            var unsubscribe = model(subscriber);
+            expect(unsubscribe).toBeDefined();
+            expect(typeof unsubscribe === 'function').toBeTruthy();
+        });
+
+        it("the model exporting each action as a function", function () {
+            var model = new Model(testState);
+            expect(model).toBeDefined();
+            for (var action in testState) {
+                expect(model[action]).toBeDefined();
+                expect(typeof model[action] === 'function').toBeTruthy();
+            }
+        });
+        it("calling an action returns a promise", function () {
+            var model = new Model(testState);
+            var promise = model.initialState();
+            expect(promise).toBeDefined();
+            expect(typeof promise.then === 'function').toBeTruthy();
+            expect(typeof promise.catch === 'function').toBeTruthy();
+        });
+        it("actions can have an arbitrary number of arguments", function (done) {
+            var model = new Model(testState);
+            expect(model).toBeDefined();
+            model(subscriber);
+            model.initialState().then(function () {
+                return model.moreThanOneArgument(1, 2);
+            }).then(function () {
+                expect(currentState.arg1).toEqual(1);
+                expect(currentState.arg2).toEqual(2);
+                done();
+            });
+        });
+        it("the model changing state when calling an action", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("initial");
+                done();
+            });
+        });
+
+        it("an action not changing state when returning undefined", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                return model.returnsUndefined();
+            }).then(function () {
+                expect(currentState.stage).toEqual("initial");
+                done();
+            });
+        });
+
+        it("an action clearing the state when returning null", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                return model.returnsNull();
+            }).then(function () {
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).not.toBeDefined();
+                done();
+            });
+        });
+
+        it("'this' keyword exposing a state() function within actions", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                return model.exposeThis();
+            }).then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("exposeThis");
+                expect(exposedThis).toBeDefined();
+                expect(typeof currentState.exposedThis === 'object').toBeTruthy();
+                var currentThis = exposedThis;
+                expect(currentThis).toBeDefined();
+                expect(currentThis.state).toBeDefined();
+                expect(typeof currentThis.state === 'function').toBeTruthy();
+                done();
+            });
+        });
+
+        it("the state() function within actions returns current state", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                return model.keepState();
+            }).then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("initial");
+                done();
+            });
+        });
+
+        it("the state() function within actions merging states when called with an argument", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                return model.mergeState({merge: 'ok'});
+            }).then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("initial");
+                expect(currentState.merge).toEqual("ok");
+                done();
+            });
+        });
+
+        it("the state() function within actions deep merging states when called with an argument", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            var state1 = {
+                stage: "setState",
+                deep: {a: "a", b: "b"}
+            };
+            var state2 = {
+                stage: "deepMerge",
+                deep: {c: "c", d: "d"}
+            };
+            model.replaceState(state1).then(function () {
+                return model.deepMergeState(state2);
+
+            }).then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("deepMerge");
+                expect(currentState.deep).toBeDefined("ok");
+                var keys = ['a', 'b', 'c', 'd'];
+                for (var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    expect(currentState.deep[key]).toEqual(key);
+                }
+                done();
+            });
+        });
+
+        it("'this' keyword exposing a model property within actions", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.initialState().then(function () {
+                return model.exposeThis();
+            }).then(function () {
+                expect(currentState).toBeDefined();
+                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.stage).toEqual("exposeThis");
+                expect(currentState.exposedThis).toBeDefined();
+                expect(typeof exposedThis === 'object').toBeTruthy();
+                var currentThis = exposedThis;
+                expect(currentThis).toBeDefined();
+                expect(currentThis.model).toBeDefined();
+                expect(typeof currentThis.model === 'function').toBeTruthy();
+                for (var action in currentThis.model) {
+                    expect(currentThis.model[action]).toBeDefined();
+                    expect(typeof currentThis.model[action] === 'function').toBeTruthy();
+                }
+                done();
+            });
+        });
+
+        it("actions within another action are executed after the action finished", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.nestedState1().then(function () {
+                expect(currentState).toBeDefined();
+                expect(currentState.stage).toBe("nestedState1");
+                done();
+            });
+        });
+
+        it("model being destroyed when an action returns an Error", function (done) {
+            var model = new Model(testState);
+            model(subscriber);
+            expect(currentState).not.toBeDefined();
+            model.deadState1().then(function (state) {
+                fail("Model is in dead state and should not get resolved.")
+                done();
+            }).catch(function (error) {
+                expect(error instanceof Error).toBeTruthy();
+                model.initialState().then(function() {
+                    fail("Model is in dead state and should reject further actions.");
+                    done();
+                }).catch(function(error) {
+                    expect(error instanceof Error).toBeTruthy();
+                    done();
+                });
+            });
+        });
+
+    });
+
+
+</script>
+
+
+</body>
+</html>

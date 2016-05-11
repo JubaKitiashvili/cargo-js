@@ -1,0 +1,1222 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module: Component &mdash; cargo-js 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="cargo-js 0.1.0 documentation" href="index.html"/>
+        <link rel="prev" title="Module: Model" href="module_model.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cargo-js
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Component</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-example">Code example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-structure">Project structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-boilerplate">Setting up the boilerplate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-and-attaching-a-component">Defining and attaching a component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualizing-state-changes">Visualizing state changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-an-html-template">Adding an HTML template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-interactivity">Adding interactivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-builder">The Builder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructor">Constructor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-withtemplate-templatefn">Method: withTemplate(templateFn)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-addaction-name-action">Method: addAction(name, action)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-withactions-actions">Method: withActions(actions)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-subscribe-model-callback">Method: subscribe(model, callback)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-build-selector">Method: build(selector)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#static-functions">Static Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#component-template-url">Component.template(URL)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-component-instance">The Component instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">cargo-js</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Module: Component</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/module_component.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-component">
+<h1>Module: Component<a class="headerlink" href="#module-component" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a GUI Component programming model for web application. It is inspired by Facebook&#8217;s
+React (<a class="reference external" href="https://facebook.github.io/react/">https://facebook.github.io/react/</a>) and uses a Virtual DOM implementation for its rendering engine. While it follows the general ideas
+of React, it does some things very differently.</p>
+<p>A Component represents a GUI element. It is conceived of a current state and its visual representation.
+Let&#8217;s assume a GUI element for a navigation menu. The navigation menu contains some menu items which
+direct the user to different parts of the web application. Additionally it contains a &#8220;Change language&#8221;
+dropdown that let&#8217;s the user choose a translation for the web application. If she switches to another language,
+the navigation menu itself shows in the new language according to the entire web application.</p>
+<p>In this example, the current state of the navigation menu consists of at least all the menu items and the currently selected
+language to highlight in the language dropdown. Furthermore, the current translation of the
+navigation menu is also part of its current state.</p>
+<p>Thus, the current state of the navigation menu component is represented by:</p>
+<ul class="simple">
+<li>the menu items</li>
+<li>the currently selected language</li>
+<li>all available languages</li>
+</ul>
+<p>In Javascript the current state could be collected in a simple object like this:</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">language</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">selected</span><span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+        <span class="nx">available</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">,</span><span class="s1">&#39;en&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nx">menu</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+        <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+        <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+        <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span>
+    <span class="p">},</span>
+    <span class="nx">translation</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;About&#39;</span><span class="p">,</span>
+        <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;Contact&#39;</span><span class="p">,</span>
+        <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;Sign up&#39;</span><span class="p">,</span>
+        <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;Login&#39;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+<p>The visual representation of this state could be something like this:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main-navigation&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>About<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Contact<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Sign up<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Login<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;language&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;active&quot;</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>In mathematical terms the visual representation is a function of the state:</p>
+<blockquote>
+<div>F(state) = HTML</div></blockquote>
+<p>If the current state changes, its visual representation changes accordingly. Let&#8217;s say the
+user selects another language. This should change the state to:</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="nx">language</span><span class="o">:</span> <span class="p">{</span>
+<span class="hll">         <span class="nx">selected</span><span class="o">:</span> <span class="s1">&#39;de&#39;</span><span class="p">,</span>
+</span>         <span class="nx">available</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">,</span><span class="s1">&#39;en&#39;</span><span class="p">]</span>
+     <span class="p">},</span>
+     <span class="nx">menu</span><span class="o">:</span> <span class="p">{</span>
+         <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+         <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+         <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">,</span>
+         <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;http://...&#39;</span><span class="p">}</span>
+     <span class="p">},</span>
+     <span class="nx">translation</span><span class="o">:</span> <span class="p">{</span>
+<span class="hll">         <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;Über uns&#39;</span><span class="p">,</span>
+</span><span class="hll">         <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;Kontakt&#39;</span><span class="p">,</span>
+</span><span class="hll">         <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;Registrieren&#39;</span><span class="p">,</span>
+</span><span class="hll">         <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;Login&#39;</span>
+</span>     <span class="p">}</span>
+ <span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+<p>The new state renders to a new visual representation:</p>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main-navigation&quot;</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+<span class="hll">         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Über uns<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span><span class="hll">         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Kontakt<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span><span class="hll">         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Registrieren<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span><span class="hll">         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Login<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span>     <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;language&quot;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="hll">         <span class="p">&lt;</span><span class="nt">li</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;active&quot;</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span><span class="p">&gt;</span>Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span>     <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+ <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Because state changes automatically lead to a change of their visual representation, the visual
+representation is never altered directly by e.g. manipulating the DOM tree. Instead state changes are
+triggered through a well-defined set of <strong>state transitions</strong> and the automatical process of
+transforming the state to its visual representation is triggered whenever a state transition occurs.</p>
+<p>In practical terms, the Component exposes a set of functions - one for each possible state transition.
+Whenever one of the functions - which are called <strong>&#8220;actions&#8221;</strong> - is called, the according state transition
+is triggered and the component is rendered automatically:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>current state -&gt; action() -&gt; new state -&gt; render() -&gt; new HTML
+</pre></div>
+</div>
+<p>In this programming model a Component is perfectly defined by:</p>
+<ol class="arabic simple">
+<li>A set of actions to define the possible state transitions.</li>
+<li>A template which renders the HTML from the current state.</li>
+</ol>
+<p>Both are surprisingly easy to code and it is very easy to start once you get the basic idea, see the code
+example below to learn how to write your own components.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This module uses the following libraries and modules:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="61%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Module</th>
+<th class="head">Repository</th>
+<th class="head">AMD module alias</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Promise</td>
+<td><a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a></td>
+<td>cargo.Promise</td>
+</tr>
+<tr class="row-odd"><td>Model</td>
+<td><a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a></td>
+<td>cargo.Model</td>
+</tr>
+<tr class="row-even"><td>virtualDom</td>
+<td><a class="reference external" href="https://github.com/Matt-Esch/virtual-dom">https://github.com/Matt-Esch/virtual-dom</a></td>
+<td>virtualDom</td>
+</tr>
+<tr class="row-odd"><td>html2hscript</td>
+<td><a class="reference external" href="https://github.com/twilson63/html2hscript">https://github.com/twilson63/html2hscript</a></td>
+<td>html2hscript</td>
+</tr>
+<tr class="row-even"><td>superagent</td>
+<td><a class="reference external" href="https://github.com/visionmedia/superagent">https://github.com/visionmedia/superagent</a></td>
+<td>superagent</td>
+</tr>
+<tr class="row-odd"><td>Handlebarsjs</td>
+<td><a class="reference external" href="https://github.com/wycats/handlebars.js/">https://github.com/wycats/handlebars.js/</a></td>
+<td>Handlebars</td>
+</tr>
+<tr class="row-even"><td>jQuery</td>
+<td><a class="reference external" href="https://jquery.com">https://jquery.com</a></td>
+<td>$</td>
+</tr>
+</tbody>
+</table>
+<p>All dependencies are provided in the <code class="docutils literal"><span class="pre">dist</span></code> directory at <a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a>.</p>
+<p>The module <cite>html2hscript</cite> in the source repository at <a class="reference external" href="https://github.com/twilson63">https://github.com/twilson63</a> is not useable
+in AMD environments. Just take the version from our repository.</p>
+</div>
+<div class="section" id="code-example">
+<h2>Code example<a class="headerlink" href="#code-example" title="Permalink to this headline">¶</a></h2>
+<p>As a practical example, the navigation menu component from above is built from scratch with
+requirejs for dependency management. Let&#8217;s start with an empty HTML page and a placeholder
+for the nav menu. This is pretty much requirejs boilerplate.</p>
+<div class="section" id="project-structure">
+<h3>Project structure<a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h3>
+<p>The overall project structure is:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>index.html
+    js/app.js
+
+    js/lib/component.js
+    js/lib/model.js
+    js/lib/promise.js
+
+    js/lib/third-party/jquery.js
+    js/lib/third-party/handlebars.amd.js
+    js/lib/third-party/html2hscript.js
+    js/lib/third-party/requirejs.js
+    js/lib/third-party/superagent.js
+    js/lib/third-party/virtualDom.js
+
+    html/nav.html
+</pre></div>
+</div>
+<p>The file <code class="docutils literal"><span class="pre">index.html</span></code> is the web page which loads <code class="docutils literal"><span class="pre">app.js</span></code> via requirejs. The files in
+<code class="docutils literal"><span class="pre">js/lib</span></code> come from the cargo repository, everything under <code class="docutils literal"><span class="pre">js/lib/third-party</span></code> comes
+from third party vendors.</p>
+<p>The file <code class="docutils literal"><span class="pre">html/nav.html</span></code> is an empty HTML-file for now and will carry the HTML template of
+the navigation menu later.</p>
+<p>We do not use any CSS or other styling for clarity. You can add it later if you want.</p>
+</div>
+<div class="section" id="setting-up-the-boilerplate">
+<h3>Setting up the boilerplate<a class="headerlink" href="#setting-up-the-boilerplate" title="Permalink to this headline">¶</a></h3>
+<p>Within <code class="docutils literal"><span class="pre">index.html</span></code> we define an element which later receives the rendered navigation menu. Note that
+we load jQuery as a global and not by requirejs. Technically, this is not necessary but as most HTML frameworks require
+jQuery it is needed as a global anyways.</p>
+<p><code class="docutils literal"><span class="pre">index.html</span></code></p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Component.js - example project<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">nav</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;nav&quot;</span> <span class="p">/&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/lib/third-party/jquery.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">data-main</span><span class="o">=</span><span class="s">&quot;js/app.js&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/lib/third-party/require.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal"><span class="pre">js/app.js</span></code> we load all required dependencies and provide a starting point.</p>
+<p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s1">&#39;cargo.Component&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/component&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cargo.Model&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/model&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cargo.Promise&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/promise&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;virtualDom&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/third-party/virtual-dom&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Handlebars&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/third-party/handlebars.amd&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;html2hscript&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/third-party/html2hscript&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;superagent&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/third-party/superagent&#39;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cargo.Component&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Component</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>Next we define a global object <code class="docutils literal"><span class="pre">TRANSLATIONS</span></code> containing the English and German translations to
+have them at hand when needed.</p>
+<p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cargo.Component&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Component</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">TRANSLATIONS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;de&#39;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;Über uns&#39;</span><span class="p">,</span>
+            <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;Kontakt&#39;</span><span class="p">,</span>
+            <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;Registrieren&#39;</span><span class="p">,</span>
+            <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;Login&#39;</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;en&#39;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;About&#39;</span><span class="p">,</span>
+            <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;Contact&#39;</span><span class="p">,</span>
+            <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;Sign up&#39;</span><span class="p">,</span>
+            <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;Login&#39;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="defining-and-attaching-a-component">
+<h3>Defining and attaching a component<a class="headerlink" href="#defining-and-attaching-a-component" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s define the navigation menu component and attach it to the <code class="docutils literal"><span class="pre">&lt;nav&gt;</span></code> element in the web page. The
+<code class="docutils literal"><span class="pre">cargo.Component</span></code> module provides a builder to achieve this. Additionally we need a first action,
+that constitutes the initial state of the component.</p>
+<p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+    <span class="kd">var</span> <span class="nx">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+
+    <span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s1">&#39;initialState&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">language</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">selected</span><span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+                <span class="nx">available</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nx">menu</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;#about&#39;</span><span class="p">,</span>
+                <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;#contact&#39;</span><span class="p">,</span>
+                <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;#register&#39;</span><span class="p">,</span>
+                <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;#login&#39;</span>
+            <span class="p">},</span>
+            <span class="nx">translation</span><span class="o">:</span> <span class="nx">TRANSLATIONS</span><span class="p">[</span><span class="s1">&#39;en&#39;</span><span class="p">]</span>
+        <span class="p">};</span>
+        <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">nav</span> <span class="o">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s1">&#39;#nav&#39;</span><span class="p">);</span>
+    <span class="nx">nav</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>In line 50-51 we attach the component to the <code class="docutils literal"><span class="pre">&lt;nav</span> <span class="pre">id=&quot;nav&quot;&gt;</span></code> element and call the initial state action
+to initalize the component.</p>
+<p>If we run this example, we should see the current state as a JSON representation at the place where the placeholder
+<code class="docutils literal"><span class="pre">&lt;nav&gt;</span></code> element was. That is the default behaviour of a component when it is not tied to a template yet.</p>
+</div>
+<div class="section" id="visualizing-state-changes">
+<h3>Visualizing state changes<a class="headerlink" href="#visualizing-state-changes" title="Permalink to this headline">¶</a></h3>
+<p>But let&#8217;s try something else before we connect the component to a template. We need another action
+to switch the language - let&#8217;s call it <code class="docutils literal"><span class="pre">changeLanguage()</span></code> and define a function for it right after the
+<code class="docutils literal"><span class="pre">initialState()</span></code> function.</p>
+<p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+    <span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s1">&#39;changeLanguage&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">lang</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">language</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">selected</span><span class="o">:</span> <span class="nx">lang</span><span class="p">,</span>
+                <span class="nx">available</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nx">menu</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;#about&#39;</span><span class="p">,</span>
+                <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;#contact&#39;</span><span class="p">,</span>
+                <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;#register&#39;</span><span class="p">,</span>
+                <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;#login&#39;</span>
+            <span class="p">},</span>
+            <span class="nx">translation</span><span class="o">:</span> <span class="nx">TRANSLATIONS</span><span class="p">[</span><span class="nx">lang</span><span class="p">]</span>
+        <span class="p">};</span>
+        <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">nav</span> <span class="o">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s1">&#39;#nav&#39;</span><span class="p">);</span>
+    <span class="nx">nav</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+
+    <span class="kd">var</span> <span class="nx">currentLanguage</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span><span class="p">;</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">currentLanguage</span> <span class="o">=</span> <span class="nx">currentLanguage</span> <span class="o">==</span> <span class="s1">&#39;en&#39;</span> <span class="o">?</span> <span class="s1">&#39;de&#39;</span> <span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">;</span>
+        <span class="nx">nav</span><span class="p">.</span><span class="nx">changeLanguage</span><span class="p">(</span><span class="nx">currentLanguage</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>If we run this example, the component should change the language from English to German back and forth every
+3 seconds. A timer triggers the action &#8220;changeLanguage()&#8221; with  different inputs altering the state of
+the component from one state to the other. Accordingly the visual representation changes as well. Note that,
+this happens without any further DOM manipulation by the developer.</p>
+</div>
+<div class="section" id="adding-an-html-template">
+<h3>Adding an HTML template<a class="headerlink" href="#adding-an-html-template" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s connect an HTML template to have a real visual representation for the navigation menu. First we define
+the template in a separate HTML file and load this file later.</p>
+<p><code class="docutils literal"><span class="pre">html/nav.html</span></code></p>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main-navigation&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.about}}&quot;</span><span class="p">&gt;</span>{{translation.about}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.contact}}&quot;</span><span class="p">&gt;</span>{{translation.contact}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.register}}&quot;</span><span class="p">&gt;</span>{{translation.register}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.login}}&quot;</span><span class="p">&gt;</span>{{translation.login}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;language&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span><span class="p">&gt;</span>Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Compnent.js uses the Handlebars template engine (s. <a class="reference external" href="http://handlebarsjs.com">http://handlebarsjs.com</a>) and applies the current
+state as context to the template. In short, there are placeholders which are enclosed in moustache like
+braces which correspond to the properties of the state object. For instance, the state object holds
+a property <code class="docutils literal"><span class="pre">menu</span></code> which is an object itself. The <code class="docutils literal"><span class="pre">menu</span></code> object contains the properties <code class="docutils literal"><span class="pre">about</span></code>, <code class="docutils literal"><span class="pre">contact</span></code>
+etc. which hold the link targets for the menu item. In the template these link targets are referenced
+by the placeholders <code class="docutils literal"><span class="pre">{{menu.about}}</span></code>  and <code class="docutils literal"><span class="pre">{{menu.contact}}</span></code>.</p>
+<p>Let&#8217;s load the template into a variable and pass it to the builder. This connects the template
+to the component. In the following code block we show the complete file <code class="docutils literal"><span class="pre">js/app.js</span></code> omitting some
+details for brevity and a better overview.</p>
+<p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cargo.Component&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">Component</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="p">...</span>
+
+    <span class="nx">Component</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="s2">&quot;html/nav.html&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+
+        <span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s1">&#39;initialState&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="p">...</span>
+        <span class="p">});</span>
+
+        <span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s1">&#39;changeLanguage&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">lang</span><span class="p">)</span> <span class="p">{</span>
+            <span class="p">...</span>
+        <span class="p">});</span>
+        <span class="nx">builder</span><span class="p">.</span><span class="nx">withTemplate</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">nav</span> <span class="o">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s1">&#39;#nav&#39;</span><span class="p">);</span>
+        <span class="nx">nav</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+
+        <span class="kd">var</span> <span class="nx">currentLanguage</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span><span class="p">;</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">currentLanguage</span> <span class="o">=</span> <span class="nx">currentLanguage</span> <span class="o">==</span> <span class="s1">&#39;en&#39;</span> <span class="o">?</span> <span class="s1">&#39;de&#39;</span> <span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">;</span>
+            <span class="nx">nav</span><span class="p">.</span><span class="nx">changeLanguage</span><span class="p">(</span><span class="nx">currentLanguage</span><span class="p">);</span>
+        <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+    <span class="p">});</span>
+
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>Component.js has a function <code class="docutils literal"><span class="pre">template()</span></code> which receives an URL as argument. The function
+loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
+the function returns a Promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) which is fulfilled with the compiled template.
+The compiled template is then passed to the builder by <code class="docutils literal"><span class="pre">withTemplate()</span></code> and used by the component
+to render the visual representation.</p>
+<p>If we run the code so far, a (rather unstyled) HTML representation of the navigation menu should
+be displayed in the web page. It consists of two unnumbered lists - one for the menu itself and
+another for the language options. The language should change every 3 seconds from English to German
+back and forth all over again as the state of the component is changed via the action <code class="docutils literal"><span class="pre">changeLanguage()</span></code>.</p>
+</div>
+<div class="section" id="adding-interactivity">
+<h3>Adding interactivity<a class="headerlink" href="#adding-interactivity" title="Permalink to this headline">¶</a></h3>
+<p>To add some interactivity, lets remove the timer and add a click handler to the language menu instead.
+We could add the click handler in <code class="docutils literal"><span class="pre">js/app.js</span></code> as soon as the component has rendered but there are
+two problems with this approach. First, we have no way to determine when the HTML finishes rendering and
+cannot register the event handler before the respective elements have been attached to the DOM.</p>
+<p>The second problem may be even more important. Adding event handlers outside of the template, loses us
+some flexibility. The event handler has to be attached to some specific element defined in the template.
+If we reference this element <strong>outside</strong> of the template, we cannot change the template without
+at least paying attention to the HTML code and checking back the references.</p>
+<p>The cleaner approach would be not to reference the component&#8217;s DOM within its Javascript code at all.
+That&#8217;s why we provide a way to define event handlers and DOM related stuff <strong>in the HTML template</strong>. Let&#8217;s
+see it in our example template:</p>
+<p><code class="docutils literal"><span class="pre">html/nav.html</span></code></p>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="cp">&lt;!DOCTYPE html&gt;</span>
+    <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main-navigation&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.about}}&quot;</span><span class="p">&gt;</span>{{translation.about}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.contact}}&quot;</span><span class="p">&gt;</span>{{translation.contact}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.register}}&quot;</span><span class="p">&gt;</span>{{translation.register}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.login}}&quot;</span><span class="p">&gt;</span>{{translation.login}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;language&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span><span class="p">&gt;</span>Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="hll">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;attach&quot;</span><span class="p">&gt;</span>
+</span><span class="hll">        <span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="hll">        <span class="nx">$</span><span class="p">(</span><span class="nx">node</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;ul.language li a[lang]&quot;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="hll">            <span class="kd">var</span> <span class="nx">lang</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;lang&#39;</span><span class="p">);</span>
+</span><span class="hll">            <span class="nx">component</span><span class="p">.</span><span class="nx">changeLanguage</span><span class="p">(</span><span class="nx">lang</span><span class="p">);</span>
+</span><span class="hll">        <span class="p">});</span>
+</span><span class="hll">    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span>    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>There is a <code class="docutils literal"><span class="pre">script</span></code> tag in the body of the template with the class <code class="docutils literal"><span class="pre">attach</span></code>. This script
+is executed <strong>once</strong> when the component is attached to the DOM. It is the right place to
+setup event handlers and other DOM related things that need to be executed before the
+component is used. There are two more script classes  - <code class="docutils literal"><span class="pre">update</span></code> and <code class="docutils literal"><span class="pre">detach</span></code>. <code class="docutils literal"><span class="pre">update</span></code>
+is executed whenever the component is re-rendered on state changes and <code class="docutils literal"><span class="pre">detach</span></code> is called
+once when the component is destroyed.</p>
+<p>In the execution context of these scripts, <code class="docutils literal"><span class="pre">this</span></code> is defined as a reference to the component and
+a special variable <code class="docutils literal"><span class="pre">node</span></code> is defined as a reference to the DOM node of the component. You
+can use <code class="docutils literal"><span class="pre">this</span></code> to access all actions of the component and trigger some interactive behaviour.</p>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h3>
+<p>By separating the component&#8217;s behaviour from its visual appearance and by accessing the
+behaviour through <em>actions</em> as a well-defined interface, we think that we provided a
+solution for writing large GUI applications in a more comprehensive and more concise manner.</p>
+<p>We use modern concept&#8217;s from the Javascript world like Promises, Flux and React-style
+application architecture to provide a clear data flow between the applications model
+and it&#8217;s visual representation and try to avoid the syntactical overhead of JSX.</p>
+<p>Our approach is very close to the up-coming &#8220;Web components&#8221; technology and may easily we
+transformed into a programming model making use of them.</p>
+<p>Please feel free to check the API documentation for a more in-depth look at our technology.</p>
+</div>
+</div>
+<div class="section" id="api-documentation">
+<h2>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-builder">
+<h3>The Builder<a class="headerlink" href="#the-builder" title="Permalink to this headline">¶</a></h3>
+<p>With Component.js components are build from a builder. The builder configures the component
+and provides a <code class="docutils literal"><span class="pre">build()</span></code> function to actually construct an instance of the component. The same
+builder can be re-used to construct different instances.</p>
+<div class="section" id="constructor">
+<h4>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">builder</span> <span class="pre">=</span> <span class="pre">new</span> <span class="pre">Component(options)</span></code></p>
+<p>Creates a builder instance.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">options</span></code></p>
+<blockquote>
+<div>Object which represents the configuration of the builder. All configuration options can
+be set with a corresponding configuration method (s. below). Using configuration
+methods is more verbose and more concise.</div></blockquote>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nx">template</span><span class="o">:</span> <span class="p">...,</span>
+    <span class="nx">actions</span><span class="o">:</span> <span class="p">...,</span>
+    <span class="nx">subscriptions</span><span class="o">:</span> <span class="p">...,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div>See the configuration methods <code class="docutils literal"><span class="pre">withTemplate()</span></code> and <code class="docutils literal"><span class="pre">withActions()</span></code>. The option
+<code class="docutils literal"><span class="pre">subscription</span></code> takes an array of callbacks and models for the component to subscribe to. See
+<code class="docutils literal"><span class="pre">subscribe</span></code> for a detailed description about the array items.</div></blockquote>
+<p>Example options:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nx">template</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span>  <span class="k">return</span> <span class="nx">html</span><span class="p">;</span> <span class="p">},</span>
+
+    <span class="nx">actions</span><span class="o">:</span> <span class="p">{</span> <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="cm">/* ... */</span>
+                        <span class="k">return</span> <span class="nx">newState</span><span class="p">;</span>
+                    <span class="p">}</span>
+    <span class="p">},</span>
+
+    <span class="nx">subscriptions</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="nx">model</span><span class="o">:</span> <span class="nx">model1</span><span class="p">,</span> <span class="nx">callback</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="p">]</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Return value</strong></p>
+<blockquote>
+<div>A new builder instance.</div></blockquote>
+</div>
+<div class="section" id="method-withtemplate-templatefn">
+<h4>Method: withTemplate(templateFn)<a class="headerlink" href="#method-withtemplate-templatefn" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">builder.withTemplate(templateFn)</span></code></p>
+<p>Sets a template function which transforms a state object into the HTML representation of the component.
+If no template function is configured, the component renders a JSON representation of its current state
+into an empty <code class="docutils literal"><span class="pre">&lt;pre</span> <span class="pre">class=&quot;_componentState&quot;&gt;</span></code> element.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">templateFn</span></code></p>
+<blockquote>
+<div><p>Usually the result of <code class="docutils literal"><span class="pre">Component.template(URL)</span></code> but basically any function that transforms the current state
+into its visual representation can be used:</p>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">html</span> <span class="pre">=</span> <span class="pre">templateFn(state);</span></code></p>
+<p>The template function takes the current component state as input parameter and returns the HTML
+representation of the component. Additionally some special callbacks can be attached to the template
+function as properties (see below for details).</p>
+</div></blockquote>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">templateFn</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*...*/</span>
+    <span class="k">return</span> <span class="nx">html</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">templateFn</span><span class="p">.</span><span class="nx">attach</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* ... */</span>
+<span class="p">};</span>
+
+<span class="nx">templateFn</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* ... */</span>
+<span class="p">};</span>
+
+<span class="nx">templateFn</span><span class="p">.</span><span class="nx">detach</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* ... */</span>
+<span class="p">};</span>
+
+<span class="nx">builder</span><span class="p">.</span><span class="nx">withTemplate</span><span class="p">(</span><span class="nx">templateFn</span><span class="p">);</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>The template function may optionally have the properties <code class="docutils literal"><span class="pre">attach</span></code>, <code class="docutils literal"><span class="pre">update</span></code> and <code class="docutils literal"><span class="pre">detach</span></code>. If these
+properties are defined as functions, they are executed on certain events in the life-cycle
+of the component.</p>
+<dl class="docutils">
+<dt>attach(node)</dt>
+<dd>This method is called once when the component has been attached to the DOM. The <code class="docutils literal"><span class="pre">node</span></code> parameter
+receives the current DOM node of the component. The <code class="docutils literal"><span class="pre">this</span></code> context is set to the current
+instance of the component and exposes the component&#8217;s actions.</dd>
+<dt>update(node)</dt>
+<dd>This method is called after the component is re-rendered. This usually takes place,
+when the state of the component changes. The <code class="docutils literal"><span class="pre">node</span></code> parameter
+receives the current DOM node of the component. The <code class="docutils literal"><span class="pre">this</span></code> context is set to the current
+instance of the component and exposes the component&#8217;s actions.</dd>
+<dt>detach(node)</dt>
+<dd>This method is called before the component is removed from the DOM. This usually takes place,
+when the state of the component enters the dead state (see <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>). The <code class="docutils literal"><span class="pre">node</span></code>
+parameter receives the current DOM node of the component. The <code class="docutils literal"><span class="pre">this</span></code> context is set to the
+current instance of the component and exposes the component&#8217;s actions.</dd>
+</dl>
+</div></blockquote>
+<p><strong>Return value</strong></p>
+<p>This builder instance for method chaining.</p>
+</div>
+<div class="section" id="method-addaction-name-action">
+<h4>Method: addAction(name, action)<a class="headerlink" href="#method-addaction-name-action" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">builder.addAction(name,</span> <span class="pre">actionFn)</span></code></p>
+<p>Adds an action to the component&#8217;s state model. The component exposes <strong>actions</strong> to the outside
+world as the only means of interaction. For instance, if the component is an unnumbered list of items,
+it would expose actions for adding new items and removing items to the outside world. No further
+interaction with the component is possible than by the defined actions. The actions are exposed in the
+form of functions in an object:</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+<span class="hll"><span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s2">&quot;addItem&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+</span>    <span class="p">...</span>
+    <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">items</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s2">&quot;#list&quot;</span><span class="p">);</span>
+<span class="hll"><span class="nx">component</span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="s2">&quot;Item 1&quot;</span><span class="p">);</span>
+</span></pre></div>
+</td></tr></table></div>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">name</span></code></p>
+<blockquote>
+<div>The name of the action.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">actionFn</span></code></p>
+<blockquote>
+<div><p>The action function which returns the new state of the component after the action has been performed.</p>
+<p>The <code class="docutils literal"><span class="pre">this</span></code> context bears a function <code class="docutils literal"><span class="pre">state()</span></code> which returns the current state of the component.
+Additionally it holds a <code class="docutils literal"><span class="pre">model</span></code> property which is set to the current instance of the component allowing
+to trigger other actions of the same component.</p>
+<p>The return value of the action function is the new state of the component.</p>
+</div></blockquote>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">initalState</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="p">{</span> <span class="nx">items</span><span class="o">:</span> <span class="p">[]</span> <span class="p">};</span>
+</span><span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">addItem</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">();</span>
+    <span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="hll">    <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+<span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s2">&quot;initialState&quot;</span><span class="p">,</span> <span class="nx">initialState</span><span class="p">);</span>
+<span class="nx">builder</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s2">&quot;addItem&quot;</span><span class="p">,</span> <span class="nx">addItem</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s2">&quot;#list&quot;</span><span class="p">);</span>
+<span class="nx">component</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+<span class="nx">component</span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="s2">&quot;Item 1&quot;</span><span class="p">);</span>
+<span class="nx">component</span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="s2">&quot;Item 2&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Return value</strong></p>
+<p>This builder instance for method chaining.</p>
+</div>
+<div class="section" id="method-withactions-actions">
+<h4>Method: withActions(actions)<a class="headerlink" href="#method-withactions-actions" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">builder.withActions(actions)</span></code></p>
+<p>Sets and replaces the configured actions of this builder instance.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">actions</span></code></p>
+<p>An object containing all actions for the component at once. This method is
+the equivalent of repeatingly calling <code class="docutils literal"><span class="pre">addAction(name,</span> <span class="pre">actionFn)</span></code> with
+different actions. The keys of the <code class="docutils literal"><span class="pre">actions</span></code> object are <cite>the `name`</cite> parameters
+and the values of the object are the <code class="docutils literal"><span class="pre">actionFn</span></code> parameters.</p>
+<p><strong>Return values</strong></p>
+<p>This builder instance for method chaining.</p>
+</div>
+<div class="section" id="method-subscribe-model-callback">
+<h4>Method: subscribe(model, callback)<a class="headerlink" href="#method-subscribe-model-callback" title="Permalink to this headline">¶</a></h4>
+<p>Subscribes this component to another model (see <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>) which influences the
+state of this component from the outside. The <code class="docutils literal"><span class="pre">subscribe()</span></code> method provides a way
+to &#8220;connect&#8221; components with each other. An example could be a navigation menu which
+reacts on language selections from a settings menu.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">model</span></code></p>
+<blockquote>
+<div>Another model to subscribe to receive updates on its state changes.</div></blockquote>
+<p><code class="docutils literal"><span class="pre">callback</span></code></p>
+<blockquote>
+<div><p>A method which receives the new state of <code class="docutils literal"><span class="pre">model</span></code> as input. It is meat to react
+on changes of the <code class="docutils literal"><span class="pre">model</span></code> by calling actions of this component.</p>
+<p>The <code class="docutils literal"><span class="pre">this</span></code> context within the callback is the instance of the current component.</p>
+</div></blockquote>
+<p><strong>Return value</strong></p>
+<p>This builder instance for method chaining.</p>
+</div>
+<div class="section" id="method-build-selector">
+<h4>Method: build(selector)<a class="headerlink" href="#method-build-selector" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">component</span> <span class="pre">=</span> <span class="pre">builder.build('#element');</span></code></p>
+<p>Creates an instance of the component which was previously configured by the methods
+described above. The instance is attached to the DOM to the elements described by
+<code class="docutils literal"><span class="pre">selector</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">build()</span></code> instance can be called more than once to create different instances
+of the component with the same configuration.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">selector</span></code></p>
+<blockquote>
+<div>A jQuery selector which defines the elements to which the component is attached. If
+more than one element is selected by the selector all of them are replaced in the DOM.
+Usually only one element should be replaced.</div></blockquote>
+</div>
+</div>
+<div class="section" id="static-functions">
+<h3>Static Functions<a class="headerlink" href="#static-functions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="component-template-url">
+<h4>Component.template(URL)<a class="headerlink" href="#component-template-url" title="Permalink to this headline">¶</a></h4>
+<p>Loads and compiles an HTML file from the specified URL. The result is meant to be
+used as an argument to the method <code class="docutils literal"><span class="pre">builder.withTemplate()</span></code>. Note that this is
+an asynchronous operation which does not return the result directly. Instead
+a promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) is returned which is fulfilled with the compiled
+template.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">URL</span></code></p>
+<p>The URL of an HTML template file. The template file must carry a <code class="docutils literal"><span class="pre">&lt;template&gt;</span></code> element containing
+the actual HTML code of the component in the documents body. Handlebars (see <a class="reference external" href="http://www.handlebarsjs.com">http://www.handlebarsjs.com</a>) is used
+as template engine.</p>
+<p>Additionally the <code class="docutils literal"><span class="pre">&lt;body&gt;</span></code> element can contain optional <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> tags with the classes <code class="docutils literal"><span class="pre">attach</span></code>,
+<code class="docutils literal"><span class="pre">update</span></code> and <code class="docutils literal"><span class="pre">detach</span></code>. See the <code class="docutils literal"><span class="pre">templateFn</span></code> parameter of the <code class="docutils literal"><span class="pre">builder.withTemplate()</span></code> method
+for details.</p>
+<p>Example:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main-navigation&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.about}}&quot;</span><span class="p">&gt;</span>{{translation.about}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.contact}}&quot;</span><span class="p">&gt;</span>{{translation.contact}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.register}}&quot;</span><span class="p">&gt;</span>{{translation.register}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{menu.login}}&quot;</span><span class="p">&gt;</span>{{translation.login}}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;language&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;#!&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span><span class="p">&gt;</span>Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;attach&quot;</span><span class="p">&gt;</span>
+        <span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">node</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;ul.language li a[lang]&quot;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">lang</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;lang&#39;</span><span class="p">);</span>
+            <span class="nx">component</span><span class="p">.</span><span class="nx">changeLanguage</span><span class="p">(</span><span class="nx">lang</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;update&quot;</span><span class="p">&gt;</span>
+        <span class="cm">/* ... */</span>
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;detach&quot;</span><span class="p">&gt;</span>
+        <span class="cm">/* ... */</span>
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>Return value</strong></p>
+<p>A promise which is fulfilled with the compiled template function to be used with <code class="docutils literal"><span class="pre">withTemplate()</span></code> method
+of the builder. If an error occurs during the load process or if the template file cannot be parsed,
+the promise is rejected with a meaningful error message.</p>
+</div>
+</div>
+<div class="section" id="the-component-instance">
+<h3>The Component instance<a class="headerlink" href="#the-component-instance" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">build()</span></code> method of the builder creates an instance of the component defined by
+the builder configuration. The instances is a model of the type described in <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>.</p>
+<p>Accordingly it exposes all defined actions as methods to the outside world.
+Example:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">navMenu</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">withTemplate</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="k">return</span> <span class="nx">state</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">build</span><span class="p">(</span><span class="s1">&#39;#nav&#39;</span><span class="p">);</span>
+
+<span class="nx">navMenu</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Furthermore it can be subscribed to by using the instance as a function.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">navMenuState</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
+<span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">navMenu</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+<span class="cm">/* ... */</span>
+<span class="nx">unsubscribe</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The instance of the component is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>. Details about
+Model.js can be found there.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="module_model.html" class="btn btn-neutral" title="Module: Model" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Jan Obladen.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

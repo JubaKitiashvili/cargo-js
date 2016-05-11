@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<template>
+    <div class="main-navigation">
+        <ul class="menu">
+            <li><a href="{{menu.about}}">{{translation.about}}</a></li>
+            <li><a href="{{menu.contact}}">{{translation.contact}}</a></li>
+            <li><a href="{{menu.register}}">{{translation.register}}</a></li>
+            <li><a href="{{menu.login}}">{{translation.login}}</a></li>
+        </ul>
+        <ul class="language">
+            <li><a href="#!" lang="en">English</a></li>
+            <li><a href="#!" lang="de">Deutsch</a></li>
+        </ul>
+    </div>
+</template>
+<script class="attach">
+    var component = this;
+    $(node).find("ul.language li a[lang]").on('click', function() {
+        var lang = $(this).attr('lang');
+        component.changeLanguage(lang);
+        return false;
+    });
+</script>
+</body>
+</html>

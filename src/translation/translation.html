@@ -34,27 +34,92 @@
         });
     });
 
-    describe("Initial state", function () {
-        it("loads the default translation without any options.", function (done) {
-            Cookies.remove('cargo.lang');
+    describe("Loading", function () {
+        it(" the default translation without any options.", function (done) {
             var trans = new Translation();
-            trans.initialState()
-                    .then(function (state) {
-                        trans(function(state) {
-                            expect(state).toBeDefined();
-                            expect(typeof state).toBe("object");
-                            expect(state.GREETING).toBe("Hello World!");
-                            expect(state.READY).toBe("ready");
-                            done();
-                        });
-                    })
-                    .catch(function(error) {
-                        fail("Loading translation with default options failed.");
-                        done();
-                    });
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).toBe("Hello World!");
+                expect(state.READY).toBe("ready");
+                done();
+            });
+            trans.select("en");
         });
-    });
 
+        it(" the default translation when selecting an unknown language.", function (done) {
+            var trans = new Translation();
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).toBe("Hello World!");
+                expect(state.READY).toBe("ready");
+                done();
+            });
+            trans.select("fr");
+        });
+
+        it(" no translation when selecting a non-existent namespace.", function (done) {
+            var trans = new Translation({namespace: "missing"});
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).not.toBeDefined();
+                expect(state.READY).not.toBeDefined();
+                done();
+            });
+            trans.select("en");
+        });
+
+        it(" no translation when selecting a non-existent base URI.", function (done) {
+            var trans = new Translation({baseURI: "missing"});
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).not.toBeDefined();
+                expect(state.READY).not.toBeDefined();
+                done();
+            });
+            trans.select("en");
+        });
+
+        it(" the translation of the parent locale when selecting a non-existent specific locale.", function (done) {
+            var trans = new Translation();
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).toBe("Hello World!");
+                expect(state.READY).toBe("ready");
+                done();
+            });
+            trans.select("en_US");
+        });
+
+        it(" the correct translation when selecting a specific non-default locale.", function (done) {
+            var trans = new Translation({languages: ['de_de', 'en']});
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).toBe("Hallo Welt!");
+                expect(state.READY).toBe("fertig");
+                done();
+            });
+            trans.select("de_de");
+        });
+
+        it(" the translation of the parent locale when selecting a unspecific locale.", function (done) {
+            var trans = new Translation({languages: ['de_de', 'en']});
+            trans(function (state) {
+                expect(state).toBeDefined();
+                expect(typeof state).toBe("object");
+                expect(state.GREETING).toBe("Hallo Welt!");
+                expect(state.READY).toBe("fertig");
+                done();
+            });
+            trans.select("de");
+        });
+
+    });
 
 </script>
 

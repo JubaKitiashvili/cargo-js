@@ -16,6 +16,7 @@ Contents:
    module_promise
    module_model
    module_component
+   module_translation
 
 
 Indices and tables

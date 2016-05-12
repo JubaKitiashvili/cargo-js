@@ -133,7 +133,7 @@ The default language to use when loading or selecting a language fails and no un
     selected translation.
 
 Method: select(lang)
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
 
 ``trans.select(lang)``
 

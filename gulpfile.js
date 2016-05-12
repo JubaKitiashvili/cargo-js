@@ -92,6 +92,45 @@ gulp.task('build_component', ['deps_html2hscript'], function () {
 
 });
 
+gulp.task('build_translation', function () {
+    var umdOptions = {
+        namespace: function () {
+            return "cargo.Translation";
+        },
+        template: 'umdTemplate.templ',
+        dependencies: function () {
+            return [
+                {
+                    name: 'Promise',
+                    amd: 'cargo.Promise',
+                    cjs: 'cargo.Promise',
+                    global: 'cargo.Promise',
+                    param: 'Promise'
+                },
+                {
+                    name: 'Model',
+                    amd: 'cargo.Model',
+                    cjs: 'cargo.Model',
+                    global: 'cargo.Model',
+                    param: 'Model'
+                }, "superagent", "_"
+
+            ];
+        }
+    };
+
+    gulp.src('src/translation/Translation.js')
+        .pipe(umd(umdOptions))
+        .pipe(rename("translation.js"))
+        .pipe(gulp.dest('dist/'));
+    gulp.src('src/translation/Translation.js')
+        .pipe(umd(umdOptions))
+        .pipe(uglify())
+        .pipe(rename("translation.min.js"))
+        .pipe(gulp.dest('dist/'));
+
+});
+
 gulp.task('build_model', function () {
     var umdOptions = {
         namespace: function () {
@@ -142,7 +181,7 @@ gulp.task('build_promise', function () {
 });
 
 
-gulp.task('build', ['deps', 'build_model', 'build_promise', 'build_component', 'build_example'], function () {
+gulp.task('build', ['deps', 'build_model', 'build_promise', 'build_component', 'build_translation', 'build_example'], function () {
 });
 
 gulp.task('default', ['build'], function () {

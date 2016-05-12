@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Module: Translation &mdash; cargo-js 0.1.0 documentation</title>
+  <title>Module: Translation &mdash; cargo-js 0.1 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="cargo-js 0.1.0 documentation" href="index.html"/>
+    <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="prev" title="Module: Component" href="module_component.html"/> 
 
   
@@ -98,9 +98,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#options-namespace-string">options.namespace (string)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#options-languages-array">options.languages (array)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#options-defaultlang-string">options.defaultLang (string)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#method-select-lang">Method: select(lang)</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#method-select-lang">Method: select(lang)</a></li>
 </ul>
 </li>
 </ul>
@@ -274,8 +274,9 @@ translation object is empty.</p>
 <div>A new translation instance which is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>. The state of the model is the currently
 selected translation.</div></blockquote>
 </div>
+</div>
 <div class="section" id="method-select-lang">
-<h4>Method: select(lang)<a class="headerlink" href="#method-select-lang" title="Permalink to this headline">¶</a></h4>
+<h3>Method: select(lang)<a class="headerlink" href="#method-select-lang" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">trans.select(lang)</span></code></p>
 <p>Selects a language. If the language is a specific variant like &#8220;en_US&#8221; or &#8220;de_AT&#8221; the next unspecific variant is
 tried (&#8220;en&#8221; or &#8220;de&#8221;). If the unspecific variant is unavailable, the default language is used. If the default
@@ -289,7 +290,6 @@ state transition is triggered before the loading finishes.</p>
 <p>A string with the language code like &#8220;en&#8221; or &#8220;en_us&#8221;.</p>
 <p><strong>Return value</strong></p>
 <p>A promise which resolves with the new state after the state transition.</p>
-</div>
 </div>
 </div>
 </div>
@@ -333,7 +333,7 @@ state transition is triggered before the loading finishes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

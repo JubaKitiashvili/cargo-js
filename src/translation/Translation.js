@@ -72,8 +72,9 @@ var Translation = function (options) {
     // Default language is English if not configured.
     config.defaultLang = options.defaultLang || "en";
     
-    var languages = _.union(options.languages, [ config.defaultLang ]) || [];
+    var languages = options.languages || [];
     var loaders = _.chain(languages)
+        .union([ config.defaultLang ])
         .uniq(true)
         .map(function (lang) {
             return lang.toLowerCase();

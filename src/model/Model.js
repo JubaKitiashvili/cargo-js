@@ -59,14 +59,18 @@ var Model = function (actions) {
             var unsubscribe = function (subscriberId) {
                 delete subscribers[subscriberId];
             };
-            if ( state !== undefined && !(state instanceof Error) ) {
-                try {
-                    var stateCopy = JSON.parse(JSON.stringify(state));
-                    subscriber.call(undefined, stateCopy);
-                } catch (e) {
-                    console.log("Error in new subscriber: " + e);
+            new Promise(function(resolve, reject) {
+                if ( state !== undefined && !(state instanceof Error) ) {
+                    try {
+                        var stateCopy = JSON.parse(JSON.stringify(state));
+                        subscriber.call(undefined, stateCopy);
+                        resolve();
+                    } catch (e) {
+                        console.log("Error in new subscriber: " + e);
+                        reject();
+                    }
                 }
-            }
+            });
             return unsubscribe.bind(self, subscriberId);
         };
 

@@ -111,6 +111,19 @@
             expect(typeof unsubscribe === 'function').toBeTruthy();
         });
 
+        it("subscribing to a model sends the current state to new subscribers.", function(done) {
+            var model = new Model(testState);
+            expect(model).toBeDefined();
+            var subscriber = function(state) {
+                if (state.stage !== "initial") {
+                    fail("State is not initialized.");
+                }
+                done();
+            };
+            model.initialState();
+            model(subscriber);
+        });
+
         it("the model exporting each action as a function", function () {
             var model = new Model(testState);
             expect(model).toBeDefined();

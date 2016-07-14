@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Component.js - Test file.</title>
+            <link rel="shortcut icon" type="image/png"
+                  href="../../bower_components/jasmine-core/images/jasmine_favicon.png">
+            <link rel="stylesheet" type="text/css"
+                  href="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.css">
+
+            <script type="text/javascript"
+                    src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+            <script type="text/javascript"
+                    src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+            <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+            <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
+            <script type="text/javascript" src="../../dist/promise.js"></script>
+            <script type="text/javascript" src="../../dist/model.js"></script>
+            <script type="text/javascript" src="../../bower_components/virtual-dom/dist/virtual-dom.js"></script>
+            <script type="text/javascript" src="../../node_modules/superagent/superagent.js"></script>
+            <script type="text/javascript" src="../../bower_components/handlebars/handlebars.js"></script>
+            <script type="text/javascript" src="../../dist/dependencies/html2hscript.js"></script>
+            <script type="text/javascript" src="../../dist/component.js"></script>
+        </head>
+<body>
+
+<div id="test"/>
+
+<script type="text/javascript">
+    window.Promise = cargo.Promise;
+    window.Component = cargo.Component;
+</script>
+<script type="text/javascript" src="FormInput.js"></script>
+<script type="text/javascript">
+
+    describe("FormInput.create()", function () {
+        var template;
+        beforeEach(function (done) {
+            $('#test').replaceWith('<div id="test" />');
+            Component.template("test/TestFormInput.html")
+                    .then(function (t) {
+                        template = t;
+                        done();
+                    })
+                    .catch(function (e) {
+                        fail(e);
+                        done();
+                    });
+        });
+        it("returning a component.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+        });
+        it("returning a model with action 'initialState()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.initialState).toBeDefined();
+            expect(typeof fi.initialState === 'function').toBeTruthy();
+        });
+        it("returning a model with action 'setError()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.setError).toBeDefined();
+            expect(typeof fi.setError === 'function').toBeTruthy();
+        });
+        it("returning a model with action 'clearError()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.clearError).toBeDefined();
+            expect(typeof fi.clearError === 'function').toBeTruthy();
+        });
+        it("returning a model with action 'setValue()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.setValue).toBeDefined();
+            expect(typeof fi.setValue === 'function').toBeTruthy();
+        });
+        it("returning a model with action 'enable()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.enable).toBeDefined();
+            expect(typeof fi.enable === 'function').toBeTruthy();
+        });
+        it("returning a model with action 'disable()'.", function () {
+            var fi = FormInput.create('#test', template);
+            expect(fi).toBeDefined();
+            expect(fi.disable).toBeDefined();
+            expect(typeof fi.disable === 'function').toBeTruthy();
+        });
+    });
+
+    describe("State Machine of FormInput", function () {
+        var template;
+        beforeEach(function (done) {
+            $('#test').replaceWith('<div id="test" />');
+            Component.template("test/TestFormInput.html")
+                    .then(function (t) {
+                        template = t;
+                        done();
+                    })
+                    .catch(function (e) {
+                        fail(e);
+                        done();
+                    });
+        });
+        it("triggering initialState() returning useful initial values.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual("");
+                expect(state.error).not.toBeDefined();
+                expect(state.enabled).toBeTruthy();
+                done();
+            });
+        });
+        it("triggering enable() returning enabled state.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                return fi.enable();
+            }).then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.enabled).toBeTruthy();
+                done();
+            })
+        });
+        it("triggering disable() returning disabled state.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                return fi.disable();
+            }).then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.enabled).not.toBeTruthy();
+                done();
+            }).catch(function (e) {
+                fail(e);
+                done();
+            });
+        });
+        it("triggering setValue() returning identical value when not using validation.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                return fi.setValue("TESTME");
+            }).then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual("TESTME");
+                done();
+            }).catch(function (e) {
+                fail(e);
+                done();
+            })
+        });
+        it("triggering setError() returning error.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                return fi.setError("TESTERROR");
+            }).then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.error.code).toEqual("TESTERROR");
+                done();
+            }).catch(function (e) {
+                fail(e);
+                done();
+            })
+        });
+        it("triggering clearError() clearing the error.", function (done) {
+            var fi = FormInput.create('#test', template);
+            fi.initialState().then(function (state) {
+                return fi.setError("TESTERROR");
+            }).then(function (state) {
+                return fi.clearError();
+            }).then(function (state) {
+                expect(state).toBeDefined();
+                expect(state.error).not.toBeDefined();
+                done();
+            }).catch(function (e) {
+                fail(e);
+                done();
+            })
+        });
+        it("triggering setValue() with filtering validator returning a filtered value.", function(done) {
+            var validator = function(value) {
+                return "NEWVALUE";
+            };
+            var fi = FormInput.create('#test', template, validator);
+            fi.initialState().then(function (state) {
+                return fi.setValue("TESTVALUE");
+            }).then(function(state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual('NEWVALUE');
+                expect(state.error).not.toBeDefined();
+                done();
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+        it("triggering setValue() with rejecting validator setting an error state.", function(done) {
+            var validator = function(value) {
+                throw "ERROR";
+            };
+            var fi = FormInput.create('#test', template, validator);
+            fi.initialState().then(function (state) {
+                return fi.setValue("TESTVALUE");
+            }).then(function(state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual('TESTVALUE');
+                expect(state.error).toBeDefined();
+                expect(state.error.code).toEqual("ERROR");
+                done();
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+        it("triggering setValue() with rejecting validator setting an error state.", function(done) {
+            var validator = function(value) {
+                throw "ERROR";
+            };
+            var fi = FormInput.create('#test', template, validator);
+            fi.initialState().then(function (state) {
+                return fi.setValue("TESTVALUE");
+            }).then(function(state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual('TESTVALUE');
+                expect(state.error).toBeDefined();
+                expect(state.error.code).toEqual("ERROR");
+                done();
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+        it("triggering setValue() with rejecting validator setting an error state (new Error()-style).", function(done) {
+            var validator = function(value) {
+                throw new Error("ERROR");
+            };
+            var fi = FormInput.create('#test', template, validator);
+            fi.initialState().then(function (state) {
+                return fi.setValue("TESTVALUE");
+            }).then(function(state) {
+                expect(state).toBeDefined();
+                expect(state.value).toEqual('TESTVALUE');
+                expect(state.error).toBeDefined();
+                expect(state.error.code).toEqual("ERROR");
+                done();
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+
+
+    });
+
+</script>
+
+
+</body>
+</html>

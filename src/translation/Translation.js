@@ -124,8 +124,7 @@ var Translation = function (options) {
         }
         return trans;
     };
-
-
+    
     return new Model(actions);
 };
 

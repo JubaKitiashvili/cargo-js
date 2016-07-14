@@ -9,6 +9,7 @@
     <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine.js"></script>
     <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/underscore.js"></script>
 </head>
 <body>
 
@@ -111,10 +112,10 @@
             expect(typeof unsubscribe === 'function').toBeTruthy();
         });
 
-        it("subscribing to a model sends the current state to new subscribers.", function(done) {
+        it("subscribing to a model sends the current state to new subscribers.", function (done) {
             var model = new Model(testState);
             expect(model).toBeDefined();
-            var subscriber = function(state) {
+            var subscriber = function (state) {
                 if (state.stage !== "initial") {
                     fail("State is not initialized.");
                 }
@@ -314,16 +315,183 @@
                 done();
             }).catch(function (error) {
                 expect(error instanceof Error).toBeTruthy();
-                model.initialState().then(function() {
+                model.initialState().then(function () {
                     fail("Model is in dead state and should reject further actions.");
                     done();
-                }).catch(function(error) {
+                }).catch(function (error) {
                     expect(error instanceof Error).toBeTruthy();
                     done();
                 });
             });
         });
 
+    });
+
+    describe("Static Model.merge() function", function () {
+        var model1;
+        var model2;
+
+        beforeEach(function () {
+            model1 = new Model({
+                initialState: function (number) {
+                    return {sum: number};
+                },
+                add: function (number) {
+                    var state = this.state();
+                    state.sum = state.sum + number;
+                    return state;
+                }
+            });
+            model2 = new Model({
+                initialState: function (number) {
+                    return {sum: -number};
+                },
+                sub: function (number) {
+                    var state = this.state();
+                    state.sum = state.sum - number;
+                    return state;
+                }
+            });
+        });
+
+        it("is present", function () {
+            expect(Model.merge).toBeDefined();
+            expect(typeof Model.merge).toEqual('function');
+        });
+
+        it("returns a model with all actions of both models defined.", function () {
+            var model = Model.merge(model1, model2);
+            expect(model).toBeDefined();
+            _.each(Object.getOwnPropertyNames(model1), function (name) {
+                if (typeof model1[name] !== 'function') return;
+                expect(model[name]).toBeDefined();
+            });
+            _.each(Object.getOwnPropertyNames(model2), function (name) {
+                if (typeof model2[name] !== 'function') return;
+                expect(model[name]).toBeDefined();
+            });
+        });
+
+        it("returns a new model subscribed to state changes of first model.", function (done) {
+            var model = Model.merge(model1, model2);
+            model(function (state) {
+                expect(state.sum).toEqual(9);
+                done();
+            });
+            model1.initialState(9).catch(function (e) {
+                fail(e);
+                done();
+            });
+        });
+
+        it("returns a new model subscribed to state changes of second model.", function (done) {
+            var model = Model.merge(model1, model2);
+            model(function (state) {
+                expect(state.sum).toEqual(-9);
+                done();
+            });
+            model2.initialState(9).catch(function (e) {
+                fail(e);
+                done();
+            });
+        });
+    });
+
+    describe("Stream API", function () {
+        var model1, model2;
+        beforeEach(function () {
+            model1 = new Model({
+                initialState: function (number) {
+                    return {sum: number};
+                },
+                add: function (number) {
+                    var state = this.state();
+                    state.sum = state.sum + number;
+                    return state;
+                }
+            });
+            model2 = new Model({
+                initialState: function (number) {
+                    return {sum: -number};
+                },
+                sub: function (number) {
+                    var state = this.state();
+                    state.sum = state.sum - number;
+                    return state;
+                }
+            });
+        });
+
+        it("initializes a stream from model.", function () {
+            var stream = Model.stream(model1);
+            expect(stream).toBeDefined();
+            expect(typeof stream).toEqual('object');
+            expect(stream instanceof Stream).toBeTruthy();
+            expect(stream.in).toBeDefined();
+            var methods = ['in', 'filter', 'out'];
+            _.each(methods, function (method) {
+                expect(stream[method]).toBeDefined();
+                expect(typeof stream[method]).toEqual('function');
+            });
+        });
+
+        it("defines a stream connected to model.", function (done) {
+            var stream = Model.stream(model1);
+            model1.initialState(9)
+                    .then(function (state) {
+                        var modelState = state;
+                        var streamState = stream.out();
+                        expect(modelState).toEqual(streamState);
+                        done();
+                    })
+                    .catch(function (e) {
+                        fail(e);
+                        done();
+                    });
+        });
+
+       it("defines a stream independent from model.", function (done) {
+            var stream = Model.stream(model1);
+            model1.initialState(9)
+                    .then(function (state) {
+                        var modelState = state;
+                        var streamState = stream.out();
+                        expect(modelState).toEqual({sum: 9});
+                        expect(streamState).toEqual({sum: 10} );
+                        done();
+                    })
+                    .catch(function (e) {
+                        fail(e);
+                        done();
+                    });
+            stream.in({ sum: 10});
+        });
+
+        it("defines a filter()-method filtering the stream input.", function (done) {
+            var stream = Model.stream(model1);
+            expect(stream.filter).toBeDefined();
+            expect(typeof stream.filter).toEqual('function');
+            var filteredStream = stream.filter(function(input) {
+                return { filtered: input };
+            });
+            model1.initialState(10)
+                    .then(function (state) {
+                        var modelState = state;
+                        var streamState = filteredStream.out();
+                        expect(modelState).toEqual({sum: 10} );
+                        expect(streamState).toEqual({filtered: {sum: 10} } );
+                        done();
+                    })
+                    .catch(function (e) {
+                        fail(e);
+                        done();
+                    });
+        });
+
+        it("defines a merge()-method merging a new model into the stream.", function(done) {
+
+
+        });
     });
 
 

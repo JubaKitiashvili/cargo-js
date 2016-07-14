@@ -51,165 +51,175 @@
  * @constructor
  */
 var Model = function (actions) {
-        'use strict';
+    'use strict';
 
-        if (!Promise) throw new Error("cargo.Promise API is required.");
+    if (!Promise) throw new Error("cargo.Promise API is required.");
 
-        var self = this;
-        var state = undefined;
+    var self = this;
+    var state = undefined;
 
-        var lastId = 1;
-        var subscribers = {};
-        self = function (subscriber) {
-            var subscriberId = lastId++;
-            if (!subscriber || typeof subscriber !== 'function') {
-                return;
-            }
-            subscribers[subscriberId] = {subscriber: subscriber};
-            var unsubscribe = function (subscriberId) {
-                delete subscribers[subscriberId];
-            };
-            new Promise(function(resolve, reject) {
-                if ( state !== undefined && !(state instanceof Error) ) {
-                    try {
-                        var stateCopy = JSON.parse(JSON.stringify(state));
-                        subscriber.call(undefined, stateCopy);
-                        resolve();
-                    } catch (e) {
-                        console.log("Error in new subscriber: " + e);
-                        reject();
-                    }
-                }
-            });
-            return unsubscribe.bind(self, subscriberId);
+    var lastId = 1;
+    var subscribers = {};
+    self = function (subscriber) {
+        var subscriberId = lastId++;
+        if (!subscriber || typeof subscriber !== 'function') {
+            return;
+        }
+        subscribers[subscriberId] = {subscriber: subscriber};
+        var unsubscribe = function (subscriberId) {
+            delete subscribers[subscriberId];
         };
-
-
-        function _merge(target, src) {
-            var dst;
-            if (src.length !== undefined) {
-                dst = [];
-                for (var idx = 0; idx < src.length; idx++) {
-                    if (typeof src[idx] === 'object' || typeof src[idx] === 'array') {
-                        dst[idx] = _merge(target[idx], src[idx]);
-                    } else {
-                        dst[idx] = src[idx];
-                    }
-                }
-                return dst;
-            }
-            dst = target || {};
-            var key;
-            if (target && typeof target === 'object') {
-                for (key in target) {
-                    if (!target.hasOwnProperty(key)) continue;
-                    dst[key] = target[key];
+        new Promise(function (resolve, reject) {
+            if (state !== undefined && !(state instanceof Error)) {
+                try {
+                    var stateCopy = JSON.parse(JSON.stringify(state));
+                    subscriber.call(undefined, stateCopy);
+                    resolve();
+                } catch (e) {
+                    console.log("Error in new subscriber: " + e);
+                    reject();
                 }
             }
-            for (key in src) {
-                if (!src.hasOwnProperty(key)) continue;
-                if (typeof src[key] !== 'object' || !src[key]) {
-                    dst[key] = src[key];
-                }
-                else {
-                    if (!target[key]) {
-                        dst[key] = src[key];
-                    } else {
-                        dst[key] = _merge(target[key], src[key]);
-                    }
+        });
+        return unsubscribe.bind(self, subscriberId);
+    };
+
+
+    function _merge(target, src) {
+        var dst;
+        if (src.length !== undefined) {
+            dst = [];
+            for (var idx = 0; idx < src.length; idx++) {
+                if (typeof src[idx] === 'object' || typeof src[idx] === 'array') {
+                    dst[idx] = _merge(target[idx], src[idx]);
+                } else {
+                    dst[idx] = src[idx];
                 }
             }
             return dst;
         }
-
-
-        for (var action in actions) {
-            if (!actions.hasOwnProperty(action)) {
-                continue;
+        dst = target || {};
+        var key;
+        if (target && typeof target === 'object') {
+            for (key in target) {
+                if (!target.hasOwnProperty(key)) continue;
+                dst[key] = target[key];
             }
-            var actionFn = actions[action];
-            if (typeof actionFn !== 'function') {
-                continue;
-            }
-            var actionCtx = {
-                state: function (newState) {
-                    if ( state === undefined ) {
-                        return {};
-                    } else if  (newState === undefined) {
-                        return _merge({}, state);
-                    } else if (newState instanceof Error) {
-                        return newState;
-                    } else {
-                        return _merge(state, newState);
-                    }
-                },
-                model: self
-            };
-            var exportedFn = function () {
-                    var actionCtx = this.actionCtx;
-                    var actionFn = this.actionFn;
-                    var args = [];
-                    for (var idx = 0; idx < arguments.length; idx++) {
-                        args.push(arguments[idx]);
-                    }
-                    var _deferredAction = function (resolve, reject) {
-                        if (state instanceof Error) {
-                            reject(state);
-                            return;
-                        }
-
-                        var newState;
-                        try {
-                            newState = actionFn.apply(actionCtx, args);
-                        } catch (e) {
-                            reject(e);
-                        }
-                        var mustDestroy = newState instanceof Error;
-                        if (newState !== undefined) {
-                            if (newState === null) {
-                                newState = {};
-                            }
-                            state = newState;
-                            for (var id in subscribers) {
-                                if (!subscribers.hasOwnProperty(id)) {
-                                    continue;
-                                }
-                                var subscriber = subscribers[id].subscriber;
-                                try {
-                                    var stateCopy = mustDestroy ? state : JSON.parse(JSON.stringify(state));
-                                    subscriber.call(undefined, stateCopy);
-                                } catch (e) {
-                                    console.log("Error in subscriber: " + e);
-                                }
-                            }
-                            if (mustDestroy) {
-                                subscribers = [];
-                            }
-                        }
-                        if (newState instanceof Error) {
-                            reject(newState);
-                        } else {
-                            resolve(newState);
-
-                        }
-
-                    };
-                    _deferredAction = _deferredAction.bind(this);
-                    return new Promise(_deferredAction);
-                }
-                ;
-
-            var ctx = {
-                actionCtx: actionCtx,
-                actionFn: actionFn
-            };
-            self[action] = exportedFn.bind(ctx);
         }
-
-        return self;
-
+        for (key in src) {
+            if (!src.hasOwnProperty(key)) continue;
+            if (typeof src[key] !== 'object' || !src[key]) {
+                dst[key] = src[key];
+            }
+            else {
+                if (!target[key]) {
+                    dst[key] = src[key];
+                } else {
+                    dst[key] = _merge(target[key], src[key]);
+                }
+            }
+        }
+        return dst;
     }
-    ;
+
+
+    for (var action in actions) {
+        if (!actions.hasOwnProperty(action)) {
+            continue;
+        }
+        var actionFn = actions[action];
+        if (typeof actionFn !== 'function') {
+            continue;
+        }
+        var actionCtx = {
+            state: function (newState) {
+                if (state === undefined) {
+                    return {};
+                } else if (newState === undefined) {
+                    return _merge({}, state);
+                } else if (newState instanceof Error) {
+                    return newState;
+                } else {
+                    return _merge(state, newState);
+                }
+            },
+            model: self
+        };
+        var exportedFn = function () {
+            var actionCtx = this.actionCtx;
+            var actionFn = this.actionFn;
+            var args = [];
+            for (var idx = 0; idx < arguments.length; idx++) {
+                args.push(arguments[idx]);
+            }
+            var _deferredAction = function (resolve, reject) {
+                if (state instanceof Error) {
+                    reject(state);
+                    return;
+                }
+
+                var newState;
+                try {
+                    newState = actionFn.apply(actionCtx, args);
+                } catch (e) {
+                    reject(e);
+                }
+                var mustDestroy = newState instanceof Error;
+                if (newState !== undefined) {
+                    if (newState === null) {
+                        newState = {};
+                    }
+                    state = newState;
+                    for (var id in subscribers) {
+                        if (!subscribers.hasOwnProperty(id)) {
+                            continue;
+                        }
+                        var subscriber = subscribers[id].subscriber;
+                        try {
+                            var stateCopy = mustDestroy ? state : JSON.parse(JSON.stringify(state));
+                            subscriber.call(undefined, stateCopy);
+                        } catch (e) {
+                            console.log("Error in subscriber: " + e);
+                            console.trace(e);
+                        }
+                    }
+                    if (mustDestroy) {
+                        subscribers = [];
+                    }
+                }
+                if (newState instanceof Error) {
+                    reject(newState);
+                } else {
+                    resolve(newState);
+
+                }
+
+            };
+            _deferredAction = _deferredAction.bind(this);
+            return new Promise(_deferredAction);
+        };
+
+        var ctx = {
+            actionCtx: actionCtx,
+            actionFn: actionFn
+        };
+        self[action] = exportedFn.bind(ctx);
+    }
+
+    return self;
+
+};
+
+/**
+ * Syntactic sugar for model(subscriber).
+ *
+ * @param model the model to subscribe to.
+ * @param subscriber the subscriber callback
+ * @returns {*} an unsubscribe method.
+ */
+Model.subscribe = function (model, subscriber) {
+    return model(subscriber);
+};
 
     return Model;
 }));

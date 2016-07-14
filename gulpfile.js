@@ -75,7 +75,15 @@ gulp.task('build_component', ['deps_html2hscript'], function () {
                     cjs: 'cargo.Model',
                     global: 'cargo.Model',
                     param: 'Model'
-                }, "virtualDom", "html2hscript", "Handlebars", "superagent"
+                },
+                {
+                    name: 'Translation',
+                    amd: 'cargo.Translation',
+                    cjs: 'cargo.Translation',
+                    global: 'cargo.Translation',
+                    param: 'Translation'
+                },
+                "virtualDom", "html2hscript", "Handlebars", "superagent"
 
             ];
         }

@@ -72,8 +72,7 @@ var Model = function (actions) {
         new Promise(function (resolve, reject) {
             if (state !== undefined && !(state instanceof Error)) {
                 try {
-                    var stateCopy = JSON.parse(JSON.stringify(state));
-                    subscriber.call(undefined, stateCopy);
+                    subscriber.call(undefined, state);
                     resolve();
                 } catch (e) {
                     console.log("Error in new subscriber: " + e);
@@ -84,45 +83,6 @@ var Model = function (actions) {
         return unsubscribe.bind(self, subscriberId);
     };
 
-
-    function _merge(target, src) {
-        var dst;
-        if (src.length !== undefined) {
-            dst = [];
-            for (var idx = 0; idx < src.length; idx++) {
-                if (typeof src[idx] === 'object' || typeof src[idx] === 'array') {
-                    dst[idx] = _merge(target[idx], src[idx]);
-                } else {
-                    dst[idx] = src[idx];
-                }
-            }
-            return dst;
-        }
-        dst = target || {};
-        var key;
-        if (target && typeof target === 'object') {
-            for (key in target) {
-                if (!target.hasOwnProperty(key)) continue;
-                dst[key] = target[key];
-            }
-        }
-        for (key in src) {
-            if (!src.hasOwnProperty(key)) continue;
-            if (typeof src[key] !== 'object' || !src[key]) {
-                dst[key] = src[key];
-            }
-            else {
-                if (!target[key]) {
-                    dst[key] = src[key];
-                } else {
-                    dst[key] = _merge(target[key], src[key]);
-                }
-            }
-        }
-        return dst;
-    }
-
-
     for (var action in actions) {
         if (!actions.hasOwnProperty(action)) {
             continue;
@@ -132,16 +92,8 @@ var Model = function (actions) {
             continue;
         }
         var actionCtx = {
-            state: function (newState) {
-                if (state === undefined) {
-                    return {};
-                } else if (newState === undefined) {
-                    return _merge({}, state);
-                } else if (newState instanceof Error) {
-                    return newState;
-                } else {
-                    return _merge(state, newState);
-                }
+            state: function () {
+                return state;
             },
             model: self
         };
@@ -167,7 +119,9 @@ var Model = function (actions) {
                 var mustDestroy = newState instanceof Error;
                 if (newState !== undefined) {
                     if (newState === null) {
-                        newState = {};
+                        newState = Model.state({});
+                    } else if (!mustDestroy) {
+                        newState = Model.state(newState);
                     }
                     state = newState;
                     for (var id in subscribers) {
@@ -176,8 +130,7 @@ var Model = function (actions) {
                         }
                         var subscriber = subscribers[id].subscriber;
                         try {
-                            var stateCopy = mustDestroy ? state : JSON.parse(JSON.stringify(state));
-                            subscriber.call(undefined, stateCopy);
+                            subscriber.call(undefined, state);
                         } catch (e) {
                             console.log("Error in subscriber: " + e);
                             console.trace(e);
@@ -191,9 +144,7 @@ var Model = function (actions) {
                     reject(newState);
                 } else {
                     resolve(newState);
-
                 }
-
             };
             _deferredAction = _deferredAction.bind(this);
             return new Promise(_deferredAction);
@@ -210,6 +161,259 @@ var Model = function (actions) {
 
 };
 
+Model.stream = function (model) {
+    return new Stream(model);
+};
+
+var Stream = function (model) {
+
+    var streamState;
+
+    var streamModel = new Model({
+        in: function (input) {
+            streamState = input;
+            return input;
+        }
+    });
+
+    model(function (s) {
+        streamModel.in(s);
+    });
+
+    this.in = function (state) {
+        streamModel.in(Model.state(state));
+    };
+
+    this.subscribe = function (subscriberFn) {
+        return streamModel(subscriberFn);
+    };
+
+    this.out = function () {
+        return streamState;
+    };
+
+    this.filter = function (filterFn) {
+
+        var filterModel = new Model({filter: filterFn});
+        streamModel(function (s) {
+            filterModel.filter(s)
+        });
+        return new Stream(filterModel);
+
+    };
+
+    this.merge = function (model, mergeFn) {
+
+        var ourState;
+        var theirState;
+
+        mergeFn = mergeFn || function (s1, s2) {
+                var state = _.extendOwn({}, s1, s2);
+            };
+
+        var mergedModel = new Model({
+            updateOurs: function (s) {
+                ourState = s;
+                return mergeFn(ourState, theirState);
+            },
+            updateTheirs: function (s) {
+                theirState = s;
+                return mergeFn(ourState, theirState);
+            }
+        });
+
+        model(function (s) {
+            mergedModel.updateTheirs(s);
+        });
+        streamModel(function (s) {
+            mergedModel.updateOurs(s);
+        });
+        return new Stream(mergedModel);
+
+    };
+
+    return this;
+};
+
+var State = function (input) {
+
+    var List = function (input) {
+        if (!_.isArray(input) && !_.isArguments()) {
+            throw new TypeError("Unable to initialize State.List from data other types than arrays.");
+        }
+
+        var _clone = function () {
+            return _data.slice();
+        };
+
+        var _data = _.map(_.toArray(input), function (item) {
+            return Model.state(item);
+        });
+
+        this.$Map = false;
+        this.$List = true;
+
+        this.type = function () {
+            return 'LIST';
+        };
+
+        this.get = function (index) {
+            return _data[index];
+        };
+
+        this.size = function () {
+            return _data.length;
+        };
+
+        this.add = function (item) {
+            return this.insert(this.size() + 1, item);
+        };
+
+        this.remove = function (index) {
+            if (this.size() == 0 || index > this.size()) {
+                return this;
+            }
+            var arr = _clone();
+            arr.splice(index, 1);
+            return Model.state(arr);
+        };
+
+        this.insert = function (index, item) {
+            var arr = _clone();
+            var item = Model.state(item);
+            if (index < 0) {
+                index = 0;
+            } else if (index > this.size()) {
+                index = this.size();
+            }
+            arr.splice(index, 0, item);
+            return Model.state(arr);
+        };
+
+        this.push = function (item) {
+            return this.insert(this.size(), item);
+        };
+
+        this.pop = function () {
+            return this.remove(0);
+        };
+
+        this.shift = function () {
+            return this.remove(this.size()-1);
+        };
+
+        this.unshift = function (item) {
+            return this.insert(0, item);
+        };
+
+        this.toJS = function () {
+            return _.map(_data, function (item) {
+                return item;
+            });
+        };
+
+    };
+
+    var Map = function (input) {
+        if (!_.isObject(input)) {
+            throw new TypeError("Unable to initialize State.Map from data other types than object.");
+        }
+
+        var _data = {};
+
+        var _clone = function () {
+            var c = _.extendOwn({}, _data);
+            return Model.state(c);
+        };
+
+        _.each(Object.getOwnPropertyNames(input), function (prop) {
+            _data[prop] = Model.state(input[prop]);
+        });
+
+        this.$Map = true;
+        this.$List = false;
+
+        this.type = function () {
+            return 'MAP';
+        };
+
+        this.get = function (key) {
+            return _data[key];
+        };
+
+        this.put = function (key, value) {
+            var m = _.extend({}, _data);
+            m[key] = Model.state(value);
+            return Model.state(m);
+        };
+
+        this.remove = function (key) {
+            if (!_.has(_data, key)) {
+                return this;
+            } else {
+                var me = _.extendOwn({}, _data);
+                delete me[key];
+                return Model.state(me);
+            }
+        };
+
+        this.has = function (key) {
+            return _.has(_data, key);
+        };
+
+        this.keys = function () {
+            return _.keys(_data);
+        };
+
+        this.merge = function(obj) {
+            var s = Model.state(obj);
+            if ( !s instanceof State || !s.$Map) {
+                return this;
+            }
+            var merged = _.extendOwn({}, _data, obj);
+            return Model.state(merged);
+        };
+
+        this.toJS = function () {
+            var js = {};
+            return _.chain(_data)
+                .keys()
+                .reduce(function (memo, key) {
+                    var val = _data[key];
+                    if (val instanceof State) {
+                        val = val.toJS();
+                    }
+                    memo[key] = val;
+                    return memo;
+                }, {})
+                .value();
+        };
+
+        return this;
+    };
+    if (_.isArray(input)) {
+        _.extend(this, new List(input));
+        return this;
+    } else if (_.isObject(input)) {
+        _.extend(this, new Map(input));
+        return this;
+    } else {
+        return undefined;
+    }
+};
+
+Model.state = function (input) {
+    return input instanceof State
+        ? input
+        : _.isNumber(input) || _.isBoolean(input) || _.isString(input) || _.isNull(input) || _.isUndefined(input)
+        ? input
+        : _.isFunction(input)
+        ? undefined
+        : _.isArray(input) || _.isObject(input)
+        ? new State(input)
+        : undefined;
+};
+
 /**
  * Syntactic sugar for model(subscriber).
  *
@@ -220,6 +424,7 @@ var Model = function (actions) {
 Model.subscribe = function (model, subscriber) {
     return model(subscriber);
 };
+
 
     return Model;
 }));

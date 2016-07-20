@@ -43,14 +43,14 @@
                 return null;
             },
             mergeState: function (newState) {
-                var state = this.state(newState);
+                var state = this.state().merge(newState);
                 return state;
             },
             replaceState: function (newState) {
                 return newState;
             },
             deepMergeState: function (newState) {
-                var state = this.state(newState);
+                var state = this.state().merge(newState);
                 return state;
             },
             moreThanOneArgument: function (arg1, arg2) {
@@ -116,7 +116,8 @@
             var model = new Model(testState);
             expect(model).toBeDefined();
             var subscriber = function (state) {
-                if (state.stage !== "initial") {
+                expect(state instanceof State).toBeTruthy();
+                if (state.get('stage') !== "initial") {
                     fail("State is not initialized.");
                 }
                 done();
@@ -147,8 +148,8 @@
             model.initialState().then(function () {
                 return model.moreThanOneArgument(1, 2);
             }).then(function () {
-                expect(currentState.arg1).toEqual(1);
-                expect(currentState.arg2).toEqual(2);
+                expect(currentState.get('arg1')).toEqual(1);
+                expect(currentState.get('arg2')).toEqual(2);
                 done();
             });
         });
@@ -158,8 +159,8 @@
             expect(currentState).not.toBeDefined();
             model.initialState().then(function () {
                 expect(currentState).toBeDefined();
-                expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("initial");
+                expect(currentState instanceof State).toBeTruthy();
+                expect(currentState.get('stage')).toEqual("initial");
                 done();
             });
         });
@@ -169,11 +170,10 @@
             model(subscriber);
             expect(currentState).not.toBeDefined();
             model.initialState().then(function () {
-                expect(currentState).toBeDefined();
-                expect(typeof currentState === 'object').toBeTruthy();
+                expect(currentState.get('stage')).toEqual("initial");
                 return model.returnsUndefined();
             }).then(function () {
-                expect(currentState.stage).toEqual("initial");
+                expect(currentState.get('stage')).toEqual("initial");
                 done();
             });
         });
@@ -200,11 +200,9 @@
             model.initialState().then(function () {
                 return model.exposeThis();
             }).then(function () {
-                expect(currentState).toBeDefined();
-                expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("exposeThis");
+                expect(currentState.get('stage')).toEqual("exposeThis");
                 expect(exposedThis).toBeDefined();
-                expect(typeof currentState.exposedThis === 'object').toBeTruthy();
+                expect(typeof currentState.get('exposedThis') === 'object').toBeTruthy();
                 var currentThis = exposedThis;
                 expect(currentThis).toBeDefined();
                 expect(currentThis.state).toBeDefined();
@@ -222,7 +220,7 @@
             }).then(function () {
                 expect(currentState).toBeDefined();
                 expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("initial");
+                expect(currentState.get('stage')).toEqual("initial");
                 done();
             });
         });
@@ -236,13 +234,16 @@
             }).then(function () {
                 expect(currentState).toBeDefined();
                 expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("initial");
-                expect(currentState.merge).toEqual("ok");
+                var s = currentState.toJS();
+                expect(currentState.get('stage')).toEqual("initial");
+                expect(currentState.get('merge')).toEqual("ok");
                 done();
             });
         });
 
         it("the state() function within actions deep merging states when called with an argument", function (done) {
+            // Deep merging not supported anymore.
+            pending('Deep merging not supported anymore.');
             var model = new Model(testState);
             model(subscriber);
             expect(currentState).not.toBeDefined();
@@ -260,12 +261,15 @@
             }).then(function () {
                 expect(currentState).toBeDefined();
                 expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("deepMerge");
-                expect(currentState.deep).toBeDefined("ok");
+                expect(currentState.get('stage')).toEqual("deepMerge");
+                expect(currentState.get('deep')).toBeDefined();
+                var subState = currentState.get('deep');
+                expect(subState instanceof State).toBeTruthy();
+                expect(subState.$Map).toBeTruthy();
                 var keys = ['a', 'b', 'c', 'd'];
                 for (var i = 0; i < keys.length; i++) {
                     var key = keys[i];
-                    expect(currentState.deep[key]).toEqual(key);
+                    expect(subState.get(key)).toEqual(key);
                 }
                 done();
             });
@@ -280,8 +284,8 @@
             }).then(function () {
                 expect(currentState).toBeDefined();
                 expect(typeof currentState === 'object').toBeTruthy();
-                expect(currentState.stage).toEqual("exposeThis");
-                expect(currentState.exposedThis).toBeDefined();
+                expect(currentState.get('stage')).toEqual("exposeThis");
+                expect(currentState.get('exposedThis')).toBeDefined();
                 expect(typeof exposedThis === 'object').toBeTruthy();
                 var currentThis = exposedThis;
                 expect(currentThis).toBeDefined();
@@ -301,7 +305,7 @@
             expect(currentState).not.toBeDefined();
             model.nestedState1().then(function () {
                 expect(currentState).toBeDefined();
-                expect(currentState.stage).toBe("nestedState1");
+                expect(currentState.get('stage')).toBe("nestedState1");
                 done();
             });
         });
@@ -327,76 +331,6 @@
 
     });
 
-    describe("Static Model.merge() function", function () {
-        var model1;
-        var model2;
-
-        beforeEach(function () {
-            model1 = new Model({
-                initialState: function (number) {
-                    return {sum: number};
-                },
-                add: function (number) {
-                    var state = this.state();
-                    state.sum = state.sum + number;
-                    return state;
-                }
-            });
-            model2 = new Model({
-                initialState: function (number) {
-                    return {sum: -number};
-                },
-                sub: function (number) {
-                    var state = this.state();
-                    state.sum = state.sum - number;
-                    return state;
-                }
-            });
-        });
-
-        it("is present", function () {
-            expect(Model.merge).toBeDefined();
-            expect(typeof Model.merge).toEqual('function');
-        });
-
-        it("returns a model with all actions of both models defined.", function () {
-            var model = Model.merge(model1, model2);
-            expect(model).toBeDefined();
-            _.each(Object.getOwnPropertyNames(model1), function (name) {
-                if (typeof model1[name] !== 'function') return;
-                expect(model[name]).toBeDefined();
-            });
-            _.each(Object.getOwnPropertyNames(model2), function (name) {
-                if (typeof model2[name] !== 'function') return;
-                expect(model[name]).toBeDefined();
-            });
-        });
-
-        it("returns a new model subscribed to state changes of first model.", function (done) {
-            var model = Model.merge(model1, model2);
-            model(function (state) {
-                expect(state.sum).toEqual(9);
-                done();
-            });
-            model1.initialState(9).catch(function (e) {
-                fail(e);
-                done();
-            });
-        });
-
-        it("returns a new model subscribed to state changes of second model.", function (done) {
-            var model = Model.merge(model1, model2);
-            model(function (state) {
-                expect(state.sum).toEqual(-9);
-                done();
-            });
-            model2.initialState(9).catch(function (e) {
-                fail(e);
-                done();
-            });
-        });
-    });
-
     describe("Stream API", function () {
         var model1, model2;
         beforeEach(function () {
@@ -405,17 +339,17 @@
                     return {sum: number};
                 },
                 add: function (number) {
-                    var state = this.state();
+                    var state = this.state().toJS();
                     state.sum = state.sum + number;
                     return state;
                 }
             });
             model2 = new Model({
                 initialState: function (number) {
-                    return {sum: -number};
+                    return {sum: number};
                 },
                 sub: function (number) {
-                    var state = this.state();
+                    var state = this.state().toJS();
                     state.sum = state.sum - number;
                     return state;
                 }
@@ -439,8 +373,11 @@
             var stream = Model.stream(model1);
             model1.initialState(9)
                     .then(function (state) {
-                        var modelState = state;
+                        expect(state instanceof State).toBeTruthy();
+                        var modelState = state.toJS();
                         var streamState = stream.out();
+                        expect(streamState instanceof State).toBeTruthy();
+                        streamState = streamState.toJS();
                         expect(modelState).toEqual(streamState);
                         done();
                     })
@@ -450,36 +387,36 @@
                     });
         });
 
-       it("defines a stream independent from model.", function (done) {
+        it("defines a stream independent from model.", function (done) {
             var stream = Model.stream(model1);
             model1.initialState(9)
                     .then(function (state) {
-                        var modelState = state;
-                        var streamState = stream.out();
+                        var modelState = state.toJS();
+                        var streamState = stream.out().toJS();
                         expect(modelState).toEqual({sum: 9});
-                        expect(streamState).toEqual({sum: 10} );
+                        expect(streamState).toEqual({sum: 10});
                         done();
                     })
                     .catch(function (e) {
                         fail(e);
                         done();
                     });
-            stream.in({ sum: 10});
+            stream.in({sum: 10});
         });
 
         it("defines a filter()-method filtering the stream input.", function (done) {
             var stream = Model.stream(model1);
             expect(stream.filter).toBeDefined();
             expect(typeof stream.filter).toEqual('function');
-            var filteredStream = stream.filter(function(input) {
-                return { filtered: input };
+            var filteredStream = stream.filter(function (input) {
+                return {filtered: input};
             });
             model1.initialState(10)
                     .then(function (state) {
                         var modelState = state;
                         var streamState = filteredStream.out();
-                        expect(modelState).toEqual({sum: 10} );
-                        expect(streamState).toEqual({filtered: {sum: 10} } );
+                        expect(modelState.toJS()).toEqual({sum: 10});
+                        expect(streamState.toJS()).toEqual({filtered: {sum: 10}});
                         done();
                     })
                     .catch(function (e) {
@@ -488,12 +425,275 @@
                     });
         });
 
-        it("defines a merge()-method merging a new model into the stream.", function(done) {
-
+        it("defines a merge()-method merging a new model into the stream.", function (done) {
+            var stream = Model.stream(model1);
+            expect(stream.merge).toBeDefined();
+            expect(typeof stream.merge).toEqual('function');
+            model1.initialState(1);
+            model2.initialState(3);
+            var mergedStream = stream.merge(model2, function (s1, s2) {
+                return {s1: s1, s2: s2};
+            });
+            model2.sub(1).then(function () {
+                var state = mergedStream.out().toJS();
+                expect(state).toEqual({
+                    s1: {sum: 1},
+                    s2: {sum: 2}
+                });
+                done();
+            });
 
         });
+
     });
 
+    describe("State API", function () {
+
+        it("defines a Model.state()-function.", function () {
+            expect(Model.state).toBeDefined();
+            expect(typeof Model.state).toEqual("function");
+        });
+
+        it("calling Model.state() returns immutables of the input.", function () {
+            var map = Model.state({'a': 1, 'b': 2});
+            expect(map).toBeDefined();
+            expect(map instanceof State).toBeTruthy();
+
+            map = Model.state(map);
+            expect(map instanceof State).toBeTruthy();
+            var js = map.toJS();
+
+            var list = Model.state([1, 2, 3, 4, 5, 6]);
+            expect(list).toBeDefined();
+            expect(map instanceof State).toBeTruthy();
+
+            var number = Model.state(1);
+            expect(_.isNumber(number)).toBeTruthy();
+
+            var string = Model.state('abcdef');
+            expect(_.isString(string)).toBeTruthy();
+
+            var bool = Model.state(true);
+            expect(_.isBoolean(bool)).toBeTruthy();
+
+            var undef = Model.state(undefined);
+            expect(_.isUndefined(undef)).toBeTruthy();
+
+            var _null = Model.state(null);
+            expect(_.isNull(_null)).toBeTruthy();
+
+            var _fun = Model.state(function () {
+            });
+            expect(_.isUndefined(_fun)).toBeTruthy();
+
+        });
+
+        describe("provides a Map model", function () {
+
+            it("that initializes from an object.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                expect(map).toBeDefined();
+                expect(map.$Map).toBeTruthy();
+                expect(map.$List).not.toBeTruthy();
+                expect(map.type()).toEqual('MAP');
+            });
+
+            it("with get(key) returning the stored value.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                expect(map.get("a")).toEqual(1);
+                expect(map.get("b")).toEqual(2);
+                expect(map.get("c")).toEqual(3);
+            });
+
+            it("with put(key, value) returning a new instance containing the new value.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                var newMap = map.put("d", 4);
+                expect(newMap.$Map).toBeTruthy();
+                expect(newMap.get("a")).toEqual(1);
+                expect(newMap.get("b")).toEqual(2);
+                expect(newMap.get("c")).toEqual(3);
+                expect(newMap.get("d")).toEqual(4);
+                expect(map.get("d")).not.toBeDefined();
+            });
+
+            it("with put(key, {object}) returning a new instance containing the new value as immutable.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                map = map.put("d", {da: 1, db: 2});
+                expect(map.get("d")).toBeDefined();
+                var subMap = map.get("d");
+                expect(subMap.$Map).toBeTruthy();
+            });
+
+            it("with merge({object}) returning a new instance merging two objects.", function() {
+                var map = Model.state({a:1, b:2, c:3 });
+                var newMap = map.merge({b:'b', d:'d'});
+                expect(newMap instanceof State).toBeTruthy();
+                expect(newMap.get('a')).toEqual(1);
+                expect(newMap.get('b')).toEqual('b');
+                expect(newMap.get('c')).toEqual(3);
+                expect(newMap.get('d')).toEqual('d');
+            });
+
+            it("with remove(key) returning a new instance without the removed value.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                var newMap = map.remove("b");
+                expect(newMap.$Map).toBeTruthy();
+                expect(newMap.get("a")).toEqual(1);
+                expect(newMap.get("b")).not.toBeDefined();
+                expect(newMap.get("c")).toEqual(3);
+                expect(map.get("b")).toEqual(2);
+            });
+
+            it("with keys() returning all object keys.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                var keys = map.keys();
+                expect(keys).toEqual(['a', 'b', 'c']);
+            });
+
+            it("with has(key) returning true for all object keys only.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                expect(map.has("a")).toBeTruthy();
+                expect(map.has("b")).toBeTruthy();
+                expect(map.has("c")).toBeTruthy();
+                expect(map.has("d")).not.toBeTruthy();
+            });
+
+            it("with toJS() returning the Javascript object.", function () {
+                var source = {a: 1, b: 2, c: 3};
+                var result = Model.state(source).toJS();
+                expect(result).toEqual(source);
+                source['d'] = 4;
+                expect(result['d']).not.toBeDefined();
+            });
+
+        });
+
+        describe("provides a List model", function () {
+
+            it("that initializes from an array.", function () {
+                var list = Model.state([1, 2, 3, 4]);
+                expect(list).toBeDefined();
+                expect(list.$Map).not.toBeTruthy();
+                expect(list.$List).toBeTruthy();
+                expect(list.type()).toEqual('LIST');
+            });
+
+            it("with get(index) returning the stored value.", function () {
+                var list = Model.state([1, 2, 3, 4]);
+                expect(list.get(0)).toEqual(1);
+                expect(list.get(1)).toEqual(2);
+                expect(list.get(2)).toEqual(3);
+                expect(list.get(3)).toEqual(4);
+                expect(list.get(4)).not.toBeDefined();
+                expect(list.get(-1)).not.toBeDefined();
+                expect(list.get("jshdjh")).not.toBeDefined();
+            });
+
+            it("with size() to return the number of elements.", function() {
+                var list = Model.state([1, 2, 3, 4]);
+                expect(list.size()).toEqual(4);
+            });
+
+            it("with add(item) to return a new list with the new value as last element.", function() {
+                var list = Model.state([1, 2, 3, 4]);
+                var newList = list.add(5);
+                expect(newList.get(4)).toEqual(5);
+                expect(list.get(4)).not.toBeDefined();
+            });
+
+            it("with remove(index) to return a new list without the removed element.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.remove(2);
+                expect(newList.size()).toEqual(3);
+                expect(newList.get(0)).toEqual(1);
+                expect(newList.get(1)).toEqual(2);
+                expect(newList.get(2)).toEqual(4);
+                expect(list.size()).toEqual(4);
+                expect(list.get(0)).toEqual(1);
+                expect(list.get(1)).toEqual(2);
+                expect(list.get(2)).toEqual(3);
+                expect(list.get(3)).toEqual(4);
+            });
+
+            it("with remove(index) to return the same list, if no element has been removed.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.remove(10);
+                expect(newList.size()).toEqual(4);
+                expect(newList.get(0)).toEqual(1);
+                expect(newList.get(1)).toEqual(2);
+                expect(newList.get(2)).toEqual(3);
+                expect(newList.get(3)).toEqual(4);
+                expect(list.size()).toEqual(4);
+                expect(list.get(0)).toEqual(1);
+                expect(list.get(1)).toEqual(2);
+                expect(list.get(2)).toEqual(3);
+                expect(list.get(3)).toEqual(4);
+            });
+
+            it("with insert(0, item) to return a list with the item at first position.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.insert(0, 5);
+                expect(newList.get(0)).toEqual(5);
+                expect(newList.get(1)).toEqual(1);
+                expect(list.size()).toEqual(4);
+            });
+
+            it("with insert(size(), item) to return a list with the item at last position.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.insert(list.size(), 5);
+                expect(newList.get(0)).toEqual(1);
+                expect(newList.get(4)).toEqual(5);
+                expect(list.size()).toEqual(4);
+            });
+
+            it("with push(item) to return a list with the item at last position.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.push(5);
+                expect(newList.get(0)).toEqual(1);
+                expect(newList.get(4)).toEqual(5);
+                expect(list.size()).toEqual(4);
+
+            });
+
+            it("with pop() to return a list with the first item removed.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.pop();
+                expect(newList.get(0)).toEqual(2);
+                expect(newList.get(1)).toEqual(3);
+                expect(newList.get(2)).toEqual(4);
+                expect(newList.get(3)).not.toBeDefined();
+                expect(list.size()).toEqual(4);
+
+            });
+
+            it("with unshift(item) to return a list with the item at first position.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.unshift(5);
+                expect(newList.get(0)).toEqual(5);
+                expect(newList.get(1)).toEqual(1);
+                expect(list.size()).toEqual(4);
+            });
+
+            it("with shift() to return a list with the last item removed.", function() {
+                var list = new Model.state([1, 2, 3, 4]);
+                var newList = list.shift();
+                expect(newList.get(0)).toEqual(1);
+                expect(newList.get(1)).toEqual(2);
+                expect(newList.get(2)).toEqual(3);
+                expect(newList.get(3)).not.toBeDefined();
+                expect(list.size()).toEqual(4);
+
+            });
+
+            it("with toJS() returning an array equal to the original array.", function() {
+                var source = [1,2,3,4];
+                var list = new Model.state(source);
+                var actual = list.toJS();
+                expect(actual).toEqual(source);
+            });
+        });
+
+    });
 
 </script>
 

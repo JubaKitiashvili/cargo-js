@@ -225,6 +225,15 @@
             });
         });
 
+        it("resolves with an empty array when no promises are passed.", function(done) {
+            Promise.when([]).then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBeDefined();
+                expect(results.length).toEqual(0);
+                done();
+            });
+        });
+
     });
 
 </script>

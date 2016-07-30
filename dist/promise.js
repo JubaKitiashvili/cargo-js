@@ -72,9 +72,10 @@ var Promise = function (action) {
      * @param x
      */
     self.resolve = function (x) {
-        setTimeout(function () {
-            _resolve(x);
-        }, 0);
+        var cb = function(val) {
+            _resolve(val);
+        };
+        setTimeout(cb.bind(undefined, x), 0);
     };
 
 
@@ -388,11 +389,14 @@ var Promise = function (action) {
  * @returns {Promise} a new promise to receive the outcome of the promises.
  */
 Promise.when = function (promises) {
+    if ( !promises || promises.length == 0 ) {
+        return Promise.resolve([]);
+    }
     return new Promise(function (resolver, reject) {
             var returnValues = [];
             var pending = promises.length;
             for (var idx = 0; idx < promises.length; idx++) {
-                var thenFn = function (result, num) {
+                var thenFn = function (result) {
                     returnValues[this.idx] = result;
                     pending--;
                     if (pending == 0) {
@@ -419,7 +423,9 @@ Promise.when = function (promises) {
  * @returns {Promise}
  */
 Promise.resolve = function (x) {
-    return new Promise().resolve(x);
+    return new Promise(function(resolve) {
+        resolve(x);
+    });
 };
 
 /**
@@ -428,7 +434,9 @@ Promise.resolve = function (x) {
  * @param x
  */
 Promise.reject = function (x) {
-    return new Promise().reject(x);
+    return new Promise(function(_, reject) {
+        reject(x);
+    });
 };
 
 /**

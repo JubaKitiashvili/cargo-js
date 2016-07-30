@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../../dist/dependencies/underscore.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/superagent.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/js.cookie.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/handlebars.js"></script>
 </head>
 <body>
 
@@ -30,18 +31,20 @@
         it("returning a translation instance.", function () {
             var trans = new Translation();
             expect(trans).toBeDefined();
-            expect(typeof trans).toBe("function");
+            expect(trans instanceof Translation).toBeTruthy();
         });
     });
 
     describe("Loading", function () {
         it(" the default translation without any options.", function (done) {
             var trans = new Translation();
-            trans(function (state) {
+            trans.select('en');
+            trans.subscribe(function (state) {
                 expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).toBe("Hello World!");
-                expect(state.READY).toBe("ready");
+                if ( state.get('loading') ) { return; }
+                var trans = state.get('translations').get('en').get('translation');
+                expect(trans.get('GREETING')).toBe("Hello World!");
+                expect(trans.get('READY')).toBe("ready");
                 done();
             });
             trans.select("en");
@@ -49,74 +52,124 @@
 
         it(" the default translation when selecting an unknown language.", function (done) {
             var trans = new Translation();
-            trans(function (state) {
+            trans.select('fr');
+            trans.subscribe(function (state) {
                 expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).toBe("Hello World!");
-                expect(state.READY).toBe("ready");
+                if ( state.get('loading') ) { return; }
+                var trans = state.get('translations').get('en').get('translation');
+                expect(trans.get('GREETING')).toBe("Hello World!");
+                expect(trans.get('READY')).toBe("ready");
                 done();
             });
             trans.select("fr");
         });
 
         it(" no translation when selecting a non-existent namespace.", function (done) {
-            var trans = new Translation({namespace: "missing"});
-            trans(function (state) {
+            var trans = new Translation();
+            trans.addNamespace('missing');
+            trans.select('en');
+            trans.subscribe(function (state) {
                 expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).not.toBeDefined();
-                expect(state.READY).not.toBeDefined();
+                if ( state.get('loading') ) { return; }
+                var trans = state.get('translations').get('en').get('missing');
+                expect(trans).not.toBeDefined();
                 done();
             });
             trans.select("en");
         });
 
         it(" no translation when selecting a non-existent base URI.", function (done) {
-            var trans = new Translation({baseURI: "missing"});
-            trans(function (state) {
+            var trans = new Translation("missing", [ 'missing' ]);
+            trans.select('en');
+            trans.subscribe(function (state) {
                 expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).not.toBeDefined();
-                expect(state.READY).not.toBeDefined();
+                if ( state.get('loading') ) { return; }
+                var trans = state.get('translations').toJS();
+                expect(trans.en).toBeDefined();
+                expect(trans.en.missing).not.toBeDefined();
                 done();
             });
             trans.select("en");
         });
 
-        it(" the translation of the parent locale when selecting a non-existent specific locale.", function (done) {
+    });
+
+    describe("Selecting ", function() {
+
+        it("a language returns a promise which fulfills with a translation function when loading finishes.", function(done) {
             var trans = new Translation();
-            trans(function (state) {
-                expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).toBe("Hello World!");
-                expect(state.READY).toBe("ready");
+            var p = trans.select('en');
+            expect(p instanceof Promise).toBeTruthy();
+            p.then(function(t) {
+                expect(typeof t).toEqual('function');
+                expect(t('GREETING')).toEqual('Hello World!');
                 done();
+            }).catch(function(e) {
+                console.log(e && e.stack ? e.stack : e);
             });
-            trans.select("en_US");
         });
 
-        it(" the correct translation when selecting a specific non-default locale.", function (done) {
-            var trans = new Translation({languages: ['de_de', 'en']});
-            trans(function (state) {
-                expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).toBe("Hallo Welt!");
-                expect(state.READY).toBe("fertig");
-                done();
+        it("the same language again returns a promise which fulfills with a translation function.", function(done) {
+            var trans = new Translation();
+            var p = trans.select('en').then(function(t) {
+                trans.select('en').then(function(t) {
+                    expect(typeof t).toEqual('function');
+                    expect(t('GREETING')).toEqual('Hello World!');
+                    done();
+                });
             });
-            trans.select("de_de");
         });
 
-        it(" the translation of the parent locale when selecting a unspecific locale.", function (done) {
-            var trans = new Translation({languages: ['de_de', 'en']});
-            trans(function (state) {
-                expect(state).toBeDefined();
-                expect(typeof state).toBe("object");
-                expect(state.GREETING).toBe("Hallo Welt!");
-                expect(state.READY).toBe("fertig");
+        it("a language translates correctly.", function(done) {
+            var trans = new Translation();
+            var p = trans.select('de');
+            expect(p instanceof Promise).toBeTruthy();
+            p.then(function(t) {
+                expect(typeof t).toEqual('function');
+                expect(t('GREETING')).toEqual('Hallo Welt!');
                 done();
+            }).catch(function(e) {
+                console.log(e && e.stack ? e.stack : e);
             });
-            trans.select("de");
+        });
+
+        it("a non-existent language translates to the default language.", function(done) {
+            var trans = new Translation();
+            var p = trans.select('fr');
+            expect(p instanceof Promise).toBeTruthy();
+            p.then(function(t) {
+                expect(typeof t).toEqual('function');
+                expect(t('GREETING')).toEqual('Hello World!');
+                done();
+            }).catch(function(e) {
+                console.log(e && e.stack ? e.stack : e);
+            });
+        });
+
+        it("a non-existent locale translates to the parent language if it exists (part 1).", function(done) {
+            var trans = new Translation();
+            var p = trans.select('en_US');
+            expect(p instanceof Promise).toBeTruthy();
+            p.then(function(t) {
+                expect(typeof t).toEqual('function');
+                expect(t('GREETING')).toEqual('Hello World!');
+                done();
+            }).catch(function(e) {
+                console.log(e && e.stack ? e.stack : e);
+            });
+        });
+
+        it("a non-existent locale translates to the parent language if it exists (part 2).", function(done) {
+            var trans = new Translation();
+            var p = trans.select('de_AT');
+            expect(p instanceof Promise).toBeTruthy();
+            p.then(function(t) {
+                expect(typeof t).toEqual('function');
+                expect(t('GREETING')).toEqual('Hallo Welt!');
+                done();
+            }).catch(function(e) {
+                console.log(e && e.stack ? e.stack : e);
+            });
         });
 
     });

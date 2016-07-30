@@ -83,7 +83,7 @@ var Model = function (actions) {
         }
         var actionCtx = {
             state: function () {
-                return state;
+                return state != undefined ? state : Model.state({});
             },
             model: self
         };
@@ -158,6 +158,7 @@ Model.stream = function (model) {
 var Stream = function (model) {
 
     var streamState;
+    var unsubscribe;
 
     var streamModel = new Model({
         in: function (input) {
@@ -167,11 +168,18 @@ var Stream = function (model) {
     });
 
     model(function (s) {
-        streamModel.in(s);
+        unsubscribe = streamModel.in(s);
     });
 
     this.in = function (state) {
         streamModel.in(Model.state(state));
+    };
+
+    this.disconnect = function() {
+        if ( unsubscribe ) {
+            unsubscribe();
+            unsubscribe = undefined;
+        }
     };
 
     this.subscribe = function (subscriberFn) {
@@ -190,6 +198,10 @@ var Stream = function (model) {
         });
         return new Stream(filterModel);
 
+    };
+
+    this.pipe = function() {
+        return new Stream(streamModel);
     };
 
     this.merge = function (model, mergeFn) {
@@ -212,9 +224,15 @@ var Stream = function (model) {
             }
         });
 
-        model(function (s) {
-            mergedModel.updateTheirs(s);
-        });
+        if ( model instanceof Stream) {
+            model.subscribe(function(s) {
+                mergedModel.updateTheirs(s);
+            });
+        } else {
+            model(function (s) {
+                mergedModel.updateTheirs(s);
+            });
+        }
         streamModel(function (s) {
             mergedModel.updateOurs(s);
         });
@@ -229,7 +247,7 @@ var State = function (input) {
 
     var List = function (input) {
         if (!_.isArray(input) && !_.isArguments()) {
-            throw new TypeError("Unable to initialize State.List from data other types than arrays.");
+            throw new TypeError("Unable to initialize State.List from other data types than arrays.");
         }
 
         var _clone = function () {
@@ -289,7 +307,7 @@ var State = function (input) {
         };
 
         this.shift = function () {
-            return this.remove(this.size()-1);
+            return this.remove(this.size() - 1);
         };
 
         this.unshift = function (item) {
@@ -298,7 +316,7 @@ var State = function (input) {
 
         this.toJS = function () {
             return _.map(_data, function (item) {
-                return item;
+                return item instanceof State ? item.toJS() : item;
             });
         };
 
@@ -306,14 +324,13 @@ var State = function (input) {
 
     var Map = function (input) {
         if (!_.isObject(input)) {
-            throw new TypeError("Unable to initialize State.Map from data other types than object.");
+            throw new TypeError("Unable to initialize State.Map from other data types than objects.");
         }
 
         var _data = {};
 
         var _clone = function () {
-            var c = _.extendOwn({}, _data);
-            return Model.state(c);
+            return _.extendOwn({}, _data);
         };
 
         _.each(Object.getOwnPropertyNames(input), function (prop) {
@@ -332,6 +349,9 @@ var State = function (input) {
         };
 
         this.put = function (key, value) {
+            if ( value === undefined ) {
+                return this.remove(key);
+            }
             var m = _.extend({}, _data);
             m[key] = Model.state(value);
             return Model.state(m);
@@ -355,12 +375,31 @@ var State = function (input) {
             return _.keys(_data);
         };
 
-        this.merge = function(obj) {
+        this.merge = function (obj) {
             var s = Model.state(obj);
-            if ( !s instanceof State || !s.$Map) {
+            if (!s instanceof State || !s.$Map) {
                 return this;
             }
             var merged = _.extendOwn({}, _data, obj);
+            return Model.state(merged);
+        };
+
+        this.deepMerge = function (obj) {
+            obj = Model.state(obj);
+            if (!obj || !obj instanceof State || !obj.$Map) {
+                throw new TypeError("Unable to deep merge state objects other than maps.");
+            }
+            var merged = _clone();
+            _.each(obj.keys(), function(key) {
+                var newVal = obj.get(key);
+                if ( newVal instanceof State && newVal.$Map ) {
+                    var curVal = merged[key];
+                    if ( curVal && curVal instanceof State && curVal.$Map ) {
+                        newVal = curVal.deepMerge(newVal);
+                    }
+                }
+                merged[key] = newVal;
+            });
             return Model.state(merged);
         };
 

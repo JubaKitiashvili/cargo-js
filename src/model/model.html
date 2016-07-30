@@ -516,6 +516,16 @@
                 expect(map.get("d")).not.toBeDefined();
             });
 
+            it("with put(key, undefined) returning a new instance with the key removed.", function () {
+                var map = Model.state({a: 1, b: 2, c: 3});
+                var newMap = map.put("c", undefined);
+                expect(newMap.$Map).toBeTruthy();
+                expect(newMap.get("a")).toEqual(1);
+                expect(newMap.get("b")).toEqual(2);
+                expect(newMap.get("c")).not.toBeDefined();
+                expect(newMap.has("c")).not.toBeTruthy();
+            });
+
             it("with put(key, {object}) returning a new instance containing the new value as immutable.", function () {
                 var map = Model.state({a: 1, b: 2, c: 3});
                 map = map.put("d", {da: 1, db: 2});
@@ -531,6 +541,17 @@
                 expect(newMap.get('a')).toEqual(1);
                 expect(newMap.get('b')).toEqual('b');
                 expect(newMap.get('c')).toEqual(3);
+                expect(newMap.get('d')).toEqual('d');
+            });
+
+            it("with deepMerge({object}) returning a new instance deeply merging two objects.", function() {
+                var map = Model.state({a:1, b:2, c: { c1: 3, c2: 4 }});
+                var newMap = map.deepMerge({b: { b1: 1, b2: 2 }, c: { c3: 3}, d:'d'});
+                var m = newMap.toJS();
+                expect(newMap instanceof State).toBeTruthy();
+                expect(newMap.get('a')).toEqual(1);
+                expect(newMap.get('b').toJS()).toEqual({ b1: 1, b2: 2 });
+                expect(newMap.get('c').toJS()).toEqual({ c1: 3, c2: 4, c3: 3});
                 expect(newMap.get('d')).toEqual('d');
             });
 

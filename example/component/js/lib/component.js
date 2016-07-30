@@ -8,7 +8,7 @@
         root.cargo.Component = factory(root.cargo.Promise, root.cargo.Model, root.cargo.Translation, root.virtualDom, root.html2hscript, root.Handlebars, root.superagent);
     }
 }(this, function(Promise, Model, Translation, virtualDom, html2hscript, Handlebars, superagent) {
-var Component = function(selector, template, actions) {
+var Component = function (templateURI, options) {
     'use strict';
 
     if (!Promise) throw new Error("cargo.Promise API is required.");
@@ -22,19 +22,111 @@ var Component = function(selector, template, actions) {
     var $ = window.$;
     var h = virtualDom.h;
 
-    actions = actions || {};
+    options = options || {};
 
-    var templateLoader = _loadTemplate(template);
+    var actions = {
+        init: function () {
+            return {
+                visible: true
+            };
+        },
+        show: function () {
+            return this.state().put('visible', true);
+        },
+        hide: function () {
+            return this.state().put('visible', false);
+        },
+        attach: function (selector) {
+            return this.state().put('selector', selector);
+        },
+        detach: function () {
+            return this.state().remove('selector');
+        },
+        destroy: function (reason) {
+            if (e instanceof Error) {
+                console.log('Error in component ' + templateURI + ': ' + e.message + "\n" + e.stack);
+            } else {
+                console.log('Error in component ' + templateURI + ': ' + e);
+            }
+            return reason instanceof Error ? reason : new Error(reason);
+        }
+    };
 
-    var model =  new Model(actions);
-    var renderFn = _createRenderFn(model, templateLoader);
-    Model.subscribe(model, renderFn);
-    return model;
+    actions = options.extendModel ? extendModel(actions) : actions;
+    var translation = options.translation;
+    var handlebars;
+
+    if (translation) {
+        handlebars = translation.getHandlebars();
+        actions.changeLanguage = function(lang) {
+            return this.state().put('lang', lang);
+        };
+        translation.subscribe(function(state) {
+            if (state) {
+                model.changeLanguage(state.get('lang'));
+            }
+        });
+    } else {
+        handlebars = Handlebars;
+        if (!handlebars.helpers.i18n) {
+            handlebars.registerHelper('i18n', function () {
+                switch (arguments.length) {
+                    case 0:
+                    case 1:
+                        return "";
+                    case 2:
+                        return arguments[0];
+                    default:
+                        return arguments[1] + "." + arguments[0];
+                }
+            });
+        }
+    }
+
+    var model = new Model(actions);
+
+
+    var templateLoader = _loadTemplate(templateURI);
+    var renderFn = _.bind(_createRenderFn(), this);
+
+    templateLoader.catch(function (e) {
+            model.destroy(e);
+        });
+
+    this.hide = function () {
+        return model.hide().then(function (state) {
+            return renderFn(state);
+        });
+    };
+
+    this.show = function () {
+        return model.show().then(function (state) {
+            return renderFn(state);
+        });
+    };
+
+    this.getModel = function () {
+        return model;
+    };
+
+    this.attach = function (selector) {
+        return model.attach(selector).then(function (state) {
+            return renderFn(state);
+        });
+    };
+
+    this.detach = function () {
+        return model.detach().then(function(state) {
+            return renderFn(state);
+        });
+    };
+
+    model.init();
+    return this;
 
     function _loadTemplate(templateURL) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             superagent.get(templateURL).end(function (err, response) {
-                var _handlebars = Handlebars.create();
                 if (err) {
                     reject("Unable to load template from '" + templateURL + "': " + err);
                     return;
@@ -49,7 +141,7 @@ var Component = function(selector, template, actions) {
                         return;
                     }
                     template = template.html().trim();
-                    template = _handlebars.compile(template);
+                    template = handlebars.compile(template);
                 } catch (e) {
                     reject("Unable to compile rendering function from template '" + templateURL + "': " + e);
                     return;
@@ -77,32 +169,174 @@ var Component = function(selector, template, actions) {
         });
     }
 
-    function _createRenderFn(selector, templateLoader) {
-        var template = undefined;
-        var attach = undefined;
-        var update = undefined;
-        var detach = undefined;
+    function _createRenderFn() {
+        var $selector;
 
-        templateLoader.then(function(result) {
-            template = result.template;
-            attach = result.attach;
-            update = result.update;
-            detach = result.detach;
-        });
+        var target = undefined;
+        var tree = undefined;
 
-        var renderFn = function(state) {
-            if (state === undefined || state instanceof e) return;
-            if ( !template ) {
-                // Defer rendering if template is still loading.
-                templateLoader.then(function() {
-                    console.log("Deferring state rendering: " + JSON.stringify(state));
-                    renderFn(state);
+        var originalNodes = [];
+
+        var template, attach, update, detach;
+
+        var _detach = function () {
+            if (target) {
+                target.each(function (idx) {
+                    try {
+                        if ( detach ) {
+                            detach(this);
+                        }
+                    } catch (e) {
+                        // TODO: Send model into dead state, on errors in detach handler?
+                    }
+                    var orig = originalNodes[idx];
+                    $(this).replaceWith(orig);
                 });
-                return;
+                originalNodes = [];
+                target = undefined;
+                tree = undefined;
             }
-            console.log("Rendering state: " + JSON.stringify(state));
+        };
+
+        var renderFn = function (state) {
+            var component = this;
+            if (!template) {
+                // Defer rendering if template is still loading.
+                return new Promise(function (resolve) {
+                    templateLoader.then(function (result) {
+                        template = result.template;
+                        attach = result.attach;
+                        update = result.update;
+                        detach = result.detach;
+                        renderFn(state);
+                        resolve(state);
+                    });
+                });
+            }
+            if (state === undefined) {
+                return Promise.resolve(state);
+            }
+
+            if (state instanceof Error) {
+                // If the model is in dead state, re-attach the old nodes
+                // and return a rejecting promise.
+                _detach();
+                return Promise.reject(state);
+            }
+            if (state.get('selector') !== $selector) {
+                // If the selector has changed, re-attach the old nodes,
+                // and reset rendering engine.
+                _detach();
+                $selector = state.get('selector');
+            }
+            if ( !$selector || ( target && target.length == 0 )) {
+                // If we have no selector, the component has not been attached yet or
+                // was recently detached.
+                // If there are no target elements, there were no matching DOM elements when attaching.
+                // In any of these cases, Skip rendering and just return a resolving promise.
+                return Promise.resolve(state);
+            }
+            var html = template(state.toJS());
+            if (!html) {
+                // If no html is returned, skip rendering and just return a resolving promise.
+                return Promise.resolve(state);
+            }
+
+            var newTree = undefined;
+            // TODO: Send the model in dead state on rendering errors?
+            html2hscript(html, function (err, hscript) {
+                newTree = eval(hscript);
+                if (err) console.log("Rendering error: " + err);
+            });
+            if (!newTree) console.log("Rendering did not return a result.");
+            if (tree === undefined) {
+                // First rendering. Render new nodes, save and replace old nodes.
+                var selection = $();
+                originalNodes = [];
+                $($selector).each(function () {
+                    var newNode = virtualDom.create(newTree);
+                    var oldNode = $(this);
+                    try {
+                        var id = oldNode.prop('id');
+                        if (id) {
+                            newNode.id = id;
+                        }
+                        originalNodes.push(oldNode);
+                        oldNode.replaceWith(newNode);
+                        attach(newNode);
+                        selection = selection.add(newNode);
+                    } catch (e) {
+                        console.log("Error while calling attach() on component with selector: " + self.selector);
+                    }
+                    target = selection;
+                    try {
+                        update(this);
+                    } catch (e) {
+                        console.log("Error while calling update() on component with selector: " + self.selector);
+                    }
+                });
+            } else if (target) {
+                target.each(function () {
+                    var patches = virtualDom.diff(tree, newTree);
+                    virtualDom.patch(this, patches);
+                    try {
+                        update(this);
+                    } catch (e) {
+                        console.log("Error while calling update() on component with selector: " + self.selector);
+                    }
+                });
+            }
+            tree = newTree;
+            return Promise.resolve(state);
         };
         return renderFn;
+    }
+
+    function _mergeTranslationStream() {
+        handlebars = translation.getHandlebars();
+        var stream = stream.merge(translation.asStream(), function (compState, transState) {
+            if (!transState.has('translations') || transState.get('loading')) {
+                return undefined;
+            }
+            var languages = transState.get('locales').toJS();
+            var namespaces = transState.get('namespaces').toJS();
+            if (!languages || !namespaces) {
+                return undefined;
+            }
+            /* The following flattens all translations to one object with all keys and translation values set to
+             * either the translation from the currently selected language, its parent language or the
+             * default language.
+             */
+            var i18n = _.chain(languages)
+                .uniq()
+                .reduce(function (memo, lang) {
+                    if (transState.get('translations').has(lang)) {
+                        memo = _.chain(namespaces)
+                            .uniq()
+                            .reduce(function (memo, ns) {
+                                if (transState.get('translations').get(lang).has(ns)) {
+                                    var trans = transState.get('translations').get(lang).get(ns);
+                                    var keys = trans.keys();
+                                    memo = _.chain(keys)
+                                        .reduce(function (memo, key) {
+                                            if (namespaces.length == 1) {
+                                                memo[key] = memo[key] || trans.get(key);
+                                            } else {
+                                                memo[ns] = memo[ns] || {};
+                                                memo[ns][key] = memo[ns][key] || trans.get(key);
+                                            }
+                                            return memo;
+                                        }, memo)
+                                        .value();
+                                }
+                                return memo;
+                            }, memo).value();
+                    }
+                    return memo;
+                }, {})
+                .value();
+            return compState.put('i18n', i18n);
+        });
     }
 
 };

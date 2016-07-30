@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../../bower_components/virtual-dom/dist/virtual-dom.js"></script>
     <script type="text/javascript" src="../../node_modules/superagent/superagent.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/underscore.js"></script>
-    <script type="text/javascript" src="../../bower_components/handlebars/handlebars.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/handlebars.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/html2hscript.js"></script>
     <script type="text/javascript" src="../../dist/translation.js"></script>
 </head>
@@ -30,12 +30,8 @@
 <script type="text/javascript" src="Component.js"></script>
 <script type="text/javascript">
 
-    var translation = new Translation({
-        baseURI: 'locales',
-        namespace: 'test',
-        languages: ['en', 'de'],
-        defaultLang: 'en'
-    });
+    var translation = new Translation();
+    translation.setNamespace('test');
     translation.select('en');
 
     var actions = {
@@ -72,20 +68,68 @@
     };
 
     describe("Constructor", function () {
-        it("returning a model instance.", function () {
-            var comp = new Component("#test", "templates/TestComponent.html", actions, {translation: translation });
+        it("returning an instance with getModel() as method.", function () {
+            var comp = new Component("templates/TestComponent.html");
             expect(comp).toBeDefined();
-            expect(typeof comp).toEqual('function');
-            var actual = _.chain(Object.getOwnPropertyNames(comp)).filter(function(prop) {
-                return typeof comp[prop] === 'function';
-            }).sort().value();
-            var expected = _.chain(Object.getOwnPropertyNames(actions)).filter(function(prop) {
-                return typeof comp[prop] === 'function';
-            }).sort().value();
-            expect(expected).toEqual(actual);
+            expect(comp instanceof Component).toBeTruthy();
+            expect(comp.getModel).toBeDefined();
+            expect(typeof comp.getModel).toEqual('function');
         });
     });
 
+    describe("Component visibility", function () {
+        it("sets 'visible' stream property to false when hide() is called.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.hide().then(function(state) {
+                expect(state.get('visible')).not.toBeTruthy();
+                done();
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+
+        it("sets 'visible' stream property to true when show() is called.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.show().then(function (state) {
+                expect(state.get('visible')).toBeTruthy();
+                done();
+            });
+        });
+    });
+
+    describe("Adding a translation", function() {
+
+        it("adds a translation stream property.", function(done) {
+            var comp = new Component("templates/TestComponent.html", { translation: translation });
+            var p = translation.select('en');
+            p.then(function() {
+                comp.show().then(function(state) {
+                    expect(state).toBeDefined();
+                    expect(state.has('lang')).toBeTruthy();
+                    expect(state.get('lang')).toEqual('en');
+                    done();
+                });
+
+            }).catch(function(e) {
+                fail(e);
+                done();
+            });
+        });
+    });
+
+    describe("Attaching", function() {
+
+        it("renders the component to the target node.", function(done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.attach('#test').then(function(state) {
+                expect(state.get('visible')).toBeTruthy();
+                comp.detach();
+                done();
+            });
+        });
+
+    });
 
 
 </script>

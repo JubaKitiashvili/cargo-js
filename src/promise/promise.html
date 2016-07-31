@@ -118,12 +118,25 @@
                     });
         });
 
+        it("If then()'s onFulfilled callback returns a value (no promise), it returns a promise which is fulfilled with that value.", function (done) {
+            var p = new Promise(function (resolve, reject) {
+                resolve("RETURN FROM 1st PROMISE.");
+            })
+                    .then(function (r) {
+                        return "DONE";
+                    })
+                    .then(function (r) {
+                        expect(r).toBe("DONE");
+                        done();
+                    });
+        });
+
         it("then()'s first argument is not called on rejected promises and catch() is called.", function (done) {
             var p = new Promise(function (resolve, reject) {
                 reject("ERROR");
             }).then(function () {
-                        done.fail("then()'s first argument was called.")
-                    })
+                done.fail("then()'s first argument was called.")
+            })
                     .catch(function (reason) {
                         expect(reason).toBe("ERROR");
                         done();
@@ -134,9 +147,9 @@
             var p = new Promise(function (resolve, reject) {
                 reject("ERROR");
             }).catch(function (reason) {
-                        expect(reason).toBe("ERROR");
-                        done();
-                    });
+                expect(reason).toBe("ERROR");
+                done();
+            });
         });
 
         it("finally() is called on fulfilled promises.", function (done) {
@@ -176,6 +189,44 @@
 
         });
 
+        it("Chained promises pass error through to last catch() and execute finally() at last.", function (done) {
+            var p1 = new Promise(function (resolve, reject) {
+                reject("ERROR");
+            })
+                    .then(function () {
+                        done.fail("then()'s onFulfilled handler was called on rejected promise.")
+                    })
+                    .then(function () {
+                        done.fail("then()'s onFulfilled handler was called on rejected promise.")
+                    })
+                    .catch(function (error) {
+                        expect(error).toBe("ERROR");
+                    }).finally(function() {
+                        done();
+                    });
+
+        });
+
+        it("catch() passes through the value of preceding promise if no error occurred.", function (done) {
+            var p1 = new Promise(function (resolve, reject) {
+                resolve("DONE1");
+            })
+                    .then(function (s) {
+                        expect(s).toEqual('DONE1');
+                        return "DONE2";
+                    })
+                    .then(function (s) {
+                        expect(s).toEqual('DONE2');
+                        return "DONE3";
+                    })
+                    .catch(function (error) {
+                        done.fail('catch() was triggered.')
+                    }).then(function(s) {
+                        expect(s).toBe("DONE3");
+                        done();
+                    });
+
+        });
 
     });
 
@@ -196,7 +247,7 @@
             Promise.when(promises).then(function (result) {
                 expect(result).toBeDefined();
                 expect(result.length).toBe(5);
-                for ( idx = 0; idx < 5; idx++ ) {
+                for (idx = 0; idx < 5; idx++) {
                     expect(result[idx]).toBe(idx);
                 }
                 done();
@@ -225,8 +276,8 @@
             });
         });
 
-        it("resolves with an empty array when no promises are passed.", function(done) {
-            Promise.when([]).then(function(results) {
+        it("resolves with an empty array when no promises are passed.", function (done) {
+            Promise.when([]).then(function (results) {
                 expect(results).toBeDefined();
                 expect(results.length).toBeDefined();
                 expect(results.length).toEqual(0);

@@ -30,7 +30,13 @@
 <script type="text/javascript" src="Component.js"></script>
 <script type="text/javascript">
 
-    var translation = new Translation();
+    function createTranslation() {
+        var trans = new Translation();
+        trans.setNamespace('test');
+        return trans;
+    }
+
+    var translation = createTranslation();
     translation.setNamespace('test');
     translation.select('en');
 
@@ -98,7 +104,7 @@
         });
     });
 
-    describe("Adding a translation", function() {
+    xdescribe("Adding a translation", function() {
 
         it("adds a translation stream property.", function(done) {
             var comp = new Component("templates/TestComponent.html", { translation: translation });
@@ -124,7 +130,40 @@
             var comp = new Component("templates/TestComponent.html");
             comp.attach('#test').then(function(state) {
                 expect(state.get('visible')).toBeTruthy();
+                var html = $('#test').html().trim();
+                expect(html).toEqual('<h1>TEST_COMPONENT</h1>');
                 comp.detach();
+                done();
+            });
+        });
+
+        xit("with english translation renders the component with the english heading.", function(done) {
+            var comp = new Component("templates/TestComponent.html", { translation: translation });
+            comp.attach('#test').then(function(state) {
+                expect(state.get('visible')).toBeTruthy();
+                var html = $('#test').html().trim();
+                expect(html).toEqual('<h1>Test Component</h1>');
+                comp.detach();
+                done();
+            });
+        });
+
+        it("with german translation renders the component with the german heading.", function(done) {
+            var trans = createTranslation();
+            var comp = new Component("templates/TestComponent.html", { translation: trans });
+            trans.select('de').then(function(state) {
+                comp.attach('#test').then(function(state) {
+                    expect(state.get('visible')).toBeTruthy();
+                    var html = $('#test').html().trim();
+                    expect(html).toEqual('<h1>Test Component</h1>');
+                    comp.detach();
+                    done();
+                }).catch(function(e) {
+                    fail(e);
+                    done();
+                });
+            }).catch(function(e) {
+                fail(e);
                 done();
             });
         });

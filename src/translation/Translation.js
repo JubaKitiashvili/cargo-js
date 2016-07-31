@@ -1,4 +1,4 @@
-var Translation = function (baseURI, options) {
+var Translation = function (options) {
 
     'use strict';
     if (!Model) throw new Error("cargo.Model API is required.");
@@ -8,11 +8,13 @@ var Translation = function (baseURI, options) {
     if (!Handlebars) throw new Error("Handlebars is required. (https://github.com/wycats/handlebars.js/)");
 
     var config = Model.state({});
+    options = options || {};
 
     // Base URI is the locales sub directory relative to the current file.
     // It is assumed that if the current location matches "PATH/*.*",
     // the base URI resolves to "PATH/locales". Otherwise, "/locales" is
     // appended to the URI path.
+    var baseURI = options.baseURI;
     if (!baseURI) {
         var uri = "" + document.location;
         var pos = uri.indexOf("#");
@@ -30,7 +32,6 @@ var Translation = function (baseURI, options) {
     baseURI = baseURI.replace(/\/+$/, "");
     config = config.put('baseURI', baseURI);
 
-    options = options || {};
 
     config = config.put('namespaces', options.namespaces || (options.defaultNamespace ? [options.defaultNamespace] : ['translation']));
     config = config.put('defaultLang', options.defaultLang || 'en');
@@ -43,18 +44,27 @@ var Translation = function (baseURI, options) {
         loading: function (lang, config) {
             return {lang: lang, namespaces: config.get('namespaces'), loading: true};
         },
-        finished: function (lang, config, translation) {
-            return {
-                loading: false,
-                lang: lang,
-                locales: [lang, _parentLocale(lang) || lang, config.get('defaultLang')],
-                namespaces: config.get('namespaces'),
-                translations: translation
-            };
+        finished: function (state) {
+            if (handlebars.helpers.i18n) {
+                handlebars.unregisterHelper('i18n');
+            }
+            var _t = _createTranslator(state);
+            handlebars.registerHelper('i18n', function () {
+                switch (arguments.length) {
+                    case 0:
+                    case 1:
+                        return "";
+                    case 2:
+                        return _t(arguments[0]);
+                    default:
+                        return _t(arguments[0], arguments[1]);
+                }
+            });
+            return state.put('loading', false);
         }
     });
 
-    var handlebars = Handlebars.create();
+    var handlebars = options.handlebars || Handlebars.create();
     handlebars.registerHelper('i18n', function () {
         switch (arguments.length) {
             case 0:
@@ -66,6 +76,16 @@ var Translation = function (baseURI, options) {
                 return arguments[1] + "." + arguments[0];
         }
     });
+
+    var _state = function(config, translation) {
+        var lang = config.get('lang');
+        return Model.state({
+            lang: lang,
+            locales: [lang, _parentLocale(lang) || lang, config.get('defaultLang')],
+            namespaces: config.get('namespaces'),
+            translations: translation
+        });
+    };
 
     var _cache = function (lang, ns, translation) {
         if (!config.get('caching')) {
@@ -102,11 +122,12 @@ var Translation = function (baseURI, options) {
         });
     };
 
-    var _createTranslator = function (config, translation) {
-        var lang = config.get('lang');
-        var parentLang = _parentLocale(lang) || lang;
-        var defaultLang = config.get('defaultLang');
-        var defaultNamespace = config.get('namespaces').get(0);
+    var _createTranslator = function (state) {
+        var translation = state.get('translations');
+        var lang = state.get('lang');
+        var parentLang = state.get('locales').get(1);
+        var defaultLang = state.get('locales').get(2);
+        var defaultNamespace = state.get('namespaces').get(0);
         return function (key, namespace) {
             namespace = namespace || defaultNamespace;
             var val = _.chain([lang, parentLang, defaultLang])
@@ -146,23 +167,9 @@ var Translation = function (baseURI, options) {
                     translation = translation.deepMerge(t);
                     _cache(result.lang, result.namespace, result.translation);
                 });
-                var _t = _createTranslator(config, translation);
-                if (handlebars.helpers.i18n) {
-                    handlebars.unregisterHelper('i18n');
-                }
-                handlebars.registerHelper('i18n', function () {
-                    switch (arguments.length) {
-                        case 0:
-                        case 1:
-                            return "";
-                        case 2:
-                            return _t(arguments[0]);
-                        default:
-                            return _t(arguments[0], arguments[1]);
-                    }
-                });
-
-                model.finished(lang, config, translation);
+                var state = _state(config, translation);
+                var _t = _createTranslator(state);
+                model.finished(state);
                 return Promise.resolve(_t);
             });
         p.catch(function (e) {

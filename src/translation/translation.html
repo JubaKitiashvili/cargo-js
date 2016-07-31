@@ -221,6 +221,82 @@
 
     });
 
+    describe('Handlebars environment from Translation', function() {
+
+        it("provides an i18n helper", function (done) {
+            var trans = new Translation();
+            var handlebars = trans.getHandlebars();
+            var template = handlebars.compile("{{i18n 'GREETING'}}");
+            expect(typeof template).toEqual('function');
+            var rendered = template({});
+            expect(rendered).toEqual('GREETING');
+            done();
+        });
+
+        it("provides an i18n helper that replaces keys with translation.", function (done) {
+            var trans = new Translation();
+            trans.select('en').then(function() {
+                var handlebars = trans.getHandlebars();
+                var template = handlebars.compile("{{i18n 'GREETING'}}");
+                expect(typeof template).toEqual('function');
+                var rendered = template({});
+                expect(rendered).toEqual('Hello World!');
+                done();
+            });
+        });
+
+        it("provides an i18n helper that replaces keys with translation after selecting a language.", function (done) {
+            var trans = new Translation();
+            trans.select('de').then(function() {
+                var handlebars = trans.getHandlebars();
+                var template = handlebars.compile("{{i18n 'GREETING'}}");
+                expect(typeof template).toEqual('function');
+                var rendered = template({});
+                expect(rendered).toEqual('Hallo Welt!');
+                done();
+            });
+        });
+
+        it("provides an i18n helper that replaces keys with translation after re-selecting a different language.", function (done) {
+            var trans = new Translation();
+            trans.select('en').then(function () {
+                trans.select('de').then(function () {
+                    var handlebars = trans.getHandlebars();
+                    var template = handlebars.compile("{{i18n 'GREETING'}}");
+                    expect(typeof template).toEqual('function');
+                    var rendered = template({});
+                    expect(rendered).toEqual('Hallo Welt!');
+                    done();
+                });
+            });
+        });
+
+        it("provides an i18n helper that replaces keys from namespaces with translation after re-selecting a different language.", function (done) {
+            var trans = new Translation();
+            trans.select('en').then(function () {
+                trans.select('de').then(function () {
+                    var handlebars = trans.getHandlebars();
+                    var template = handlebars.compile("{{i18n 'GREETING' 'translation'}}");
+                    expect(typeof template).toEqual('function');
+                    var rendered = template({});
+                    expect(rendered).toEqual('Hallo Welt!');
+                    done();
+                });
+            });
+        });
+
+        it('can be provided as an option to the constructor and is augmented with an i18n helper.', function() {
+            var handlebars = Handlebars.create();
+            handlebars.registerHelper('exampleHelper', function() { return 'EXAMPLE_HELPER'; });
+            var trans = new Translation({ handlebars: handlebars });
+            var hb = trans.getHandlebars();
+            expect(hb.helpers.i18n).toBeDefined();
+            expect(hb.helpers.exampleHelper).toBeDefined();
+        });
+
+    })
+
+
 </script>
 
 

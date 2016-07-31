@@ -54,8 +54,8 @@ var Component = function (templateURI, options) {
 
     actions = options.extendModel ? extendModel(actions) : actions;
     var translation = options.translation;
-    var handlebars;
 
+    var handlebars;
     if (translation) {
         handlebars = translation.getHandlebars();
         actions.changeLanguage = function(lang) {
@@ -67,7 +67,7 @@ var Component = function (templateURI, options) {
             }
         });
     } else {
-        handlebars = Handlebars;
+        handlebars = options.handlebars || Handlebars;
         if (!handlebars.helpers.i18n) {
             handlebars.registerHelper('i18n', function () {
                 switch (arguments.length) {
@@ -84,7 +84,6 @@ var Component = function (templateURI, options) {
     }
 
     var model = new Model(actions);
-
 
     var templateLoader = _loadTemplate(templateURI);
     var renderFn = _.bind(_createRenderFn(), this);

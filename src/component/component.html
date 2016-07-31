@@ -137,7 +137,7 @@
             });
         });
 
-        xit("with english translation renders the component with the english heading.", function(done) {
+        it("with english translation renders the component with the english heading.", function(done) {
             var comp = new Component("templates/TestComponent.html", { translation: translation });
             comp.attach('#test').then(function(state) {
                 expect(state.get('visible')).toBeTruthy();
@@ -155,7 +155,7 @@
                 comp.attach('#test').then(function(state) {
                     expect(state.get('visible')).toBeTruthy();
                     var html = $('#test').html().trim();
-                    expect(html).toEqual('<h1>Test Component</h1>');
+                    expect(html).toEqual('<h1>Test Komponente</h1>');
                     comp.detach();
                     done();
                 }).catch(function(e) {

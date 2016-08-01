@@ -42,16 +42,18 @@ var Component = function (templateURI, options) {
         }
     };
 
-    actions = options.extendModel ? extendModel(actions) : actions;
+    actions = options.extendModel ? options.extendModel(actions) : actions;
+    var model = new Model(actions);
+
     var translation = options.translation;
 
     var handlebars;
     if (translation) {
         handlebars = translation.getHandlebars();
-        actions.changeLanguage = function(lang) {
+        actions.changeLanguage = function (lang) {
             return this.state().put('lang', lang);
         };
-        translation.subscribe(function(state) {
+        translation.subscribe(function (state) {
             if (state) {
                 model.changeLanguage(state.get('lang'));
             }
@@ -73,14 +75,12 @@ var Component = function (templateURI, options) {
         }
     }
 
-    var model = new Model(actions);
-
     var templateLoader = _loadTemplate(templateURI);
     var renderFn = _.bind(_createRenderFn(), this);
 
     templateLoader.catch(function (e) {
-            model.destroy(e);
-        });
+        model.destroy(e);
+    });
 
     this.hide = function () {
         return model.hide().then(function (state) {
@@ -98,6 +98,10 @@ var Component = function (templateURI, options) {
         return model;
     };
 
+    this.render = function (state) {
+        return renderFn(state);
+    };
+
     this.attach = function (selector) {
         return model.attach(selector).then(function (state) {
             return renderFn(state);
@@ -105,7 +109,7 @@ var Component = function (templateURI, options) {
     };
 
     this.detach = function () {
-        return model.detach().then(function(state) {
+        return model.detach().then(function (state) {
             return renderFn(state);
         });
     };
@@ -172,7 +176,7 @@ var Component = function (templateURI, options) {
             if (target) {
                 target.each(function (idx) {
                     try {
-                        if ( detach ) {
+                        if (detach) {
                             detach(this);
                         }
                     } catch (e) {
@@ -218,7 +222,7 @@ var Component = function (templateURI, options) {
                 _detach();
                 $selector = state.get('selector');
             }
-            if ( !$selector || ( target && target.length == 0 )) {
+            if (!$selector || ( target && target.length == 0 )) {
                 // If we have no selector, the component has not been attached yet or
                 // was recently detached.
                 // If there are no target elements, there were no matching DOM elements when attaching.
@@ -279,53 +283,6 @@ var Component = function (templateURI, options) {
             return Promise.resolve(state);
         };
         return renderFn;
-    }
-
-    function _mergeTranslationStream() {
-        handlebars = translation.getHandlebars();
-        var stream = stream.merge(translation.asStream(), function (compState, transState) {
-            if (!transState.has('translations') || transState.get('loading')) {
-                return undefined;
-            }
-            var languages = transState.get('locales').toJS();
-            var namespaces = transState.get('namespaces').toJS();
-            if (!languages || !namespaces) {
-                return undefined;
-            }
-            /* The following flattens all translations to one object with all keys and translation values set to
-             * either the translation from the currently selected language, its parent language or the
-             * default language.
-             */
-            var i18n = _.chain(languages)
-                .uniq()
-                .reduce(function (memo, lang) {
-                    if (transState.get('translations').has(lang)) {
-                        memo = _.chain(namespaces)
-                            .uniq()
-                            .reduce(function (memo, ns) {
-                                if (transState.get('translations').get(lang).has(ns)) {
-                                    var trans = transState.get('translations').get(lang).get(ns);
-                                    var keys = trans.keys();
-                                    memo = _.chain(keys)
-                                        .reduce(function (memo, key) {
-                                            if (namespaces.length == 1) {
-                                                memo[key] = memo[key] || trans.get(key);
-                                            } else {
-                                                memo[ns] = memo[ns] || {};
-                                                memo[ns][key] = memo[ns][key] || trans.get(key);
-                                            }
-                                            return memo;
-                                        }, memo)
-                                        .value();
-                                }
-                                return memo;
-                            }, memo).value();
-                    }
-                    return memo;
-                }, {})
-                .value();
-            return compState.put('i18n', i18n);
-        });
     }
 
 };

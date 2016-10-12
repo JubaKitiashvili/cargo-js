@@ -348,6 +348,7 @@ var State = function (input) {
         });
 
         this.$Map = true;
+
         this.$List = false;
 
         this.type = function () {

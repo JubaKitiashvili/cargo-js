@@ -74,61 +74,151 @@
     };
 
     describe("Constructor", function () {
-        it("returning an instance with getModel() as method.", function () {
+        it("returning an instance with attach() as method.", function () {
             var comp = new Component("templates/TestComponent.html");
             expect(comp).toBeDefined();
             expect(comp instanceof Component).toBeTruthy();
-            expect(comp.getModel).toBeDefined();
-            expect(typeof comp.getModel).toEqual('function');
+            expect(comp.attach).toBeDefined();
+            expect(typeof comp.attach).toEqual('function');
         });
     });
 
-    describe("Component visibility", function () {
-        it("sets 'visible' stream property to false when hide() is called.", function (done) {
+    describe("attach():", function () {
+        it("attach() returns a promise resolving with a render function.", function (done) {
             var comp = new Component("templates/TestComponent.html");
-            comp.hide().then(function(state) {
-                expect(state.get('visible')).not.toBeTruthy();
-                done();
-            }).catch(function(e) {
+            comp.attach('#test').then(function (renderFn) {
+                expect(renderFn).toBeDefined();
+                expect(typeof renderFn).toEqual('function');
+            }).catch(function (e) {
                 fail(e);
+            }).finally(function () {
+                $('#test').removeAttr('x-cargo-id');
                 done();
             });
         });
 
-        it("sets 'visible' stream property to true when show() is called.", function (done) {
+        it("the render function has a 'detach' property which is a function.", function (done) {
             var comp = new Component("templates/TestComponent.html");
-            comp.show().then(function (state) {
-                expect(state.get('visible')).toBeTruthy();
+            comp.attach('#test').then(function (renderFn) {
+                expect(renderFn).toBeDefined();
+                expect(typeof renderFn).toEqual('function');
+                expect(renderFn.detach).toBeDefined();
+                expect(typeof renderFn.detach).toEqual('function');
+            }).catch(function (e) {
+                fail(e);
+            }).finally(function () {
+                $('#test').removeAttr('x-cargo-id');
                 done();
             });
         });
+
+        it("attach() must not work without a selector.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.attach().then(function (renderFn) {
+                fail('Promise was fulfilled and not rejected unexpectedly.');
+            }).catch(function (e) {
+                expect(e).toBeDefined();
+            }).finally(function () {
+                $('#test').removeAttr('x-cargo-id');
+                done();
+            });
+        });
+
+        it("attach() returns promise that is rejected if there are no nodes selected.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.attach('#test2').then(function (renderFn) {
+                fail("Promise was not rejected.");
+            }).catch(function (e) {
+                expect(e).toBeDefined();
+            }).finally(function () {
+                done();
+            });
+        });
+
+        it("attach() returns promise that is rejected if there are nodes selected that are already attached to a component.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            $('#test').attr('x-cargo-id', _.uniqueId());
+            comp.attach('#test').then(function (renderFn) {
+                fail("Promise was not rejected.");
+            }).catch(function (e) {
+                expect(e).toBeDefined();
+            }).finally(function () {
+                $('#test').removeAttr('x-cargo-id');
+                done();
+            });
+        });
+
+        it("attach() is rejected when the template could not be loaded.", function (done) {
+            var comp = new Component("templates/TestComponent.html2");
+            comp.attach('#test').then(function (renderFn) {
+                fail("Promise was not rejected.");
+            }).catch(function (e) {
+                expect(e).toBeDefined();
+            }).finally(function () {
+                $('#test').removeAttr('x-cargo-id');
+                done();
+            });
+        });
+
     });
 
-    xdescribe("Adding a translation", function() {
+    describe("detach()", function () {
 
-        it("adds a translation stream property.", function(done) {
-            var comp = new Component("templates/TestComponent.html", { translation: translation });
+        it("render function from attach() bears a detach() function as a property.", function (done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.attach('#test').then(function (renderFn) {
+                var detach = renderFn.detach;
+                expect(detach).toBeDefined();
+                expect(typeof detach).toEqual('function');
+            }).catch(function (e) {
+                fail(e);
+            }).finally(function() {
+                $('#test').removeAttr('x-cargo-id');
+                done();
+            });
+
+        });
+
+        it("calling detach() removes the x-cargo-id from target elements.", function(done) {
+            var comp = new Component("templates/TestComponent.html");
+            comp.attach('#test').then(function (renderFn) {
+                expect($('#test').attr('x-cargo-id')).toBeDefined();
+                renderFn.detach();
+                expect($('#test').attr('x-cargo-id')).not.toBeDefined();
+            }).catch(function (e) {
+                fail(e);
+            }).finally(function() {
+                done();
+            });
+        });
+
+    });
+
+    xdescribe("Adding a translation", function () {
+
+        it("adds a translation stream property.", function (done) {
+            var comp = new Component("templates/TestComponent.html", {translation: translation});
             var p = translation.select('en');
-            p.then(function() {
-                comp.show().then(function(state) {
+            p.then(function () {
+                comp.show().then(function (state) {
                     expect(state).toBeDefined();
                     expect(state.has('lang')).toBeTruthy();
                     expect(state.get('lang')).toEqual('en');
                     done();
                 });
 
-            }).catch(function(e) {
+            }).catch(function (e) {
                 fail(e);
                 done();
             });
         });
     });
 
-    describe("Attaching", function() {
+    xdescribe("Attaching", function () {
 
-        it("renders the component to the target node.", function(done) {
+        it("renders the component to the target node.", function (done) {
             var comp = new Component("templates/TestComponent.html");
-            comp.attach('#test').then(function(state) {
+            comp.attach('#test').then(function (state) {
                 expect(state.get('visible')).toBeTruthy();
                 var html = $('#test').html().trim();
                 expect(html).toEqual('<h1>TEST_COMPONENT</h1>');
@@ -137,9 +227,9 @@
             });
         });
 
-        it("with english translation renders the component with the english heading.", function(done) {
-            var comp = new Component("templates/TestComponent.html", { translation: translation });
-            comp.attach('#test').then(function(state) {
+        it("with english translation renders the component with the english heading.", function (done) {
+            var comp = new Component("templates/TestComponent.html", {translation: translation});
+            comp.attach('#test').then(function (state) {
                 expect(state.get('visible')).toBeTruthy();
                 var html = $('#test').html().trim();
                 expect(html).toEqual('<h1>Test Component</h1>');
@@ -148,21 +238,21 @@
             });
         });
 
-        it("with german translation renders the component with the german heading.", function(done) {
+        it("with german translation renders the component with the german heading.", function (done) {
             var trans = createTranslation();
-            var comp = new Component("templates/TestComponent.html", { translation: trans });
-            trans.select('de').then(function(state) {
-                comp.attach('#test').then(function(state) {
+            var comp = new Component("templates/TestComponent.html", {translation: trans});
+            trans.select('de').then(function (state) {
+                comp.attach('#test').then(function (state) {
                     expect(state.get('visible')).toBeTruthy();
                     var html = $('#test').html().trim();
                     expect(html).toEqual('<h1>Test Komponente</h1>');
                     comp.detach();
                     done();
-                }).catch(function(e) {
+                }).catch(function (e) {
                     fail(e);
                     done();
                 });
-            }).catch(function(e) {
+            }).catch(function (e) {
                 fail(e);
                 done();
             });

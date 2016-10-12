@@ -39,6 +39,14 @@ var Promise = function (action) {
     var _result = undefined;
     var _subscribers = [];
 
+    var defer = function(fun) {
+        if ( typeof window === 'undefined') {
+            process.nextTick(fun);
+            return;
+        }
+        window.setTimeout(fun, 0);
+    };
+
     /**
      * Returns an object representing the current state of the promise.
      * "state" can be "fulfilled", "rejected" or "pending". "result" contains
@@ -65,7 +73,7 @@ var Promise = function (action) {
         var cb = function(val) {
             _resolve(val);
         };
-        setTimeout(cb.bind(undefined, x), 0);
+        defer(cb.bind(undefined, x));
     };
 
 
@@ -75,10 +83,10 @@ var Promise = function (action) {
      * @param reason
      */
     self.reject = function (reason) {
-        setTimeout(function () {
+        defer(function () {
             _changeState('rejected', reason);
             _notifySubscribers();
-        }, 0);
+        });
     };
 
     var _isPromise = function (x) {
@@ -299,9 +307,9 @@ var Promise = function (action) {
         if (_state != 'pending') {
             // Notify subscribers if promise is not pending any more. Leave the asynchronous
             // behavior of then() by using setTimeout(..., 0).
-            window.setTimeout(function () {
+            defer(function () {
                 _notifySubscribers();
-            }, 0);
+            });
         }
         // 2.2.7 then() must return a promise [3.3].
         //       promise2 = promise1.then(onFulfilled, onRejected);
@@ -326,9 +334,9 @@ var Promise = function (action) {
         if (_state != 'pending') {
             // Notify subscribers if promise is not pending any more. Leave the asynchronous
             // behavior of catch() by using setTimeout(..., 0).
-            window.setTimeout(function () {
+            defer(function () {
                 _notifySubscribers();
-            }, 0);
+            });
         }
         return promise2;
     };
@@ -349,17 +357,17 @@ var Promise = function (action) {
         if (_state != 'pending') {
             // Notify subscribers if promise is not pending any more. Leave the asynchronous
             // behavior of finally() by using setTimeout(..., 0).
-            window.setTimeout(function () {
+            defer(function () {
                 _notifySubscribers();
-            }, 0);
+            });
         }
         return promise2;
     };
 
     if (typeof action === 'function') {
-        setTimeout(function () {
+        defer(function () {
             _resolve(action)
-        }, 0);
+        });
     }
 
 };

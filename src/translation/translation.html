@@ -38,57 +38,38 @@
     describe("Loading", function () {
         it(" the default translation without any options.", function (done) {
             var trans = new Translation();
-            trans.select('en');
-            trans.subscribe(function (state) {
-                if ( !state || state.get('loading') ) { return; }
-                var trans = state.get('translations').get('en').get('translation');
-                expect(trans.get('GREETING')).toBe("Hello World!");
-                expect(trans.get('READY')).toBe("ready");
+            trans.select('en').then(function(t) {
+                expect(t('GREETING')).toBe("Hello World!");
+                expect(t('READY')).toBe("ready");
                 done();
             });
-            trans.select("en");
         });
 
         it(" the default translation when selecting an unknown language.", function (done) {
             var trans = new Translation();
-            trans.select('fr');
-            trans.subscribe(function (state) {
-                expect(state).toBeDefined();
-                if ( state.get('loading') ) { return; }
-                var trans = state.get('translations').get('en').get('translation');
-                expect(trans.get('GREETING')).toBe("Hello World!");
-                expect(trans.get('READY')).toBe("ready");
+            trans.select('fr').then(function(t) {
+                expect(t('GREETING')).toBe("Hello World!");
+                expect(t('READY')).toBe("ready");
                 done();
             });
-            trans.select("fr");
         });
 
         it(" no translation when selecting a non-existent namespace.", function (done) {
             var trans = new Translation();
             trans.addNamespace('missing');
-            trans.select('en');
-            trans.subscribe(function (state) {
-                expect(state).toBeDefined();
-                if ( state.get('loading') ) { return; }
-                var trans = state.get('translations').get('en').get('missing');
-                expect(trans).not.toBeDefined();
+            trans.select('en').then(function(t) {
+                expect(t('GREETING', 'missing')).toEqual('GREETING');
                 done();
             });
-            trans.select("en");
         });
 
         it(" no translation when selecting a non-existent base URI.", function (done) {
-            var trans = new Translation("missing", [ 'missing' ]);
-            trans.select('en');
-            trans.subscribe(function (state) {
-                expect(state).toBeDefined();
-                if ( state.get('loading') ) { return; }
-                var trans = state.get('translations').toJS();
-                expect(trans.en).toBeDefined();
-                expect(trans.en.missing).not.toBeDefined();
+            var trans = new Translation({ baseURI: 'missing', namespaces: ['missing']});
+            trans.select('en').then(function(t) {
+                var p = t('GREETING');
+                expect(t('GREETING')).toEqual('GREETING');
                 done();
             });
-            trans.select("en");
         });
 
     });
@@ -221,13 +202,15 @@
 
     });
 
-    describe('Handlebars environment from Translation', function() {
+    describe('Handlebars support from Translation', function() {
 
         it("provides an i18n helper", function (done) {
             var trans = new Translation();
-            var handlebars = trans.getHandlebars();
+            var handlebars = Handlebars.create();
             var template = handlebars.compile("{{i18n 'GREETING'}}");
-            expect(typeof template).toEqual('function');
+            var helper = trans.createHandlebarsHelper();
+            expect(typeof helper).toEqual('function');
+            handlebars.registerHelper('i18n', helper);
             var rendered = template({});
             expect(rendered).toEqual('GREETING');
             done();
@@ -236,9 +219,11 @@
         it("provides an i18n helper that replaces keys with translation.", function (done) {
             var trans = new Translation();
             trans.select('en').then(function() {
-                var handlebars = trans.getHandlebars();
+                var handlebars = Handlebars.create();
                 var template = handlebars.compile("{{i18n 'GREETING'}}");
-                expect(typeof template).toEqual('function');
+                var helper = trans.createHandlebarsHelper();
+                expect(typeof helper).toEqual('function');
+                handlebars.registerHelper('i18n', helper);
                 var rendered = template({});
                 expect(rendered).toEqual('Hello World!');
                 done();
@@ -248,9 +233,11 @@
         it("provides an i18n helper that replaces keys with translation after selecting a language.", function (done) {
             var trans = new Translation();
             trans.select('de').then(function() {
-                var handlebars = trans.getHandlebars();
+                var handlebars = Handlebars.create();
                 var template = handlebars.compile("{{i18n 'GREETING'}}");
-                expect(typeof template).toEqual('function');
+                var helper = trans.createHandlebarsHelper();
+                expect(typeof helper).toEqual('function');
+                handlebars.registerHelper('i18n', helper);
                 var rendered = template({});
                 expect(rendered).toEqual('Hallo Welt!');
                 done();
@@ -261,9 +248,11 @@
             var trans = new Translation();
             trans.select('en').then(function () {
                 trans.select('de').then(function () {
-                    var handlebars = trans.getHandlebars();
+                    var handlebars = Handlebars.create();
                     var template = handlebars.compile("{{i18n 'GREETING'}}");
-                    expect(typeof template).toEqual('function');
+                    var helper = trans.createHandlebarsHelper();
+                    expect(typeof helper).toEqual('function');
+                    handlebars.registerHelper('i18n', helper);
                     var rendered = template({});
                     expect(rendered).toEqual('Hallo Welt!');
                     done();
@@ -275,23 +264,16 @@
             var trans = new Translation();
             trans.select('en').then(function () {
                 trans.select('de').then(function () {
-                    var handlebars = trans.getHandlebars();
+                    var handlebars = Handlebars.create();
                     var template = handlebars.compile("{{i18n 'GREETING' 'translation'}}");
-                    expect(typeof template).toEqual('function');
+                    var helper = trans.createHandlebarsHelper();
+                    expect(typeof helper).toEqual('function');
+                    handlebars.registerHelper('i18n', helper);
                     var rendered = template({});
                     expect(rendered).toEqual('Hallo Welt!');
                     done();
                 });
             });
-        });
-
-        it('can be provided as an option to the constructor and is augmented with an i18n helper.', function() {
-            var handlebars = Handlebars.create();
-            handlebars.registerHelper('exampleHelper', function() { return 'EXAMPLE_HELPER'; });
-            var trans = new Translation({ handlebars: handlebars });
-            var hb = trans.getHandlebars();
-            expect(hb.helpers.i18n).toBeDefined();
-            expect(hb.helpers.exampleHelper).toBeDefined();
         });
 
     })

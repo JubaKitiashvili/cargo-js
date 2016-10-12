@@ -48,54 +48,14 @@ var Translation = function (options) {
     config = config.put('lang', config.get('defaultLang'));
     config = config.put('caching', options.caching || true);
 
-    var cache = Model.state({});
-
-    var model = new Model({
-        loading: function (lang, config) {
-            return {lang: lang, namespaces: config.get('namespaces'), loading: true};
-        },
-        finished: function (state) {
-            if (handlebars.helpers.i18n) {
-                handlebars.unregisterHelper('i18n');
-            }
-            var _t = _createTranslator(state);
-            handlebars.registerHelper('i18n', function () {
-                switch (arguments.length) {
-                    case 0:
-                    case 1:
-                        return "";
-                    case 2:
-                        return _t(arguments[0]);
-                    default:
-                        return _t(arguments[0], arguments[1]);
-                }
-            });
-            return state.put('loading', false);
+    var translateFn = function(key, namespace) {
+        if ( !namespace || config.get('namespaces').size() <= 1 ) {
+            return key;
         }
-    });
-
-    var handlebars = options.handlebars || Handlebars.create();
-    handlebars.registerHelper('i18n', function () {
-        switch (arguments.length) {
-            case 0:
-            case 1:
-                return "";
-            case 2:
-                return arguments[0];
-            default:
-                return arguments[1] + "." + arguments[0];
-        }
-    });
-
-    var _state = function(config, translation) {
-        var lang = config.get('lang');
-        return Model.state({
-            lang: lang,
-            locales: [lang, _parentLocale(lang) || lang, config.get('defaultLang')],
-            namespaces: config.get('namespaces'),
-            translations: translation
-        });
+        return namespace + "." + key;
     };
+
+    var cache = Model.state({});
 
     var _cache = function (lang, ns, translation) {
         if (!config.get('caching')) {
@@ -132,12 +92,11 @@ var Translation = function (options) {
         });
     };
 
-    var _createTranslator = function (state) {
-        var translation = state.get('translations');
-        var lang = state.get('lang');
-        var parentLang = state.get('locales').get(1);
-        var defaultLang = state.get('locales').get(2);
-        var defaultNamespace = state.get('namespaces').get(0);
+    var _createTranslator = function (config, translation) {
+        var lang = config.get('lang');
+        var parentLang = _parentLocale(lang) || lang;
+        var defaultLang = config.get('defaultLang');
+        var defaultNamespace = config.get('namespaces').get(0);
         return function (key, namespace) {
             namespace = namespace || defaultNamespace;
             var val = _.chain([lang, parentLang, defaultLang])
@@ -165,7 +124,6 @@ var Translation = function (options) {
                 loaders.push(_createLoader(l, ns));
             });
         });
-        model.loading(lang, namespaces);
         var p = Promise
             .when(loaders)
             .then(function (results) {
@@ -177,10 +135,8 @@ var Translation = function (options) {
                     translation = translation.deepMerge(t);
                     _cache(result.lang, result.namespace, result.translation);
                 });
-                var state = _state(config, translation);
-                var _t = _createTranslator(state);
-                model.finished(state);
-                return Promise.resolve(_t);
+                translateFn = _createTranslator(config, translation);
+                return Promise.resolve(translateFn);
             });
         p.catch(function (e) {
             console.log(e && e.stack ? e.stack : e);
@@ -208,17 +164,40 @@ var Translation = function (options) {
         return _load(config);
     };
 
-    this.getHandlebars = function () {
-        return handlebars;
-    };
-
     this.select = function (lang) {
         config = config.put('lang', lang);
         return _load(config);
     };
 
-    this.subscribe = function (subscriber) {
-        return model(subscriber);
+    this.translate = function(key, namespace) {
+        return translateFn(key, namespace);
+    };
+
+    this.i18n = function() {
+        return translateFn;
+    };
+
+    this.createHandlebarsHelper = function() {
+        var _t = this.i18n();
+        var helper = function() {
+            var key, namespace;
+            switch (arguments.length) {
+                case 0:
+                case 1:
+                    return "";
+                case 2:
+                    key = arguments[0];
+                    namespace = config.get('namespaces').get(0);
+                    break;
+                case 3:
+                    key = arguments[0];
+                    namespace = arguments[1];
+                    break;
+            }
+            return _t(key, namespace);
+        };
+        helper._t = _t;
+        return helper;
     };
 
 };

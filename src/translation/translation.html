@@ -10,8 +10,8 @@
     <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script type="text/javascript" src="../../bower_components/jasmine-core/lib/jasmine-core/boot.js"></script>
     <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="../../dist/promise.js"></script>
     <script type="text/javascript" src="../../dist/model.js"></script>
+    <script type="text/javascript" src="../../dist/dependencies/rsvp.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/underscore.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/superagent.js"></script>
     <script type="text/javascript" src="../../dist/dependencies/js.cookie.js"></script>
@@ -22,7 +22,7 @@
 <nav id="test"/>
 <script type="text/javascript">
     window.Model = cargo.Model;
-    window.Promise = cargo.Promise;
+    window.Promise = RSVP.Promise;
 </script>
 <script type="text/javascript" src="Translation.js"></script>
 <script type="text/javascript">

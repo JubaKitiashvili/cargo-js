@@ -1,21 +1,21 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Promise', 'cargo.Model', 'superagent', '_'], factory);
+        define(['cargo.Model', 'Promise', 'superagent', '_'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Promise'), require('cargo.Model'), require('superagent'), require('_'));
+        module.exports = factory(require('cargo.Model'), require('Promise'), require('superagent'), require('_'));
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Translation = factory(root.cargo.Promise, root.cargo.Model, root.superagent, root._);
+        root.cargo.Translation = factory(root.cargo.Model, root.Promise, root.superagent, root._);
     }
-}(this, function(Promise, Model, superagent, _) {
+}(this, function(Model, Promise, superagent, _) {
 var Translation = function (options) {
 
     'use strict';
     if (!Model) throw new Error("cargo.Model API is required.");
-    if (!Promise) throw new Error("cargo.Promise API is required.");
+    if (!Promise) throw new Error("Promise API is required.");
+	if (!Promise.all) throw new Error("Promise API with support for Promise.all() is required. (https://github.com/tildeio/rsvp.js/)");
     if (!superagent) throw new Error("superagent is required. (https://github.com/visionmedia/superagent)");
     if (!_) throw new Error("underscore is required. (https://github.com/jashkenas/underscore)");
-    if (!Handlebars) throw new Error("Handlebars is required. (https://github.com/wycats/handlebars.js/)");
 
     var config = Model.state({});
     options = options || {};
@@ -125,7 +125,7 @@ var Translation = function (options) {
             });
         });
         var p = Promise
-            .when(loaders)
+            .all(loaders)
             .then(function (results) {
                 var translation = Model.state({});
                 _.each(results, function (result) {
@@ -178,8 +178,8 @@ var Translation = function (options) {
     };
 
     this.createHandlebarsHelper = function() {
-        var _t = this.i18n();
-        var helper = function() {
+        var helper = _.bind(function() {
+			var _t = this.i18n();
             var key, namespace;
             switch (arguments.length) {
                 case 0:
@@ -195,8 +195,10 @@ var Translation = function (options) {
                     break;
             }
             return _t(key, namespace);
-        };
-        helper._t = _t;
+        }, this);
+        helper._t = _.bind(function() {
+            return this.i18n();
+        },this);
         return helper;
     };
 

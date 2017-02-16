@@ -1,4 +1,4 @@
-var Component = function (templateURI, options) {
+var Component = function(templateURI, options) {
 	'use strict';
 	
 	if (!Promise) throw new Error("Promise API is required.");
@@ -11,7 +11,6 @@ var Component = function (templateURI, options) {
 	if (!_) throw new Error("underscore is required. (https://github.com/jashkenas/underscore)");
 	
 	var $ = window.$;
-	var h = virtualDom.h;
 	
 	options = options || {};
 	
@@ -44,8 +43,8 @@ var Component = function (templateURI, options) {
 		}
 		return _loadTemplate(templateURI, handlebars)
 			.then(function (template) {
-				var renderFn = _createRenderFn(selector, originalNodes, template, handlebars);
-				return Promise.resolve(renderFn)
+				var renderer = new Renderer(selector, originalNodes, template);
+				return Promise.resolve(renderer)
 			});
 	};
 	
@@ -110,103 +109,110 @@ var Component = function (templateURI, options) {
 		});
 	}
 	
-	function _createRenderFn(selector, originalNodes, template) {
-		
-		var target = $();
-		var tree = undefined;
-		
-		var templateFn = template.template;
-		var attach = template.attach;
-		var update = template.update;
-		var detach = template.detach;
-		
-		var _detach = function () {
-			_.each(originalNodes, function (orig, cargoId) {
-				orig.removeAttribute('x-cargo-id');
-				if (target && target.length) {
-					target.each(function () {
-						if (this.getAttribute('x-cargo-id') === cargoId) {
-							try {
-								detach && detach(this);
-							} catch (e) {
-							}
-							$(this).replaceWith(orig);
+};
+Component.prototype.constructor = Component;
+
+var Renderer = function(selector, originalNodes, template) {
+	var h = virtualDom.h;
+	
+	var target = $();
+	var tree = undefined;
+	
+	var templateFn = template.template;
+	var attach = template.attach;
+	var update = template.update;
+	var detach = template.detach;
+	
+	this.detach = function () {
+		_.each(originalNodes, function (orig, cargoId) {
+			orig.removeAttribute('x-cargo-id');
+			if (target && target.length) {
+				target.each(function () {
+					if (this.getAttribute('x-cargo-id') === cargoId) {
+						try {
+							detach && detach(this);
+						} catch (e) {
 						}
-					});
+						$(this).replaceWith(orig);
+					}
+				});
+			}
+		});
+		originalNodes = {};
+		target = $();
+		tree = undefined;
+	};
+	
+	this.render = function (state) {
+		state = Model.state(state);
+		if (state === undefined) {
+			return Promise.resolve(state);
+		}
+		
+		if (state instanceof Error) {
+			return Promise.reject(state);
+		}
+		if (!selector || !_.keys(originalNodes).length) {
+			// If we have no selector, the component has not been attached yet or
+			// was recently detached.
+			// If there are no target elements, there were no matching DOM elements when attaching.
+			// In any of these cases, Skip rendering and just return a resolving promise.
+			return Promise.resolve(state);
+		}
+		this.state = state.toJS();
+		var html = templateFn(this.state);
+		if (!html) {
+			// If no html is returned, skip rendering and just return a resolving promise.
+			return Promise.resolve(state);
+		}
+		
+		var newTree = undefined;
+		html2hscript(html, function (err, hscript) {
+			newTree = eval(hscript);
+			if (err) console.log("Rendering error: " + err);
+		});
+		if (!newTree) console.log("Rendering did not return a result.");
+		if (tree === undefined) {
+			// First rendering. Render new nodes, save and replace old nodes.
+			_.each(originalNodes, function (oldNode, cargoId) {
+				var newNode = virtualDom.create(newTree);
+				var $oldNode = $(oldNode);
+				try {
+					var id = $oldNode.prop('id');
+					if (id) {
+						newNode.id = id;
+					}
+					newNode.setAttribute('x-cargo-id', cargoId);
+					$oldNode.replaceWith(newNode);
+					attach(newNode);
+					target = target.add(newNode);
+				} catch (e) {
+					console.log("Error while calling attach() on component with selector: " + self.selector);
+				}
+				try {
+					update(this);
+				} catch (e) {
+					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
 			});
-			originalNodes = {};
-			target = $();
-			tree = undefined;
-		};
-		
-		var renderFn = function (state) {
-			state = Model.state(state);
-			if (state === undefined) {
-				return Promise.resolve(state);
-			}
-			
-			if (state instanceof Error) {
-				return Promise.reject(state);
-			}
-			if (!selector || !_.keys(originalNodes).length) {
-				// If we have no selector, the component has not been attached yet or
-				// was recently detached.
-				// If there are no target elements, there were no matching DOM elements when attaching.
-				// In any of these cases, Skip rendering and just return a resolving promise.
-				return Promise.resolve(state);
-			}
-			var html = templateFn(state.toJS());
-			if (!html) {
-				// If no html is returned, skip rendering and just return a resolving promise.
-				return Promise.resolve(state);
-			}
-			
-			var newTree = undefined;
-			html2hscript(html, function (err, hscript) {
-				newTree = eval(hscript);
-				if (err) console.log("Rendering error: " + err);
+		} else {
+			target.each(function () {
+				var patches = virtualDom.diff(tree, newTree);
+				virtualDom.patch(this, patches);
+				try {
+					update(this);
+				} catch (e) {
+					console.log("Error while calling update() on component with selector: " + self.selector);
+				}
 			});
-			if (!newTree) console.log("Rendering did not return a result.");
-			if (tree === undefined) {
-				// First rendering. Render new nodes, save and replace old nodes.
-				_.each(originalNodes, function (oldNode, cargoId) {
-					var newNode = virtualDom.create(newTree);
-					var $oldNode = $(oldNode);
-					try {
-						var id = $oldNode.prop('id');
-						if (id) {
-							newNode.id = id;
-						}
-						newNode.setAttribute('x-cargo-id', cargoId);
-						$oldNode.replaceWith(newNode);
-						attach(newNode);
-						target = target.add(newNode);
-					} catch (e) {
-						console.log("Error while calling attach() on component with selector: " + self.selector);
-					}
-					try {
-						update(this);
-					} catch (e) {
-						console.log("Error while calling update() on component with selector: " + self.selector);
-					}
-				});
-			} else {
-				target.each(function () {
-					var patches = virtualDom.diff(tree, newTree);
-					virtualDom.patch(this, patches);
-					try {
-						update(this);
-					} catch (e) {
-						console.log("Error while calling update() on component with selector: " + self.selector);
-					}
-				});
-			}
-			tree = newTree;
-			return Promise.resolve(state);
-		};
-		renderFn.detach = _detach;
-		return renderFn;
-	}
+		}
+		tree = newTree;
+		return Promise.resolve(state);
+	};
 	
-};
+	this.refresh = function() {
+		this.render(this.state);
+	};
+}
+Renderer.prototype.constructor = Renderer;
+Component.Renderer = Renderer;

@@ -74,11 +74,11 @@
 	});
 
 	describe("attach():", function () {
-		it("attach() returns a promise resolving with a render function.", function (done) {
+		it("attach() returns a promise resolving with a Renderer instance.", function (done) {
 			var comp = new Component("templates/TestComponent.html");
-			comp.attach('#test').then(function (renderFn) {
-				expect(renderFn).toBeDefined();
-				expect(typeof renderFn).toEqual('function');
+			comp.attach('#test').then(function (renderer) {
+				expect(renderer).toBeDefined();
+				expect(renderer instanceof Component.Renderer).toBeTruthy();
 			}).catch(function (e) {
 				fail(e);
 			}).finally(function () {
@@ -87,13 +87,26 @@
 			});
 		});
 
-		it("the render function has a 'detach' property which is a function.", function (done) {
+		it("the Renderer instance has a 'detach' property which is a function.", function (done) {
 			var comp = new Component("templates/TestComponent.html");
-			comp.attach('#test').then(function (renderFn) {
-				expect(renderFn).toBeDefined();
-				expect(typeof renderFn).toEqual('function');
-				expect(renderFn.detach).toBeDefined();
-				expect(typeof renderFn.detach).toEqual('function');
+			comp.attach('#test').then(function (renderer) {
+				expect(renderer).toBeDefined();
+				expect(renderer.detach).toBeDefined();
+				expect(typeof renderer.detach).toEqual('function');
+			}).catch(function (e) {
+				fail(e);
+			}).finally(function () {
+				$('#test').removeAttr('x-cargo-id');
+				done();
+			});
+		});
+
+		it("the Renderer instance  has a 'render' property which is a function.", function (done) {
+			var comp = new Component("templates/TestComponent.html");
+			comp.attach('#test').then(function (renderer) {
+				expect(renderer).toBeDefined();
+				expect(renderer.render).toBeDefined();
+				expect(typeof renderer.render).toEqual('function');
 			}).catch(function (e) {
 				fail(e);
 			}).finally(function () {
@@ -154,7 +167,7 @@
 
 	describe("detach()", function () {
 
-		it("render function from attach() bears a detach() function as a property.", function (done) {
+		it("the Renderer instance from attach() bears a detach() function as a property.", function (done) {
 			var comp = new Component("templates/TestComponent.html");
 			comp.attach('#test').then(function (renderFn) {
 				var detach = renderFn.detach;
@@ -201,7 +214,7 @@
 		it("with english translation renders the component with the english heading.", function (done) {
 			var helper = translation.createHandlebarsHelper();
 			var handlebars = Handlebars.create();
-			var renderFn;
+			var renderer;
 			handlebars.registerHelper('i18n', helper);
 			var comp = new Component("templates/TestComponent.html", {
 				handlebars: handlebars
@@ -209,13 +222,12 @@
 			translation.select('en').then(function () {
 				return comp.attach('#test');
 			}).then(function (result) {
-				expect(typeof result === 'function').toBeTruthy();
-				renderFn = result;
-				return renderFn({});
+				renderer = result;
+				return renderer.render({});
 			}).then(function (state) {
 				var html = $('#test').html().trim();
 				expect(html).toEqual('<h1>Test Component</h1>');
-				renderFn.detach();
+				renderer.detach();
 				html = $('#test').html().trim();
 				expect(html).toEqual("");
 				done();
@@ -229,20 +241,19 @@
 			var helper = translation.createHandlebarsHelper();
 			var handlebars = Handlebars.create();
 			handlebars.registerHelper('i18n', helper);
-			var renderFn;
+			var renderer;
 			var comp = new Component("templates/TestComponent.html", {
 				handlebars: handlebars
 			});
 			translation.select('de').then(function () {
 				return comp.attach('#test');
 			}).then(function (result) {
-				expect(typeof result === 'function').toBeTruthy();
-				renderFn = result;
-				return renderFn({});
+				renderer = result;
+				return renderer.render({});
 			}).then(function (state) {
 				var html = $('#test').html().trim();
 				expect(html).toEqual('<h1>Test Komponente</h1>');
-				renderFn.detach();
+				renderer.detach();
 				html = $('#test').html().trim();
 				expect(html).toEqual("");
 				done();

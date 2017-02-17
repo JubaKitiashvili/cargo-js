@@ -20,12 +20,12 @@ var Component = function(templateURI, options) {
 	
 	this.attach = function (selector) {
 		if (!selector) {
-			return Promise.reject('Need a jquery selector as first argument to attach().');
+			return Promise.reject(new Error('Need a jquery selector as first argument to attach().'));
 		}
 		var nodes = $(selector);
 		var originalNodes = {};
 		if (!nodes || nodes.length == 0) {
-			return Promise.reject('Selector ' + selector + ' does not select any actual DOM nodes.');
+			return Promise.reject(new Error('Selector ' + selector + ' does not select any actual DOM nodes.'));
 		}
 		try {
 			nodes.each(function (idx, node) {
@@ -66,7 +66,7 @@ var Component = function(templateURI, options) {
 		return new Promise(function (resolve, reject) {
 			superagent.get(templateURL).end(function (err, response) {
 				if (err) {
-					reject("Unable to load template from '" + templateURL + "': " + err);
+					reject(new Error("Unable to load template from '" + templateURL + "': " + err));
 					return;
 				}
 				var template;
@@ -75,14 +75,14 @@ var Component = function(templateURI, options) {
 					var dom = parser.parseFromString(response.text, "text/html");
 					template = $(dom).find('template').first();
 					if (!template || !template.length) {
-						reject("Template '" + templateURL + "' does not contain a <template> element in body.");
+						reject(new Error("Template '" + templateURL + "' does not contain a <template> element in body."));
 						return;
 					}
 					templateCache = {};
 					templateCache.template = template.html().trim();
 					template = handlebars.compile(templateCache.template);
 				} catch (e) {
-					reject("Unable to compile rendering function from template '" + templateURL + "': " + e);
+					reject(new Error("Unable to compile rendering function from template '" + templateURL + "': " + e));
 					return;
 				}
 				var result = {};
@@ -100,7 +100,7 @@ var Component = function(templateURI, options) {
 							templateCache[fnName] = result[fnName] = new Function("");
 						}
 					} catch (e) {
-						reject("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e);
+						reject(new Error("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e));
 						return;
 					}
 				}
@@ -213,6 +213,6 @@ var Renderer = function(selector, originalNodes, template) {
 	this.refresh = function() {
 		this.render(this.state);
 	};
-}
+};
 Renderer.prototype.constructor = Renderer;
 Component.Renderer = Renderer;

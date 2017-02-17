@@ -8,7 +8,7 @@
         root.cargo.Component = factory(root.cargo.Promise, root.cargo.Model, root.cargo.Translation, root.virtualDom, root.html2hscript, root.Handlebars, root.superagent);
     }
 }(this, function(Promise, Model, Translation, virtualDom, html2hscript, Handlebars, superagent) {
-var Component = function (templateURI, options) {
+var Component = function(templateURI, options) {
 	'use strict';
 	
 	if (!Promise) throw new Error("Promise API is required.");
@@ -21,7 +21,6 @@ var Component = function (templateURI, options) {
 	if (!_) throw new Error("underscore is required. (https://github.com/jashkenas/underscore)");
 	
 	var $ = window.$;
-	var h = virtualDom.h;
 	
 	options = options || {};
 	
@@ -31,12 +30,12 @@ var Component = function (templateURI, options) {
 	
 	this.attach = function (selector) {
 		if (!selector) {
-			return Promise.reject('Need a jquery selector as first argument to attach().');
+			return Promise.reject(new Error('Need a jquery selector as first argument to attach().'));
 		}
 		var nodes = $(selector);
 		var originalNodes = {};
 		if (!nodes || nodes.length == 0) {
-			return Promise.reject('Selector ' + selector + ' does not select any actual DOM nodes.');
+			return Promise.reject(new Error('Selector ' + selector + ' does not select any actual DOM nodes.'));
 		}
 		try {
 			nodes.each(function (idx, node) {
@@ -54,8 +53,8 @@ var Component = function (templateURI, options) {
 		}
 		return _loadTemplate(templateURI, handlebars)
 			.then(function (template) {
-				var renderFn = _createRenderFn(selector, originalNodes, template, handlebars);
-				return Promise.resolve(renderFn)
+				var renderer = new Renderer(selector, originalNodes, template);
+				return Promise.resolve(renderer)
 			});
 	};
 	
@@ -77,7 +76,7 @@ var Component = function (templateURI, options) {
 		return new Promise(function (resolve, reject) {
 			superagent.get(templateURL).end(function (err, response) {
 				if (err) {
-					reject("Unable to load template from '" + templateURL + "': " + err);
+					reject(new Error("Unable to load template from '" + templateURL + "': " + err));
 					return;
 				}
 				var template;
@@ -86,14 +85,14 @@ var Component = function (templateURI, options) {
 					var dom = parser.parseFromString(response.text, "text/html");
 					template = $(dom).find('template').first();
 					if (!template || !template.length) {
-						reject("Template '" + templateURL + "' does not contain a <template> element in body.");
+						reject(new Error("Template '" + templateURL + "' does not contain a <template> element in body."));
 						return;
 					}
 					templateCache = {};
 					templateCache.template = template.html().trim();
 					template = handlebars.compile(templateCache.template);
 				} catch (e) {
-					reject("Unable to compile rendering function from template '" + templateURL + "': " + e);
+					reject(new Error("Unable to compile rendering function from template '" + templateURL + "': " + e));
 					return;
 				}
 				var result = {};
@@ -111,7 +110,7 @@ var Component = function (templateURI, options) {
 							templateCache[fnName] = result[fnName] = new Function("");
 						}
 					} catch (e) {
-						reject("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e);
+						reject(new Error("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e));
 						return;
 					}
 				}
@@ -120,112 +119,112 @@ var Component = function (templateURI, options) {
 		});
 	}
 	
-	function _createRenderFn(selector, originalNodes, template) {
-		
-		var target = $();
-		var tree = undefined;
-		
-		var templateFn = template.template;
-		var attach = template.attach;
-		var update = template.update;
-		var detach = template.detach;
-		
-		var _detach = function () {
-			_.each(originalNodes, function (orig, cargoId) {
-				orig.removeAttribute('x-cargo-id');
-				if (target && target.length) {
-					target.each(function () {
-						if (this.getAttribute('x-cargo-id') === cargoId) {
-							try {
-								detach && detach(this);
-							} catch (e) {
-								// TODO: Send model into dead state, on errors in detach handler?
-							}
-							$(this).replaceWith(orig);
+};
+Component.prototype.constructor = Component;
+
+var Renderer = function(selector, originalNodes, template) {
+	var h = virtualDom.h;
+	
+	var target = $();
+	var tree = undefined;
+	
+	var templateFn = template.template;
+	var attach = template.attach;
+	var update = template.update;
+	var detach = template.detach;
+	
+	this.detach = function () {
+		_.each(originalNodes, function (orig, cargoId) {
+			orig.removeAttribute('x-cargo-id');
+			if (target && target.length) {
+				target.each(function () {
+					if (this.getAttribute('x-cargo-id') === cargoId) {
+						try {
+							detach && detach(this);
+						} catch (e) {
 						}
-					});
+						$(this).replaceWith(orig);
+					}
+				});
+			}
+		});
+		originalNodes = {};
+		target = $();
+		tree = undefined;
+	};
+	
+	this.render = function (state) {
+		state = Model.state(state);
+		if (state === undefined) {
+			return Promise.resolve(state);
+		}
+		
+		if (state instanceof Error) {
+			return Promise.reject(state);
+		}
+		if (!selector || !_.keys(originalNodes).length) {
+			// If we have no selector, the component has not been attached yet or
+			// was recently detached.
+			// If there are no target elements, there were no matching DOM elements when attaching.
+			// In any of these cases, Skip rendering and just return a resolving promise.
+			return Promise.resolve(state);
+		}
+		this.state = state.toJS();
+		var html = templateFn(this.state);
+		if (!html) {
+			// If no html is returned, skip rendering and just return a resolving promise.
+			return Promise.resolve(state);
+		}
+		
+		var newTree = undefined;
+		html2hscript(html, function (err, hscript) {
+			newTree = eval(hscript);
+			if (err) console.log("Rendering error: " + err);
+		});
+		if (!newTree) console.log("Rendering did not return a result.");
+		if (tree === undefined) {
+			// First rendering. Render new nodes, save and replace old nodes.
+			_.each(originalNodes, function (oldNode, cargoId) {
+				var newNode = virtualDom.create(newTree);
+				var $oldNode = $(oldNode);
+				try {
+					var id = $oldNode.prop('id');
+					if (id) {
+						newNode.id = id;
+					}
+					newNode.setAttribute('x-cargo-id', cargoId);
+					$oldNode.replaceWith(newNode);
+					attach(newNode);
+					target = target.add(newNode);
+				} catch (e) {
+					console.log("Error while calling attach() on component with selector: " + self.selector);
+				}
+				try {
+					update(this);
+				} catch (e) {
+					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
 			});
-			originalNodes = {};
-			target = $();
-			tree = undefined;
-		};
-		
-		var renderFn = function (state) {
-			var component = this;
-			state = Model.state(state);
-			if (state === undefined) {
-				return Promise.resolve(state);
-			}
-			
-			if (state instanceof Error) {
-				// If the model is in dead state, re-attach the old nodes
-				// and return a rejecting promise.
-				//_detach();
-				return Promise.reject(state);
-			}
-			if (!selector || !_.keys(originalNodes).length) {
-				// If we have no selector, the component has not been attached yet or
-				// was recently detached.
-				// If there are no target elements, there were no matching DOM elements when attaching.
-				// In any of these cases, Skip rendering and just return a resolving promise.
-				return Promise.resolve(state);
-			}
-			var html = templateFn(state.toJS());
-			if (!html) {
-				// If no html is returned, skip rendering and just return a resolving promise.
-				return Promise.resolve(state);
-			}
-			
-			var newTree = undefined;
-			// TODO: Send the model in dead state on rendering errors?
-			html2hscript(html, function (err, hscript) {
-				newTree = eval(hscript);
-				if (err) console.log("Rendering error: " + err);
+		} else {
+			target.each(function () {
+				var patches = virtualDom.diff(tree, newTree);
+				virtualDom.patch(this, patches);
+				try {
+					update(this);
+				} catch (e) {
+					console.log("Error while calling update() on component with selector: " + self.selector);
+				}
 			});
-			if (!newTree) console.log("Rendering did not return a result.");
-			if (tree === undefined) {
-				// First rendering. Render new nodes, save and replace old nodes.
-				_.each(originalNodes, function (oldNode, cargoId) {
-					var newNode = virtualDom.create(newTree);
-					var $oldNode = $(oldNode);
-					try {
-						var id = $oldNode.prop('id');
-						if (id) {
-							newNode.id = id;
-						}
-						newNode.setAttribute('x-cargo-id', cargoId);
-						$oldNode.replaceWith(newNode);
-						attach(newNode);
-						target = target.add(newNode);
-					} catch (e) {
-						console.log("Error while calling attach() on component with selector: " + self.selector);
-					}
-					try {
-						update(this);
-					} catch (e) {
-						console.log("Error while calling update() on component with selector: " + self.selector);
-					}
-				});
-			} else {
-				target.each(function () {
-					var patches = virtualDom.diff(tree, newTree);
-					virtualDom.patch(this, patches);
-					try {
-						update(this);
-					} catch (e) {
-						console.log("Error while calling update() on component with selector: " + self.selector);
-					}
-				});
-			}
-			tree = newTree;
-			return Promise.resolve(state);
-		};
-		renderFn.detach = _detach;
-		return renderFn;
-	}
+		}
+		tree = newTree;
+		return Promise.resolve(state);
+	};
 	
+	this.refresh = function() {
+		this.render(this.state);
+	};
 };
-
+Renderer.prototype.constructor = Renderer;
+Component.Renderer = Renderer;
     return Component;
 }));

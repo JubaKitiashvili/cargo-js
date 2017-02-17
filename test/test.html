@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cargo JS Unit Test Runner</title>
+    <link href="../bower_components/mocha/mocha.css" rel="stylesheet" />
+</head>
+<body>
+<script src="../bower_components/mocha/mocha.js"></script>
+<script src="../bower_components/chai/chai.js"></script>
+
+<script type="text/javascript" src="../dist/dependencies/jquery.js"></script>
+<script type="text/javascript" src="../dist/dependencies/rsvp.js"></script>
+<script type="text/javascript" src="../dist/dependencies/virtual-dom.js"></script>
+<script type="text/javascript" src="../dist/dependencies/superagent.js"></script>
+<script type="text/javascript" src="../dist/dependencies/underscore.js"></script>
+<script type="text/javascript" src="../dist/dependencies/handlebars.js"></script>
+<script type="text/javascript" src="../dist/dependencies/html2hscript.js"></script>
+
+<script src="../src/model/Model.js"></script>
+<script src="../src/translation/Translation.js"></script>
+<script src="../src/component/Component.js"></script>
+
+<div id="test"></div>
+<div id="mocha"></div>
+<script type="text/javascript">
+    mocha.setup('bdd');
+    window.expect = chai.expect;
+    window.Promise = RSVP.Promise;
+</script>
+
+<script src="component/test.js"></script>
+
+<script>
+	mocha.checkLeaks();
+	mocha.run();
+</script>
+
+
+</body>
+</html>

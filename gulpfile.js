@@ -42,18 +42,6 @@ gulp.task('deps_html2hscript', function () {
 		.pipe(gulp.dest("dist/dependencies/"));
 });
 
-gulp.task('build_example', function () {
-	gulp.src(['dist/component.js', 'dist/model.js', 'dist/promise.js'])
-		.pipe(gulp.dest('example/component/js/lib/'));
-	gulp.src(['dist/dependencies/require.js',
-			'dist/dependencies/jquery.js',
-			'dist/dependencies/virtual-dom.js',
-			'dist/dependencies/handlebars.js',
-			'dist/dependencies/html2hscript.js',
-			'dist/dependencies/superagent.js'])
-		.pipe(gulp.dest('example/component/js/lib/third-party/'));
-});
-
 gulp.task('build_component', ['deps_html2hscript'], function () {
 	var umdOptions = {
 		namespace: function () {
@@ -114,7 +102,14 @@ gulp.task('build_translation', function () {
 					cjs: 'cargo.Model',
 					global: 'cargo.Model',
 					param: 'Model'
-				}, "Promise", "superagent", "_"
+				}, "superagent",
+				{
+					name: 'underscore',
+					amd: 'underscore',
+					cjs: 'underscore',
+					global: 'underscore',
+					param: '_'
+				}
 			
 			];
 		}
@@ -136,16 +131,6 @@ gulp.task('build_model', function () {
 	var umdOptions = {
 		namespace: function () {
 			return "cargo.Model";
-		},
-		dependencies: function () {
-			return [
-				{
-					name: 'Promise',
-					amd: 'cargo.Promise',
-					cjs: 'cargo.Promise',
-					global: 'cargo.Promise',
-					param: 'Promise'
-				}]
 		},
 		template: 'umdTemplate.templ'
 	};
@@ -182,7 +167,7 @@ gulp.task('build_promise', function () {
 });
 
 
-gulp.task('build', ['deps', 'build_model', 'build_promise', 'build_component', 'build_translation', 'build_example'], function () {
+gulp.task('build', ['deps', 'build_model', 'build_promise', 'build_component', 'build_translation'], function () {
 });
 
 gulp.task('default', ['build'], function () {

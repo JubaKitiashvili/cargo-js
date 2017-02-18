@@ -43,7 +43,7 @@
 var Model = function (actions) {
     'use strict';
 
-    if (!Promise) throw new Error("cargo.Promise API is required.");
+    if (!Promise) throw new Error("Promise API is required.");
 
     var self = this;
     var state = undefined;

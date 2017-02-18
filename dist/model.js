@@ -1,13 +1,13 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Promise'], factory);
+        define([], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Promise'));
+        module.exports = factory();
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Model = factory(root.cargo.Promise);
+        root.cargo.Model = factory();
     }
-}(this, function(Promise) {
+}(this, function() {
 /* Copyright 2016 Jan Obladen <obladen@datenwelt.net>
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@
 var Model = function (actions) {
     'use strict';
 
-    if (!Promise) throw new Error("cargo.Promise API is required.");
+    if (!Promise) throw new Error("Promise API is required.");
 
     var self = this;
     var state = undefined;

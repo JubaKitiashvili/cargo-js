@@ -1,13 +1,13 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Model', 'Promise', 'superagent', '_'], factory);
+        define(['cargo.Model', 'superagent', 'underscore'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Model'), require('Promise'), require('superagent'), require('_'));
+        module.exports = factory(require('cargo.Model'), require('superagent'), require('underscore'));
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Translation = factory(root.cargo.Model, root.Promise, root.superagent, root._);
+        root.cargo.Translation = factory(root.cargo.Model, root.superagent, root.underscore);
     }
-}(this, function(Model, Promise, superagent, _) {
+}(this, function(Model, superagent, _) {
 var Translation = function (options) {
 
     'use strict';

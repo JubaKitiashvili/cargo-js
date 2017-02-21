@@ -51,13 +51,6 @@ gulp.task('build_component', ['deps_html2hscript'], function () {
 		dependencies: function () {
 			return [
 				{
-					name: 'Promise',
-					amd: 'cargo.Promise',
-					cjs: 'cargo.Promise',
-					global: 'cargo.Promise',
-					param: 'Promise'
-				},
-				{
 					name: 'Model',
 					amd: 'cargo.Model',
 					cjs: 'cargo.Model',

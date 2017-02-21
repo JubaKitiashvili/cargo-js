@@ -1,13 +1,13 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Promise', 'cargo.Model', 'cargo.Translation', 'virtualDom', 'html2hscript', 'Handlebars', 'superagent'], factory);
+        define(['cargo.Model', 'cargo.Translation', 'virtualDom', 'html2hscript', 'Handlebars', 'superagent'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Promise'), require('cargo.Model'), require('cargo.Translation'), require('virtualDom'), require('html2hscript'), require('Handlebars'), require('superagent'));
+        module.exports = factory(require('cargo.Model'), require('cargo.Translation'), require('virtualDom'), require('html2hscript'), require('Handlebars'), require('superagent'));
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Component = factory(root.cargo.Promise, root.cargo.Model, root.cargo.Translation, root.virtualDom, root.html2hscript, root.Handlebars, root.superagent);
+        root.cargo.Component = factory(root.cargo.Model, root.cargo.Translation, root.virtualDom, root.html2hscript, root.Handlebars, root.superagent);
     }
-}(this, function(Promise, Model, Translation, virtualDom, html2hscript, Handlebars, superagent) {
+}(this, function(Model, Translation, virtualDom, html2hscript, Handlebars, superagent) {
 var Component = function(templateURI, options) {
 	'use strict';
 	
@@ -194,7 +194,7 @@ var Renderer = function(selector, originalNodes, template) {
 					}
 					newNode.setAttribute('x-cargo-id', cargoId);
 					$oldNode.replaceWith(newNode);
-					attach(newNode);
+					attach.call(this, newNode);
 					target = target.add(newNode);
 				} catch (e) {
 					console.log("Error while calling attach() on component with selector: " + self.selector);
@@ -204,7 +204,7 @@ var Renderer = function(selector, originalNodes, template) {
 				} catch (e) {
 					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
-			});
+			}, this);
 		} else {
 			target.each(function () {
 				var patches = virtualDom.diff(tree, newTree);

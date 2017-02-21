@@ -16,30 +16,26 @@
             <div class="nav-wrapper blue-grey">
                 <div class="brand-logo">&nbsp;CargoJS</div>
                 <ul id="nav-lang" class="right">
-                    <li><a href="#!" class="dropdown-button" data-constrainwidth="false" data-beloworigin="true"
+                    <li><a href="javascript:false;" class="dropdown-button" data-constrainwidth="false" data-beloworigin="true"
                            data-activates="language-menu"><i class="large material-icons">language</i></a></li>
                 </ul>
-                <ul id="nav-desktop" class="right hide-on-small-only">
+                <ul id="main-menu-desktop" class="right hide-on-small-only">
                     <li><a href="#!">Sign up</a></li>
                     <li><a href="#!">Sign in</a></li>
                 </ul>
                 <ul id="nav-mobile" class="left hide-on-med-and-up">
                     <li><a href="#!" class="dropdown-button" data-constrainwidth="false" data-beloworigin="true"
-                           data-activates="menu-mobile"><i class="large material-icons">menu</i></a></li>
+                           data-activates="main-menu-mobile"><i class="large material-icons">menu</i></a></li>
                 </ul>
             </div>
         </nav>
 
-    <ul id="language-menu" class="dropdown-content blue-grey white-text">
-        <li class="divider"></li>
-        <li><a href="#!" class="white-text">English / English</a></li>
-        <li><a href="#!" class="white-text">German / Deutsch</a></li>
-    </ul>
-    <ul id="menu-mobile" class="dropdown-content blue-grey white-text">
-        <li class="divider"></li>
-        <li><a href="#!" class="white-text">Sign up</a></li>
-        <li><a href="#!" class="white-text">Sign in</a></li>
-    </ul>
+        <ul id="language-menu"></ul>
+        <ul id="main-menu-mobile" class="dropdown-content blue-grey white-text">
+            <li class="divider"></li>
+            <li><a href="#!" class="white-text">Sign up</a></li>
+            <li><a href="#!" class="white-text">Sign in</a></li>
+        </ul>
     </div>
 </header>
 
@@ -102,7 +98,7 @@
 
 <script type="text/javascript" src="../../dist/dependencies/rsvp.js"></script>
 <script type="text/javascript">
-    window.Promise = RSVP.Promise;
+	window.Promise = RSVP.Promise;
 </script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>

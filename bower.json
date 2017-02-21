@@ -35,7 +35,7 @@
     "jquery": "^3.0.0",
     "rsvp.js": "rsvp#^3.3.3",
     "mocha": "^3.2.0",
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
   },
   "repository": {
     "type": "git",

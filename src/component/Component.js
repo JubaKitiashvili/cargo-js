@@ -211,7 +211,7 @@ var Renderer = function(selector, originalNodes, template) {
 	};
 	
 	this.refresh = function() {
-		this.render(this.state);
+		return this.render(this.state);
 	};
 };
 Renderer.prototype.constructor = Renderer;

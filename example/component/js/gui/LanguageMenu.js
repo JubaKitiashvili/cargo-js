@@ -4,7 +4,7 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 	return {
 		initialize: function () {
 			if (instance) return Promise.resolve(instance);
-			new Component("js/gui/LanguageMenu.html")
+			new Component("templates/LanguageMenu.html")
 				.attach('#language-menu')
 				.then(function (renderer) {
 					instance = renderer;

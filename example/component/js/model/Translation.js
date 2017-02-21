@@ -1,4 +1,4 @@
-define(['cargo.Translation'], function (Translation) {
+define(['cargo.Translation', 'Handlebars'], function (Translation, Handlebars) {
 	var instance;
 	return {
 		initialize: function() {
@@ -8,7 +8,9 @@ define(['cargo.Translation'], function (Translation) {
 			instance = new Translation({
 				baseURI: 'locales'
 			});
-			return instance.setNamespace('nav').then(function(x) {
+			return instance.setNamespace('nav').then(function() {
+				var helper = instance.createHandlebarsHelper();
+				Handlebars.registerHelper('i18n', helper);
 				return instance;
 			});
 		},

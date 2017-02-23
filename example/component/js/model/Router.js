@@ -1,6 +1,14 @@
 define(['cargo.Model'], function (Model) {
 	var instance;
 	
+	function _normalize(target) {
+		target = target || "sign-up";
+		if ( target.startsWith('#') ) {
+			target = target.substring(1);
+		}
+		return target;
+	}
+	
 	return {
 		initialize: function () {
 			if (instance) {
@@ -12,14 +20,10 @@ define(['cargo.Model'], function (Model) {
 			});
 			instance = new Model({
 				initialState: function () {
-					return {target: window.location.hash};
+					return {target: _normalize(window.location.hash)};
 				},
 				select: function (target) {
-					target = target || "sign-up";
-					if ( target.startsWith('#') ) {
-						target = target.substring(1);
-					}
-					return this.state().put("target", target);
+					return this.state().put("target", _normalize(target));
 				}
 			});
 			instance.initialState();

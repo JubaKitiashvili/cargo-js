@@ -1,4 +1,4 @@
-define(['cargo.Component', 'underscore'], function(Component, _) {
+define(['cargo.Component', 'model/BrowserLanguage', 'underscore'], function(Component, BrowserLanguage, _) {
 	
 	var instance;
 	
@@ -29,6 +29,7 @@ define(['cargo.Component', 'underscore'], function(Component, _) {
 						});
 					}
 				};
+				BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
 				return Promise.resolve(instance);
 			});
 		},

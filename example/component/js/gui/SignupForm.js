@@ -1,4 +1,4 @@
-define(['cargo.Component', 'cargo.Model'], function(Component, Model) {
+define(['cargo.Component', 'cargo.Model', 'model/BrowserLanguage'], function(Component, Model, BrowserLanguage) {
 	
 	var instance;
 	var state = Model.state({
@@ -10,6 +10,7 @@ define(['cargo.Component', 'cargo.Model'], function(Component, Model) {
 			if ( instance ) return Promise.resolve(instance);
 			return new Component("templates/Signup.html").attach("#sign-up").then(function(result) {
 				instance = result;
+				BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
 				return instance;
 			});
 		},
@@ -21,9 +22,6 @@ define(['cargo.Component', 'cargo.Model'], function(Component, Model) {
 		},
 		hide: function() {
 			instance.render(state.put('hide', 'hide'));
-		},
-		refresh: function() {
-			instance.refresh();
 		}
 	};
 	

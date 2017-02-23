@@ -10,7 +10,7 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 					instance = renderer;
 					instance.select = function (lang) {
 						if (!lang) return;
-						BrowserLanguage.get().select(lang);
+						BrowserLanguage.select(lang);
 					};
 					return renderer.render({}).then(function() {
 						return instance;

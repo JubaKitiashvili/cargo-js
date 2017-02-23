@@ -11,25 +11,23 @@ requirejs.config({
 		'cargo.Model': '../../../dist/model',
 		'cargo.Translation': '../../../dist/translation',
 		'cargo.Component': '../../../dist/component'
-	},
+	}
 });
 
 requirejs(['domReady',
-	'model/BrowserLanguage', 'model/Translation',
-	'model/Router',
+	'model/BrowserLanguage', 'model/Router',
 	'gui/LanguageMenu', 'gui/MainMenu',
 	'gui/SignupForm'
 ], main);
 
-function main(domReady, BrowserLanguage, Translation,
-			  Router,
+function main(domReady,
+			  BrowserLanguage, Router,
 			  LanguageMenu, MainMenu,
 			  SignupForm) {
 	domReady(function () {
 		Promise.all([
 			/* Initialize model */
 			BrowserLanguage.initialize(),
-			Translation.initialize(),
 			Router.initialize()
 		]).then(function () {
 			/* Initialize components */
@@ -45,16 +43,6 @@ function main(domReady, BrowserLanguage, Translation,
 				MainMenu.show(),
 				SignupForm.show()
 			])
-		}).then(function () {
-			/* Wire up I18N support. */
-			BrowserLanguage.get()(function (state) {
-				var lang = state.get('lang');
-				Translation.get().select(lang).then(function () {
-					LanguageMenu.show();
-					MainMenu.show();
-					SignupForm.refresh();
-				});
-			});
 		}).then(function(){
 			/* Wire up Router */
 			Router.get()(function(state) {

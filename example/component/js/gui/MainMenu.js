@@ -32,8 +32,8 @@ define(['cargo.Component', 'underscore'], function(Component, _) {
 				return Promise.resolve(instance);
 			});
 		},
-		get: function() {
-			return instance;
+		show: function() {
+			return instance.render({});
 		}
 	};
 	

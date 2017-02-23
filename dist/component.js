@@ -200,7 +200,7 @@ var Renderer = function(selector, originalNodes, template) {
 					console.log("Error while calling attach() on component with selector: " + self.selector);
 				}
 				try {
-					update(this);
+					update.call(this, newNode);
 				} catch (e) {
 					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
@@ -210,7 +210,7 @@ var Renderer = function(selector, originalNodes, template) {
 				var patches = virtualDom.diff(tree, newTree);
 				virtualDom.patch(this, patches);
 				try {
-					update(this);
+					update.call(this);
 				} catch (e) {
 					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
@@ -221,7 +221,7 @@ var Renderer = function(selector, originalNodes, template) {
 	};
 	
 	this.refresh = function() {
-		this.render(this.state);
+		return this.render(this.state);
 	};
 };
 Renderer.prototype.constructor = Renderer;

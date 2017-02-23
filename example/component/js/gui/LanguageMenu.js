@@ -17,8 +17,8 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 					});
 				});
 		},
-		get: function () {
-			return instance;
+		show: function() {
+			instance.render({});
 		}
 	};
 });

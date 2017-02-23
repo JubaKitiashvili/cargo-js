@@ -184,23 +184,23 @@ var Renderer = function(selector, originalNodes, template) {
 					}
 					newNode.setAttribute('x-cargo-id', cargoId);
 					$oldNode.replaceWith(newNode);
-					attach(newNode);
+					attach.call(this, newNode);
 					target = target.add(newNode);
 				} catch (e) {
 					console.log("Error while calling attach() on component with selector: " + self.selector);
 				}
 				try {
-					update(this);
+					update.call(this, newNode);
 				} catch (e) {
 					console.log("Error while calling update() on component with selector: " + self.selector);
 				}
-			});
+			}, this);
 		} else {
 			target.each(function () {
 				var patches = virtualDom.diff(tree, newTree);
 				virtualDom.patch(this, patches);
 				try {
-					update(this);
+					update.call(this);
 				} catch (e) {
 					console.log("Error while calling update() on component with selector: " + self.selector);
 				}

@@ -1,0 +1,8 @@
+{
+  "TITLE": "Registrierung",
+  "INTRO": "Bitte legen Sie einen Benutzernamen und ein Passwort fest, um zum Login-Fenster zu gelangen.",
+  "USERNAME": "Benutzername",
+  "PASSWORD": "Passwort",
+  "PASSWORD_REPEAT": "Passwort bestätigen",
+  "SUBMIT": "Absenden"
+}

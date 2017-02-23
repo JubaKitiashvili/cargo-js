@@ -330,6 +330,10 @@ var State = function (input) {
             });
         };
 
+        this.toJSON = function(indent) {
+            return JSON.stringify(this.toJS(), undefined, indent);
+        };
+        
     };
 
     var Map = function (input) {
@@ -428,8 +432,12 @@ var State = function (input) {
                 }, {})
                 .value();
         };
-
-        return this;
+	
+		this.toJSON = function(indent) {
+			return JSON.stringify(this.toJS(), undefined, indent);
+		};
+		
+		return this;
     };
     if (_.isArray(input)) {
         _.extend(this, new List(input));

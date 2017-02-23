@@ -1,0 +1,8 @@
+{
+  "TITLE": "SIGN UP",
+  "INTRO": "Please sign up with a username and a password to proceed to the login screen.",
+  "USERNAME": "Username",
+  "PASSWORD": "Password",
+  "PASSWORD_REPEAT": "Repeat Password",
+  "SUBMIT": "Submit"
+}

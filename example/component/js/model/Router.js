@@ -22,6 +22,7 @@ define(['cargo.Model'], function (Model) {
 					return this.state().put("target", target);
 				}
 			});
+			instance.initialState();
 			return Promise.resolve(instance);
 		},
 		get: function () {

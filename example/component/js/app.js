@@ -17,11 +17,14 @@ requirejs.config({
 requirejs(['domReady',
 	'model/BrowserLanguage', 'model/Translation',
 	'model/Router',
-		'gui/LanguageMenu', 'gui/MainMenu'], main);
+	'gui/LanguageMenu', 'gui/MainMenu',
+	'gui/SignupForm'
+], main);
 
 function main(domReady, BrowserLanguage, Translation,
 			  Router,
-			  LanguageMenu, MainMenu) {
+			  LanguageMenu, MainMenu,
+			  SignupForm) {
 	domReady(function () {
 		Promise.all([
 			/* Initialize model */
@@ -29,29 +32,40 @@ function main(domReady, BrowserLanguage, Translation,
 			Translation.initialize(),
 			Router.initialize()
 		]).then(function () {
-			Router.get()(function(state) {
-				console.log(JSON.stringify(state.toJS()));
-			});
 			/* Initialize components */
 			return Promise.all([
 				LanguageMenu.initialize(),
-				MainMenu.initialize()
+				MainMenu.initialize(),
+				SignupForm.initialize()
 			]);
-		}).then(function() {
+		}).then(function () {
 			/* Initial rendering */
 			return Promise.all([
-				LanguageMenu.get().render({}),
-				MainMenu.get().render({})
+				LanguageMenu.show(),
+				MainMenu.show(),
+				SignupForm.show()
 			])
 		}).then(function () {
 			/* Wire up I18N support. */
-			BrowserLanguage.get()(function(state) {
+			BrowserLanguage.get()(function (state) {
 				var lang = state.get('lang');
-				Translation.get().select(lang).then(function() {
-					LanguageMenu.get().refresh();
-					MainMenu.get().refresh();
+				Translation.get().select(lang).then(function () {
+					LanguageMenu.show();
+					MainMenu.show();
+					SignupForm.refresh();
 				});
 			});
+		}).then(function(){
+			/* Wire up Router */
+			Router.get()(function(state) {
+				var target = state.get('target') || 'sign-up';
+				if ( target === 'sign-up') {
+					SignupForm.show();
+				} else {
+					SignupForm.hide();
+				}
+			});
+		}).then(function () {
 			console.log('Ready.');
 		}).catch(function (err) {
 			console.log(err);

@@ -1,4 +1,6 @@
-define(['cargo.Component', 'cargo.Model', 'model/BrowserLanguage'], function(Component, Model, BrowserLanguage) {
+define(['cargo.Component', 'cargo.Model',
+	'model/BrowserLanguage', 'model/Router'],
+	function(Component, Model, BrowserLanguage, Router) {
 	
 	var instance;
 	var state = Model.state({
@@ -11,14 +13,18 @@ define(['cargo.Component', 'cargo.Model', 'model/BrowserLanguage'], function(Com
 			return new Component("templates/Signup.html").attach("#sign-up").then(function(result) {
 				instance = result;
 				BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
+				Router.subscribe(function(routerState) {
+					if ( routerState.get('target') === 'sign-up' ) {
+						state = state.put('hide', '');
+						instance.render(state);
+					}
+					if ( routerState.get('target') === 'sign-in' ) {
+						state = state.put('hide', 'hide');
+						instance.render(state);
+					}
+				});
 				return instance;
 			});
-		},
-		show: function() {
-			instance.render(state.put('hide', ''));
-		},
-		hide: function() {
-			instance.render(state.put('hide', 'hide'));
 		}
 	};
 	

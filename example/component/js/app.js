@@ -44,26 +44,6 @@ function main(domReady,
 				SigninForm.initialize()
 			]);
 		}).then(function () {
-			/* Initial rendering */
-			return Promise.all([
-				LanguageMenu.show(),
-				MainMenu.show(),
-				SignupForm.show(),
-				SigninForm.hide()
-			])
-		}).then(function(){
-			/* Wire up Router */
-			Router.subscribe(function(state) {
-				var target = state.get('target') || 'sign-up';
-				if ( target === 'sign-up') {
-					SignupForm.show();
-					SigninForm.hide();
-				} else {
-					SignupForm.hide();
-					SigninForm.show();
-				}
-			});
-		}).then(function () {
 			console.log('Ready.');
 		}).catch(function (err) {
 			console.log(err);

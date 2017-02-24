@@ -30,6 +30,7 @@ define(['cargo.Component', 'model/BrowserLanguage', 'underscore'], function(Comp
 					}
 				};
 				BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
+				instance.render({});
 				return Promise.resolve(instance);
 			});
 		},

@@ -15,6 +15,9 @@ var Component = function(templateURI, options) {
 	options = options || {};
 	
 	var handlebars = options.handlebars || Handlebars;
+	var attachFn = options.attach || function() {};
+	var updateFn = options.update || function() {};
+	var detachFn = options.detach || function() {};
 	
 	var templateCache = undefined;
 	
@@ -41,16 +44,26 @@ var Component = function(templateURI, options) {
 		} catch (e) {
 			return Promise.reject(e);
 		}
-		return _loadTemplate(templateURI, handlebars)
-			.then(function (template) {
-				var renderer = new Renderer(selector, originalNodes, template);
-				return Promise.resolve(renderer)
-			});
+		if ( handlebars.templates && handlebars.templates[templateURI] ) {
+			var renderer = new Renderer(selector, originalNodes, handlebars.templates[templateURI], attachFn, updateFn, detachFn);
+			return Promise.resolve(renderer);
+		} else {
+			var fns = {
+				attach: attachFn,
+				update: updateFn,
+				detach: detachFn
+			};
+			return _loadTemplate(templateURI, handlebars, fns)
+				.then(function (result) {
+					var renderer = new Renderer(selector, originalNodes, result.template, result.attach, result.update, result.detach);
+					return Promise.resolve(renderer)
+				});
+		}
 	};
 	
 	return this;
 	
-	function _loadTemplate(templateURL, handlebars) {
+	function _loadTemplate(templateURL, handlebars, functions) {
 		if (templateCache) {
 			return new Promise(function (resolve) {
 				var result = {};
@@ -97,7 +110,7 @@ var Component = function(templateURI, options) {
 							var scriptContent = fnNode.text();
 							templateCache[fnName] = result[fnName] = new Function("node", scriptContent);
 						} else {
-							templateCache[fnName] = result[fnName] = new Function("");
+							templateCache[fnName] = result[fnName] = functions[fnName];
 						}
 					} catch (e) {
 						reject(new Error("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e));
@@ -112,16 +125,11 @@ var Component = function(templateURI, options) {
 };
 Component.prototype.constructor = Component;
 
-var Renderer = function(selector, originalNodes, template) {
+var Renderer = function(selector, originalNodes, template, attach, update, detach) {
 	var h = virtualDom.h;
 	
 	var target = $();
 	var tree = undefined;
-	
-	var templateFn = template.template;
-	var attach = template.attach;
-	var update = template.update;
-	var detach = template.detach;
 	
 	this.detach = function () {
 		_.each(originalNodes, function (orig, cargoId) {
@@ -160,7 +168,7 @@ var Renderer = function(selector, originalNodes, template) {
 			return Promise.resolve(state);
 		}
 		this.state = state.toJS();
-		var html = templateFn(this.state);
+		var html = template(this.state);
 		if (!html) {
 			// If no html is returned, skip rendering and just return a resolving promise.
 			return Promise.resolve(state);
@@ -187,12 +195,12 @@ var Renderer = function(selector, originalNodes, template) {
 					attach.call(this, newNode);
 					target = target.add(newNode);
 				} catch (e) {
-					console.log("Error while calling attach() on component with selector: " + self.selector);
+					console.log("Error while calling attach() on component with selector: " + selector + ": " + e);
 				}
 				try {
 					update.call(this, newNode);
 				} catch (e) {
-					console.log("Error while calling update() on component with selector: " + self.selector);
+					console.log("Error while calling update() on component with selector: " + selector + ": " + e);
 				}
 			}, this);
 		} else {
@@ -202,7 +210,7 @@ var Renderer = function(selector, originalNodes, template) {
 				try {
 					update.call(this);
 				} catch (e) {
-					console.log("Error while calling update() on component with selector: " + self.selector);
+					console.log("Error while calling update() on component with selector: " + selector + ": " + e);
 				}
 			});
 		}

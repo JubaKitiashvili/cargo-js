@@ -11,19 +11,24 @@ requirejs.config({
 		'cargo.Model': '../../../dist/model',
 		'cargo.Translation': '../../../dist/translation',
 		'cargo.Component': '../../../dist/component'
+	},
+	map: {
+		'*': {
+			'handlebars.runtime': 'Handlebars'
+		}
 	}
 });
 
 requirejs(['domReady',
 	'model/BrowserLanguage', 'model/Router',
 	'gui/LanguageMenu', 'gui/MainMenu',
-	'gui/SignupForm'
+	'gui/SignupForm', 'gui/SigninForm'
 ], main);
 
 function main(domReady,
 			  BrowserLanguage, Router,
 			  LanguageMenu, MainMenu,
-			  SignupForm) {
+			  SignupForm, SigninForm) {
 	domReady(function () {
 		Promise.all([
 			/* Initialize model */
@@ -34,14 +39,16 @@ function main(domReady,
 			return Promise.all([
 				LanguageMenu.initialize(),
 				MainMenu.initialize(),
-				SignupForm.initialize()
+				SignupForm.initialize(),
+				SigninForm.initialize()
 			]);
 		}).then(function () {
 			/* Initial rendering */
 			return Promise.all([
 				LanguageMenu.show(),
 				MainMenu.show(),
-				SignupForm.show()
+				SignupForm.show(),
+				SigninForm.hide()
 			])
 		}).then(function(){
 			/* Wire up Router */
@@ -49,8 +56,10 @@ function main(domReady,
 				var target = state.get('target') || 'sign-up';
 				if ( target === 'sign-up') {
 					SignupForm.show();
+					SigninForm.hide();
 				} else {
 					SignupForm.hide();
+					SigninForm.show();
 				}
 			});
 		}).then(function () {

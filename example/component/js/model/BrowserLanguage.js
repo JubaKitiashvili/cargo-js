@@ -25,7 +25,9 @@ define(['cargo.Translation', 'cargo.Model', 'Handlebars', 'cookie'], function (T
 				baseURI: 'locales'
 			});
 			return instance.setNamespace('nav').then(function () {
-				return instance.addNamespace('signup');
+				return Promise.all([
+					instance.addNamespace('signup'),
+					instance.addNamespace('signin')]);
 			}).then(function () {
 				var helper = instance.createHandlebarsHelper();
 				Handlebars.registerHelper('i18n', helper);

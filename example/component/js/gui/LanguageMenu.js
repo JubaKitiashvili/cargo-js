@@ -8,17 +8,18 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 				.attach('#language-menu')
 				.then(function (renderer) {
 					instance = renderer;
-					instance.select = function (lang) {
-						if (!lang) return;
-						BrowserLanguage.select(lang);
-					};
 					return renderer.render({}).then(function() {
+						instance.select = function (lang) {
+							if (!lang) return;
+							BrowserLanguage.select(lang);
+						};
 						return instance;
 					});
 				});
 		},
 		show: function() {
-			instance.render({});
+			if ( instance )
+				instance.render({});
 		}
 	};
 });

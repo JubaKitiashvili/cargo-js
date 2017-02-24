@@ -1,6 +1,6 @@
 define(['cargo.Component', 'model/BrowserLanguage'], function (Component, BrowserLanguage) {
 	var instance;
-	var initialPromise;
+
 	return {
 		initialize: function () {
 			if (instance) return Promise.resolve(instance);
@@ -20,6 +20,10 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 		show: function() {
 			if ( instance )
 				instance.render({});
+		},
+		select: function(lang) {
+			if ( instance && instance.select )
+				instance.select(lang);
 		}
 	};
 });

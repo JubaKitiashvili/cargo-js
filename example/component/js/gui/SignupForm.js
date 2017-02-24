@@ -14,9 +14,6 @@ define(['cargo.Component', 'cargo.Model', 'model/BrowserLanguage'], function(Com
 				return instance;
 			});
 		},
-		get: function() {
-			return instance;
-		},
 		show: function() {
 			instance.render(state.put('hide', ''));
 		},

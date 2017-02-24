@@ -29,8 +29,8 @@ define(['cargo.Model'], function (Model) {
 			instance.initialState();
 			return Promise.resolve(instance);
 		},
-		get: function () {
-			return instance;
+		subscribe: function(subscriber) {
+			return instance(subscriber);
 		}
 	};
 	

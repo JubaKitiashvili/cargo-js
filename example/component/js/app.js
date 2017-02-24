@@ -53,7 +53,7 @@ function main(domReady,
 			])
 		}).then(function(){
 			/* Wire up Router */
-			Router.get()(function(state) {
+			Router.subscribe(function(state) {
 				var target = state.get('target') || 'sign-up';
 				if ( target === 'sign-up') {
 					SignupForm.show();

@@ -1,7 +1,6 @@
 define(['cargo.Component', 'cargo.Model', 'model/BrowserLanguage', '../../templates/Signin', '../../templates/Signin.template'], function (Component, Model, BrowserLanguage, options) {
 	
 	var instance;
-	var instance;
 	var state = Model.state({
 		hide: ''
 	});

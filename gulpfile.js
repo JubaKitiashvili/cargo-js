@@ -18,31 +18,24 @@ gulp.task('doc', function (cb) {
 		.pipe(gulp.dest('dist/documentation/'));
 });
 
+gulp.task('deps_morphdom', function () {
+	gulp.src('bower_components/morphdom/dist/morphdom-umd.js')
+		.pipe(rename('morphdom.js'))
+		.pipe(gulp.dest('dist/dependencies'));
+});
+
 gulp.task('deps', function () {
 	gulp.src(['bower_components/requirejs/require.js',
 			'bower_components/jquery/dist/jquery.js',
-			'bower_components/virtual-dom/dist/virtual-dom.js',
 			'bower_components/handlebars/handlebars.js',
 			'bower_components/underscore/underscore.js',
 			'bower_components/js-cookie/src/js.cookie.js',
-			'dist/html2hscript.js',
 			'node_modules/superagent/superagent.js',
 			'bower_components/rsvp.js/rsvp.js'])
 		.pipe(gulp.dest('dist/dependencies'));
 });
 
-gulp.task('deps_html2hscript', function () {
-	return browserify({
-		entries: ['node_modules/html2hscript/index.js'],
-		standalone: 'html2hscript'
-	})
-		.bundle()
-		.pipe(source('html2hscript.js'))
-		.pipe(replace('}, {decodeEntities: true, xmlMode: true});', '}, {decodeEntities: true, xmlMode: false});'))
-		.pipe(gulp.dest("dist/dependencies/"));
-});
-
-gulp.task('build_component', ['deps_html2hscript'], function () {
+gulp.task('build_component', ['deps_morphdom'], function () {
 	var umdOptions = {
 		namespace: function () {
 			return "cargo.Component";
@@ -64,7 +57,7 @@ gulp.task('build_component', ['deps_html2hscript'], function () {
 					global: 'cargo.Translation',
 					param: 'Translation'
 				},
-				"virtualDom", "html2hscript", "Handlebars", "superagent"
+				"morphdom", "Handlebars", "superagent"
 			
 			];
 		}

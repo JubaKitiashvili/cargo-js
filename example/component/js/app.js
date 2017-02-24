@@ -3,6 +3,7 @@ requirejs.config({
 	paths: {
 		'cookie': '../../../bower_components/js-cookie/src/js.cookie',
 		'domReady': '../../../bower_components/domReady/domReady',
+		'morphdom': '../../../bower_components/morphdom/dist/morphdom-umd',
 		'Handlebars': '../../../dist/dependencies/handlebars',
 		'html2hscript': '../../../dist/dependencies/html2hscript',
 		'superagent': '../../../dist/dependencies/superagent',

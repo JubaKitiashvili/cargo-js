@@ -25,17 +25,16 @@
   ],
   "devDependencies": {
     "requirejs": "~2.1.22",
-    "jasmine-core": "jasmine#~2.4.1"
+    "mocha": "^3.2.0",
+    "chai": "^3.5.0"
   },
   "dependencies": {
-    "virtual-dom": "^2.1.1",
     "handlebars": "^4.0.5",
     "underscore": "^1.8.3",
     "js-cookie": "^2.1.1",
     "jquery": "^3.0.0",
     "rsvp.js": "rsvp#^3.3.3",
-    "mocha": "^3.2.0",
-    "chai": "^3.5.0",
+    "morphdom": "^2.3.1"
   },
   "repository": {
     "type": "git",

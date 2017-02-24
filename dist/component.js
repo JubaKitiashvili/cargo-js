@@ -1,21 +1,20 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Model', 'cargo.Translation', 'virtualDom', 'html2hscript', 'Handlebars', 'superagent'], factory);
+        define(['cargo.Model', 'cargo.Translation', 'morphdom', 'Handlebars', 'superagent'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Model'), require('cargo.Translation'), require('virtualDom'), require('html2hscript'), require('Handlebars'), require('superagent'));
+        module.exports = factory(require('cargo.Model'), require('cargo.Translation'), require('morphdom'), require('Handlebars'), require('superagent'));
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Component = factory(root.cargo.Model, root.cargo.Translation, root.virtualDom, root.html2hscript, root.Handlebars, root.superagent);
+        root.cargo.Component = factory(root.cargo.Model, root.cargo.Translation, root.morphdom, root.Handlebars, root.superagent);
     }
-}(this, function(Model, Translation, virtualDom, html2hscript, Handlebars, superagent) {
+}(this, function(Model, Translation, morphdom, Handlebars, superagent) {
 var Component = function(templateURI, options) {
 	'use strict';
 	
 	if (!Promise) throw new Error("Promise API is required.");
 	if (!Model) throw new Error("cargo.Model API is required.");
 	if (!Translation) throw new Error("cargo.Translation API is required.");
-	if (!virtualDom) throw new Error("Virtual DOM required. (https://github.com/Matt-Esch/virtual-dom)");
-	if (!html2hscript) throw new Error("Module html2hscript required.");
+	if (!morphdom) throw new Error("morphdom is required. (https://github.com/patrick-steele-idem/morphdom)");
 	if (!superagent) throw new Error("superagent is required. (https://github.com/visionmedia/superagent)");
 	if (!Handlebars) throw new Error("Handlebars is required. (https://github.com/wycats/handlebars.js/)");
 	if (!_) throw new Error("underscore is required. (https://github.com/jashkenas/underscore)");
@@ -108,6 +107,7 @@ var Component = function(templateURI, options) {
 					reject(new Error("Unable to compile rendering function from template '" + templateURL + "': " + e));
 					return;
 				}
+				
 				var result = {};
 				result.template = template;
 				result.handlebars = handlebars;
@@ -136,10 +136,9 @@ var Component = function(templateURI, options) {
 Component.prototype.constructor = Component;
 
 var Renderer = function(selector, originalNodes, template, attach, update, detach) {
-	var h = virtualDom.h;
 	
 	var target = $();
-	var tree = undefined;
+	var firstRender = true;
 	
 	this.detach = function () {
 		_.each(originalNodes, function (orig, cargoId) {
@@ -158,7 +157,7 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 		});
 		originalNodes = {};
 		target = $();
-		tree = undefined;
+		firstRender = true;
 	};
 	
 	this.render = function (state) {
@@ -184,16 +183,13 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 			return Promise.resolve(state);
 		}
 		
-		var newTree = undefined;
-		html2hscript(html, function (err, hscript) {
-			newTree = eval(hscript);
-			if (err) console.log("Rendering error: " + err);
-		});
-		if (!newTree) console.log("Rendering did not return a result.");
-		if (tree === undefined) {
+		if (firstRender) {
 			// First rendering. Render new nodes, save and replace old nodes.
+			firstRender = false;
 			_.each(originalNodes, function (oldNode, cargoId) {
-				var newNode = virtualDom.create(newTree);
+				var $nodes = $.parseHTML(html);
+				if ( !$nodes || !$nodes.length ) return;
+				var newNode = $nodes[0];
 				var $oldNode = $(oldNode);
 				try {
 					var id = $oldNode.prop('id');
@@ -215,8 +211,11 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 			}, this);
 		} else {
 			target.each(function () {
-				var patches = virtualDom.diff(tree, newTree);
-				virtualDom.patch(this, patches);
+				var id = this.id;
+				var cargoId = this.getAttribute('x-cargo-id');
+				morphdom(this, html);
+				this.id = id;
+				this.setAttribute('x-cargo-id', cargoId);
 				try {
 					update.call(this);
 				} catch (e) {
@@ -224,7 +223,6 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 				}
 			});
 		}
-		tree = newTree;
 		return Promise.resolve(state);
 	};
 	

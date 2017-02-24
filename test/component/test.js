@@ -154,9 +154,48 @@ describe("Component.js", function () {
 			translation.setNamespace('test').then(function (result) {
 				done();
 			}).catch(function (err) {
-				fail(err);
-				done();
+				done(err);
 			});
+		});
+		
+		it("renders the state to the target node", function(done) {
+			var comp = new Component("component/templates/TestHeading.html");
+			var renderer;
+			comp.attach('#test-heading').then(function(result) {
+				renderer = result;
+				return renderer.render({ heading: "TEST" });
+			}).then(function(){
+				var targetNode = $('#test-heading')[0];
+				expect(targetNode.nodeName).to.equal('H1');
+				expect(targetNode.innerHTML).to.equal('TEST');
+				done();
+			}).catch(function(e) {
+				done(e);
+			}).finally(function() {
+				renderer.detach();
+			});
+			
+		});
+		
+		it("updates the state in the target node", function(done) {
+			var comp = new Component("component/templates/TestHeading.html");
+			var renderer;
+			comp.attach('#test-heading').then(function(result) {
+				renderer = result;
+				return renderer.render({ heading: "TEST" });
+			}).then(function() {
+				return renderer.render({heading:"TEST2"});
+			}).then(function() {
+				var targetNode = $('#test-heading')[0];
+				expect(targetNode.nodeName).to.equal('H1');
+				expect(targetNode.innerHTML).to.equal('TEST2');
+				done();
+			}).catch(function(e) {
+				done(e);
+			}).finally(function() {
+				renderer.detach();
+			});
+			
 		});
 		
 		it("with english translation renders the component with the english heading.", function (done) {

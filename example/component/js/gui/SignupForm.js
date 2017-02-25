@@ -12,7 +12,9 @@ define(['cargo.Component', 'cargo.Model',
 			if ( instance ) return Promise.resolve(instance);
 			return new Component("templates/Signup.html").attach("#sign-up").then(function(result) {
 				instance = result;
-				BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
+				BrowserLanguage.subscribe(function() {
+					instance.render(state);
+				});
 				Router.subscribe(function(routerState) {
 					if ( routerState.get('target') === 'sign-up' ) {
 						state = state.put('hide', '');

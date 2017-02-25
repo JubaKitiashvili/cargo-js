@@ -166,8 +166,7 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 			// In any of these cases, Skip rendering and just return a resolving promise.
 			return Promise.resolve(state);
 		}
-		this.state = state.toJS();
-		var html = template(this.state);
+		var html = template(state.toJS());
 		if (!html) {
 			// If no html is returned, skip rendering and just return a resolving promise.
 			return Promise.resolve(state);
@@ -216,9 +215,6 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 		return Promise.resolve(state);
 	};
 	
-	this.refresh = function() {
-		return this.render(this.state);
-	};
 };
 Renderer.prototype.constructor = Renderer;
 Component.Renderer = Renderer;

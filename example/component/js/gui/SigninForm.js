@@ -17,7 +17,9 @@ define(['cargo.Component', 'cargo.Model',
 				new Component("Signin.template.html", options).attach('#sign-in')
 					.then(function (result) {
 						instance = result;
-						BrowserLanguage.subscribe(_.bind(instance.refresh, instance));
+						BrowserLanguage.subscribe(function() {
+							instance.render(state);
+						});
 						Router.subscribe(function (routerState) {
 							if (routerState.get('target') === 'sign-in') {
 								state = state.put('hide', '');

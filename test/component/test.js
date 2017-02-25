@@ -56,7 +56,7 @@ describe("Component.js", function () {
 			});
 		});
 		
-		it("the Renderer instance  has a 'refresh' property which is a function.", function (done) {
+		xit("the Renderer instance  has a 'refresh' property which is a function.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
 			comp.attach('#test').then(function (renderer) {
 				expect(renderer.refresh).to.be.defined;

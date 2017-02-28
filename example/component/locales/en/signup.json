@@ -4,5 +4,10 @@
   "USERNAME": "Username",
   "PASSWORD": "Password",
   "PASSWORD_REPEAT": "Repeat Password",
-  "SUBMIT": "Submit"
+  "SUBMIT": "Submit",
+  "ERR_USERNAME_EMPTY": "Username must not be empty.",
+  "ERR_PASSWORD_EMPTY": "Password must not be empty.",
+  "ERR_PASSWORD_INVALID": "The password must have at least 6 characters.",
+  "ERR_PASSWORD_MISMATCH": "The passwowrds do not match."
+
 }

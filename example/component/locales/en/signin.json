@@ -3,5 +3,9 @@
   "INTRO": "Please login with the credentials you saved in the \"Sign Up\" screen.",
   "USERNAME": "Username",
   "PASSWORD": "Password",
-  "SUBMIT": "Submit"
+  "SUBMIT": "Submit",
+  "ERR_USERNAME_EMPTY": "Username must not be empty.",
+  "ERR_PASSWORD_EMPTY": "Password must not be empty.",
+  "ERR_LOGIN_FAILED": "Login failed.",
+  "SUCCESS": "Login successful."
 }

@@ -3,5 +3,9 @@
   "INTRO": "Bitte melden Sie sich mit den Zugangsdaten an, die Sie im \"Registrieren\"-Dialog festgelegt haben.",
   "USERNAME": "Benutzername",
   "PASSWORD": "Passwort",
-  "SUBMIT": "Absenden"
+  "SUBMIT": "Absenden",
+  "ERR_USERNAME_EMPTY": "Bitte geben Sie einen Benutzernamen an.",
+  "ERR_PASSWORD_EMPTY": "Bitte geben Sie ein Passwort an.",
+  "ERR_LOGIN_FAILED": "Anmeldung fehlgeschlagen.",
+  "SUCCESS": "Anmeldung erfolgreich."
 }

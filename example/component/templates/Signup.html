@@ -27,30 +27,38 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix">account_circle</i>
-                                    <input id="sign-up-username" type="text">
+                                    <input id="sign-up-username" name="sign-up-username" type="text" value="{{username}}">
                                     <label for="sign-up-username">{{i18n "USERNAME" "signup" }}</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix">lock</i>
-                                    <input id="sign-up-password" type="password">
+                                    <input id="sign-up-password" name="sign-up-password" type="password" value="{{password}}">
                                     <label for="sign-up-password">{{i18n "PASSWORD" "signup" }}</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
                                     <i class="material-icons prefix">autorenew</i>
-                                    <input id="sign-up-password-confirm" type="password">
+                                    <input id="sign-up-password-confirm" name="sign-up-password-confirm" type="password"  value="{{password2}}">
                                     <label for="sign-up-password-confirm">{{i18n "PASSWORD_REPEAT" "signup" }}</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
                             </div>
+                            {{#if error}}
+                            <div class="row">
+                                <div class="center red-text text-darken-4">{{i18n error "signup"}}</div>
+                            </div>
+                            {{/if}}
                             <div class="row">
                                 <div class="center">
-                                    <a class="waves-effect waves-light btn blue-grey">{{i18n "SUBMIT" "signup" }}</a>
+                                    <button type="submit" class="waves-effect waves-light btn blue-grey" value="">
+                                        {{i18n 'SUBMIT' 'signup' }}
+                                        <i class="material-icons right">send</i>
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -61,5 +69,15 @@
     </div>
     </div>
 </template>
+<script class="attach">
+    var form = $(node).find('form');
+    var renderer = this;
+    form.on('submit',  function() {
+    	return renderer.submit();
+    });
+</script>
+<script class="update">
+    Materialize.updateTextFields();
+</script>
 </body>
 </html>

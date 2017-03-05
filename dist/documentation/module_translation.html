@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="prev" title="Module: Component" href="module_component.html"/> 
 
@@ -86,7 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_component.html">Module: Component</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Translation</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Translation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#translation-files">Translation files</a></li>
 </ul>
@@ -127,7 +130,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -139,7 +142,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/module_translation.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/module_translation.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -153,7 +156,7 @@
 <h1>Module: Translation<a class="headerlink" href="#module-translation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>This module provides I18N features as a <a class="reference internal" href="module_model.html"><em>Module: Model</em></a> instance and automates loading translations from language
+<p>This module provides I18N features as a <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a> instance and automates loading translations from language
 files. The translation is organized as a directory tree under a configurable base URI. Translation files are loaded
 upfront and guaranteed to be ready before the first state transition happens.</p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">trans</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Translation</span><span class="p">();</span>
@@ -162,7 +165,7 @@ upfront and guaranteed to be ready before the first state transition happens.</p
 </div>
 <p>The example above loads the translation from <code class="docutils literal"><span class="pre">locales/en/translation.json</span></code> relative to the current HTML file. The
 translation file should be a file with a JSON object.</p>
-<p>Because <code class="docutils literal"><span class="pre">trans</span></code> is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a> and its state is the selected translation, the translation
+<p>Because <code class="docutils literal"><span class="pre">trans</span></code> is an instance of <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a> and its state is the selected translation, the translation
 can be subscribed to:</p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">trans</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">GREETING</span><span class="p">);</span>
@@ -186,7 +189,7 @@ directory. Each translation can go by a unique filename called a <code class="do
 </div>
 <p>In this example we have two namespaces - &#8220;translation&#8221; and &#8220;login&#8221; - and three languages &#8220;en&#8221;, &#8220;en_us&#8221; and &#8220;de&#8221;. The language
 &#8220;en_us&#8221; is a more specific version of the language &#8220;en&#8221;. Note that there is no file for the &#8220;translation&#8221; namespace for
-US English. That&#8217;s ok because <a class="reference internal" href=""><em>Module: Translation</em></a> uses the less specific variant if there is no suitable language file.
+US English. That&#8217;s ok because <a class="reference internal" href="#"><span class="doc">Module: Translation</span></a> uses the less specific variant if there is no suitable language file.
 If &#8220;en_us&#8221; is selected for the &#8220;translation&#8221; namespace, &#8220;en&#8221; is used instead. Additionally, if a non-existent or unimplemented language
 is selected the default language is selected.</p>
 <p>Namespaces, base URI and default languages are configurable through the constructor.</p>
@@ -271,7 +274,7 @@ translation object is empty.</p>
 <p>The default language to use when loading or selecting a language fails and no unspecific variant is available.</p>
 <p><strong>Return value</strong></p>
 <blockquote>
-<div>A new translation instance which is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>. The state of the model is the currently
+<div>A new translation instance which is an instance of <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>. The state of the model is the currently
 selected translation.</div></blockquote>
 </div>
 </div>
@@ -280,7 +283,7 @@ selected translation.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">trans.select(lang)</span></code></p>
 <p>Selects a language. If the language is a specific variant like &#8220;en_US&#8221; or &#8220;de_AT&#8221; the next unspecific variant is
 tried (&#8220;en&#8221; or &#8220;de&#8221;). If the unspecific variant is unavailable, the default language is used. If the default
-language is unavailable, an empty translation is used. Since this module is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>,
+language is unavailable, an empty translation is used. Since this module is an instance of <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>,
 calling this method triggers a state transition.</p>
 <p>Loading the translations is an asynchronous process which may not be completed before <code class="docutils literal"><span class="pre">select()</span></code> is called. If
 <code class="docutils literal"><span class="pre">select()</span></code> is called before loading has finished, the language selection is deferred until the loading completes. No

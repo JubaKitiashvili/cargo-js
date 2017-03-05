@@ -36,7 +36,7 @@ function main(domReady,
 			BrowserLanguage.initialize(),
 			Router.initialize()
 		]).then(function () {
-			/* Initialize components */
+			/* Initialize GUI components */
 			return Promise.all([
 				LanguageMenu.initialize(),
 				MainMenu.initialize(),

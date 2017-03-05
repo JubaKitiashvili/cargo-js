@@ -14,10 +14,6 @@ define(['cargo.Model'], function (Model) {
 			if (instance) {
 				return Promise.resolve(instance);
 			}
-			window.addEventListener("popstate", function() {
-				var state = window.history.state;
-				instance.select(window.location.hash);
-			});
 			instance = new Model({
 				initialState: function () {
 					return {target: _normalize(window.location.hash)};
@@ -27,6 +23,10 @@ define(['cargo.Model'], function (Model) {
 				}
 			});
 			instance.initialState();
+			window.addEventListener("popstate", function() {
+				var state = window.history.state;
+				instance.select(window.location.hash);
+			});
 			return Promise.resolve(instance);
 		},
 		subscribe: function(subscriber) {

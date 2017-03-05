@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="next" title="Module: Translation" href="module_translation.html"/>
         <link rel="prev" title="Module: Model" href="module_model.html"/> 
@@ -86,7 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Component</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-example">Code example</a><ul>
@@ -141,7 +144,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -153,7 +156,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/module_component.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/module_component.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -753,7 +756,7 @@ details for brevity and a better overview.</p>
 </td></tr></table></div>
 <p>Component.js has a function <code class="docutils literal"><span class="pre">template()</span></code> which receives an URL as argument. The function
 loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
-the function returns a Promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) which is fulfilled with the compiled template.
+the function returns a Promise (see <a class="reference internal" href="module_promise.html"><span class="doc">Module: Promise</span></a>) which is fulfilled with the compiled template.
 The compiled template is then passed to the builder by <code class="docutils literal"><span class="pre">withTemplate()</span></code> and used by the component
 to render the visual representation.</p>
 <p>If we run the code so far, a (rather unstyled) HTML representation of the navigation menu should
@@ -952,7 +955,7 @@ receives the current DOM node of the component. The <code class="docutils litera
 instance of the component and exposes the component&#8217;s actions.</dd>
 <dt>detach(node)</dt>
 <dd>This method is called before the component is removed from the DOM. This usually takes place,
-when the state of the component enters the dead state (see <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>). The <code class="docutils literal"><span class="pre">node</span></code>
+when the state of the component enters the dead state (see <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>). The <code class="docutils literal"><span class="pre">node</span></code>
 parameter receives the current DOM node of the component. The <code class="docutils literal"><span class="pre">this</span></code> context is set to the
 current instance of the component and exposes the component&#8217;s actions.</dd>
 </dl>
@@ -1037,7 +1040,7 @@ and the values of the object are the <code class="docutils literal"><span class=
 </div>
 <div class="section" id="method-subscribe-model-callback">
 <h4>Method: subscribe(model, callback)<a class="headerlink" href="#method-subscribe-model-callback" title="Permalink to this headline">¶</a></h4>
-<p>Subscribes this component to another model (see <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>) which influences the
+<p>Subscribes this component to another model (see <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>) which influences the
 state of this component from the outside. The <code class="docutils literal"><span class="pre">subscribe()</span></code> method provides a way
 to &#8220;connect&#8221; components with each other. An example could be a navigation menu which
 reacts on language selections from a settings menu.</p>
@@ -1077,7 +1080,7 @@ Usually only one element should be replaced.</div></blockquote>
 <p>Loads and compiles an HTML file from the specified URL. The result is meant to be
 used as an argument to the method <code class="docutils literal"><span class="pre">builder.withTemplate()</span></code>. Note that this is
 an asynchronous operation which does not return the result directly. Instead
-a promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) is returned which is fulfilled with the compiled
+a promise (see <a class="reference internal" href="module_promise.html"><span class="doc">Module: Promise</span></a>) is returned which is fulfilled with the compiled
 template.</p>
 <p><strong>Parameters</strong></p>
 <p><code class="docutils literal"><span class="pre">URL</span></code></p>
@@ -1131,7 +1134,7 @@ the promise is rejected with a meaningful error message.</p>
 <div class="section" id="the-component-instance">
 <h3>The Component instance<a class="headerlink" href="#the-component-instance" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">build()</span></code> method of the builder creates an instance of the component defined by
-the builder configuration. The instances is a model of the type described in <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>.</p>
+the builder configuration. The instances is a model of the type described in <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>.</p>
 <p>Accordingly it exposes all defined actions as methods to the outside world.
 Example:</p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">navMenu</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">()</span>
@@ -1149,7 +1152,7 @@ Example:</p>
 <span class="nx">unsubscribe</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>The instance of the component is an instance of <a class="reference internal" href="module_model.html"><em>Module: Model</em></a>. Details about
+<p>The instance of the component is an instance of <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a>. Details about
 Model.js can be found there.</p>
 </div>
 </div>

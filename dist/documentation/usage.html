@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="next" title="Module: Promise" href="module_promise.html"/>
         <link rel="prev" title="How to Build" href="how_to_build.html"/> 
@@ -83,7 +86,7 @@
             
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">General Usage</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#usage-with-requirejs">Usage with requirejs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage-as-browser-globals">Usage as browser globals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
@@ -115,7 +118,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -127,7 +130,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/usage.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -146,13 +149,12 @@ to not collide with other libraries.</p>
 <h2>Usage with requirejs<a class="headerlink" href="#usage-with-requirejs" title="Permalink to this headline">¶</a></h2>
 <p>The modules can be used like any other module with requirejs. They are dependent on each other
 and expected to go by the alias &#8220;cargo.MODULENAME&#8221; to avoid name collision with other
-libraries - e.g. for Promise.js it&#8217;s &#8220;cargo.Promise&#8221;.</p>
+libraries - e.g. for Model.js it&#8217;s &#8220;cargo.Model&#8221;.</p>
 <p>Here is a sample path config for requirejs assuming the modules are stored in a sub directory
 <code class="docutils literal"><span class="pre">lib/</span></code>:</p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
     <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
         <span class="c1">// ...</span>
-        <span class="s1">&#39;cargo.Promise&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/promise&#39;</span><span class="p">,</span>
         <span class="s1">&#39;cargo.Model&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/model&#39;</span>
         <span class="c1">// ...</span>
     <span class="p">}</span>
@@ -160,10 +162,9 @@ libraries - e.g. for Promise.js it&#8217;s &#8220;cargo.Promise&#8221;.</p>
 </pre></div>
 </div>
 <p>And later in one of your modules:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">define</span><span class="p">([</span><span class="s1">&#39;cargo.Promise&#39;</span><span class="p">,</span> <span class="s1">&#39;cargo.Model&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nb">Promise</span><span class="p">,</span> <span class="nx">Model</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">define</span><span class="p">([</span><span class="s1">&#39;cargo.Model&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Model</span><span class="p">)</span> <span class="p">{</span>
 
     <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span> <span class="cm">/* ... */</span> <span class="p">});</span>
-    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">});</span>
 
     <span class="c1">// ...</span>
 <span class="p">});</span>
@@ -176,12 +177,10 @@ libraries - e.g. for Promise.js it&#8217;s &#8220;cargo.Promise&#8221;.</p>
 sure to load the Javascript files and all dependencies in your HTML</p>
 <div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
 <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/promise.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/model.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">text/javascript&quot;</span><span class="p">&gt;</span>
 
         <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span> <span class="cm">/* ... */</span> <span class="p">});</span>
-        <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">cargo</span><span class="p">.</span><span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">});</span>
 
         <span class="c1">//...</span>
 
@@ -196,7 +195,7 @@ sure to load the Javascript files and all dependencies in your HTML</p>
 <p>Some modules depend on third-party libraries like jQuery or underscore. All required third-party modules are
 provided in the <code class="docutils literal"><span class="pre">dist/dependencies</span></code> directory but you are highly encouraged to maintain your own dependency tree (for instance
 with bower or/and npm) and use the modules from there.</p>
-<p>All modules fail early if a dependency is missing on initialization. So when in doubt which dependencies to
+<p>All modules fail early if dependencies are missing on initialization. So when in doubt which dependencies to
 provide, just try to use the module and read the errors. Additionally dependencies are documented in the
 respective module documentation.</p>
 </div>

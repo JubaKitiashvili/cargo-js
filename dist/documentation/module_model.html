@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="next" title="Module: Component" href="module_component.html"/>
         <link rel="prev" title="Module: Promise" href="module_promise.html"/> 
@@ -85,16 +88,46 @@
 <li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Module: Model</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction-to-state-api">Introduction to State-API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction-to-model-api">Introduction to Model-API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#define-actions-to-change-the-state">Define actions to change the state</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subscribe-to-state-changes">Subscribe to state changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unsubscribe-later">Unsubscribe later</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-current-state-within-the-action-callbacks">Use current state within the action callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#actions-are-asynchronous-and-can-be-combined">Actions are asynchronous and can be combined</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#special-case-an-undefined-state">Special case: An undefined state</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#special-case-throwing-an-exception-in-an-action-callback">Special case: Throwing an exception in an action callback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#special-case-dead-state">Special case: Dead state</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#define-state-transitions-actions-as-functions-and-bundle-them-in-an-object">Define state transitions (&#8220;actions&#8221;) as functions and bundle them in an object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pass-the-bundled-actions-to-the-constructor-method">Pass the bundled actions to the constructor method.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-actions-to-change-the-state">Use actions to change the state.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#subscribe-to-state-changes">Subscribe to state changes.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#unsubscribe-from-state-changes-later">Unsubscribe from state changes later.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#useful-helpers">Useful helpers.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#state">State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructor-new-state">constructor: new State()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-prototype-map-state-prototype-list">State.prototype.$Map / State.prototype.$List</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-prototype-type">State.prototype.type()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-prototype-tojs">State.prototype.toJS()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-prototype-tojson-indent">State.prototype.toJSON(indent)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-get-index">List: State.prototype.get(index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-size">List: State.prototype.size()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-add-element">List: State.prototype.add(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-remove-index">List: State.prototype.remove(index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-insert-element-index">List: State.prototype.insert(element, index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-push-element">List: State.prototype.push(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-pop">List: State.prototype.pop()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-shift">List: State.prototype.shift()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-unshift-element">List: State.prototype.unshift(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-get-key">Map: State.prototype.get(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-keys">Map: State.prototype.keys()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-has-key">Map: State.prototype.has(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-put-key-value">Map: State.prototype.put(key, value)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-remove-key">Map: State.prototype.remove(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-merge-object">Map: State.prototype.merge(object)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model">Model</a></li>
 </ul>
 </li>
 </ul>
@@ -123,7 +156,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -135,7 +168,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/module_model.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/module_model.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -153,165 +186,528 @@
 pattern for application data models created by Facebook.</p>
 <p>The basic idea of Flux is that in an application the data model should not be accessed directly. In Flux the data model
 defines the current state of the application. Only well-defined access methods (&#8220;actions&#8221;) change the application state.
-Subscribers get notifications of state changes an can react on the new state.</p>
+Subscribers get notifications of state changes and can react on the new state.</p>
 <p>See this page for a better understanding of Flux: <a class="reference external" href="https://facebook.github.io/flux/">https://facebook.github.io/flux/</a></p>
+<p>There are two APIs available in this Module which are complementary to each other - State and Model.</p>
+</div>
+<div class="section" id="introduction-to-state-api">
+<h2>Introduction to State-API<a class="headerlink" href="#introduction-to-state-api" title="Permalink to this headline">¶</a></h2>
+<p>“State” stores the application state in an immutable manner. It contains data structures which replace
+both traditional javascript collections: objects are replaced with a “Map” data structure and arrays are
+replaced with a “List” data structure.</p>
+<p>Since application state should not be subject to side effects, these collections are immutable. Every time
+the collection is altered a new instance is created and the old instance is left unchanged. E.g. the
+Map data structure has a method to add new items which returns a new instance of Map which contains the
+added item:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">map2</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">map</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>  <span class="c1">// map =&gt; {}, i.e. it stays the same after put().</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">map2</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span> <span class="c1">// map2 =&gt; { &quot;id&quot;: 1 }</span>
+</pre></div>
+</div>
+<p>Lists follow the same idea:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">List</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">list2</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">list</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>  <span class="c1">// list =&gt; []</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">list2</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span> <span class="c1">// list2 =&gt; [ 1 ];</span>
+</pre></div>
+</div>
+<p>Immutable data structures can be shared between different Model instances without having one model interfere with
+the other. If an action in one model changes a shared state the new state is &#8220;forked&#8221; off from the other models.</p>
+</div>
+<div class="section" id="introduction-to-model-api">
+<h2>Introduction to Model-API<a class="headerlink" href="#introduction-to-model-api" title="Permalink to this headline">¶</a></h2>
+<p>The &#8220;Model&#8221; data structure implements a publish/subscribe pattern for instances of <code class="docutils literal"><span class="pre">State</span></code>. <code class="docutils literal"><span class="pre">Model</span></code> stores and manages
+one specific instance of <code class="docutils literal"><span class="pre">State</span></code> and defines a set of well known actions (= functions) which alter this state.
+To prevent side effects there is no other way to alter the state than through this set of actions.</p>
+<p>As an example we implement the general idea of a form within a web page that disables the submit button when
+the form has been submitted. For simplification, we retrieve the form and the submit button through
+the jQuery selector API and do not care about the HTML and CSS details.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;form&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">submitButton</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input [type=&quot;submit&quot;]&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="define-actions-to-change-the-state">
+<h3>Define actions to change the state<a class="headerlink" href="#define-actions-to-change-the-state" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">Model</span></code> exposes a constructor which receives an object with one callback for each action. The callbacks are named
+after the corresponding action and must return the new state which is desired as the outcome of the action.</p>
+<p>If we wanted to define a model which represents a financial transaction and an action which marks the transaction as &#8220;paid&#8221;
+we would define a callback <code class="docutils literal"><span class="pre">pay</span></code> within an object and pass that object to the <code class="docutils literal"><span class="pre">Model</span></code> constructor.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">pay</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="nx">paid</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">pay</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The constructor returns a new <code class="docutils literal"><span class="pre">Model</span></code> instance which exposes the actions through corresponding methods.</p>
+<p>In the &#8220;form example&#8221; from above we define a <code class="docutils literal"><span class="pre">Model</span></code> with an action <code class="docutils literal"><span class="pre">initalState</span></code>.
+In <code class="docutils literal"><span class="pre">initialState</span></code> the form is defined as &#8220;not submitted yet&#8221; by returning a new <code class="docutils literal"><span class="pre">State</span></code> instance.
+The action is called to initialize the model.</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+        <span class="nx">initialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="nx">submitted</span><span class="o">:</span> <span class="kc">false</span><span class="p">});</span>
+        <span class="p">},</span>
+
+        <span class="nx">submitted</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">isSubmitted</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="p">{</span> <span class="nx">submitted</span><span class="o">:</span> <span class="nx">isSubmitted</span> <span class="p">};</span>
+        <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>An additional action <code class="docutils literal"><span class="pre">submitted</span></code> is defined in line 7-9. This action changes the submit state to <code class="docutils literal"><span class="pre">true</span></code> or <code class="docutils literal"><span class="pre">false</span></code>
+depending on an input parameter. The return value is a plain Javascript object which converts to a new <code class="docutils literal"><span class="pre">State</span></code> instance
+automatically for convenience.</p>
+</div>
+<div class="section" id="subscribe-to-state-changes">
+<h3>Subscribe to state changes<a class="headerlink" href="#subscribe-to-state-changes" title="Permalink to this headline">¶</a></h3>
+<p>Subscribers can subscribe to state changes and get notifications about the new state whenever an action has been called.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+        <span class="c1">// ...</span>
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">disabled</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">);</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input [type=submit]&#39;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">,</span> <span class="nx">disabled</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Whenever the state of the model changes, the subscriber is called with the current state (which is an instance of <code class="docutils literal"><span class="pre">State</span></code>).
+In this example the submit button is disabled or enabled if the form has been submitted. To connect the model to the form
+we need to add an event handler that calls the <code class="docutils literal"><span class="pre">submitted</span></code> action.</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+        <span class="nx">initialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="nx">submitted</span><span class="o">:</span> <span class="kc">false</span><span class="p">});</span>
+        <span class="p">},</span>
+
+        <span class="nx">submitted</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">isSubmitted</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="p">{</span> <span class="nx">submitted</span><span class="o">:</span> <span class="nx">isSubmitted</span> <span class="p">};</span>
+        <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">initialState</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">disabled</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">);</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input [type=submit]&#39;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">,</span> <span class="nx">disabled</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+
+<span class="nx">form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">model</span><span class="p">.</span><span class="nx">submitted</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="unsubscribe-later">
+<h3>Unsubscribe later<a class="headerlink" href="#unsubscribe-later" title="Permalink to this headline">¶</a></h3>
+<p>Subscribing to a model returns an unsubscribe function to be used later for unsubscribing. In our form example we
+use that function to prevent the submit button to be activated again once the form has been submitted.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="kd">var</span> <span class="nx">unsubscribe</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">disabled</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">);</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;input [type=submit]&#39;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;disabled&#39;</span><span class="p">,</span> <span class="nx">disabled</span><span class="p">);</span>
+      <span class="nx">unsubscribe</span><span class="p">();</span>
+<span class="p">};</span>
+<span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+
+<span class="nx">form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">model</span><span class="p">.</span><span class="nx">submitted</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-current-state-within-the-action-callbacks">
+<h3>Use current state within the action callbacks<a class="headerlink" href="#use-current-state-within-the-action-callbacks" title="Permalink to this headline">¶</a></h3>
+<p>Within the action callbacks the <code class="docutils literal"><span class="pre">this</span></code> context exposes the current state through a <code class="docutils literal"><span class="pre">state()</span></code> method. The current
+state can be used preserve data which is not effected be the current action. If we had a form validation action which
+stores a <code class="docutils literal"><span class="pre">valid</span></code> attribute in the state, we would have to preserve this attribute in the <code class="docutils literal"><span class="pre">submitted</span></code> action somehow.
+That&#8217;s what the <code class="docutils literal"><span class="pre">this.state()</span></code> method is for.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+   <span class="nx">initialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="nx">submitted</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">valid</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+   <span class="p">},</span>
+
+   <span class="nx">validate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// ...</span>
+   <span class="p">},</span>
+
+   <span class="nx">submitted</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">isSubmitted</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">();</span>
+      <span class="c1">// Before: { submitted: false, valid: true }</span>
+      <span class="nx">state</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="nx">isSubmitted</span><span class="p">);</span>
+      <span class="c1">// After: { submitted: false/true, valid: true }</span>
+      <span class="c1">// The &quot;valid&quot; property is still there.</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+   <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="actions-are-asynchronous-and-can-be-combined">
+<h3>Actions are asynchronous and can be combined<a class="headerlink" href="#actions-are-asynchronous-and-can-be-combined" title="Permalink to this headline">¶</a></h3>
+<p>Note that there is a difference between the action callbacks you provide to the constructor and the actions exposed
+through the instance created by the constructor.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actionCallback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="p">};</span>
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+      <span class="nx">action</span><span class="o">:</span> <span class="nx">actionCallback</span>
+
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action</span><span class="p">();</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="nx">actionCallback</span><span class="p">;</span> <span class="c1">// true</span>
+</pre></div>
+</div>
+<p>When the action is executed by calling the method from the <code class="docutils literal"><span class="pre">Model</span></code> instance, a wrapper is called which creates the
+<code class="docutils literal"><span class="pre">this</span></code> context, executes the callback and stores its return value as the current state of the <code class="docutils literal"><span class="pre">Model</span></code> instance.</p>
+<p>The callback is called as an asynchronous task inside a Promise which resolves with the current state after the
+callback returned a value.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">action</span><span class="p">();</span>
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Current state is: &quot;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>You can chain actions by chaining their promises:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="nx">model</span><span class="p">.</span><span class="nx">action3</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+   <span class="c1">// ...</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The Promises present an alternative to the subscriber API and both APIs can be combined as well. Furthermore, there is
+a third way to combine actions.</p>
+<p>In addition to <code class="docutils literal"><span class="pre">this.state()</span></code> the <code class="docutils literal"><span class="pre">this</span></code> context contains a second method <code class="docutils literal"><span class="pre">this.model()</span></code>. It is the model
+instance itself providing a way to call one action from another action.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+   <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">();</span>
+      <span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="p">...</span> <span class="p">});</span>
+   <span class="p">},</span>
+
+   <span class="nx">action2</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// ...</span>
+   <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="special-case-an-undefined-state">
+<h3>Special case: An undefined state<a class="headerlink" href="#special-case-an-undefined-state" title="Permalink to this headline">¶</a></h3>
+<p>If an action does not return a value (i.e. <code class="docutils literal"><span class="pre">undefined</span></code>), the current state is left unchanged. This is helpful
+when chaining actions conditionally or when an input changes the state only under certain conditions.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+   <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">input</span> <span class="o">===</span> <span class="s1">&#39;OK&#39;</span> <span class="p">)</span> <span class="p">{</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="nx">valid</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+      <span class="p">}</span>
+      <span class="k">return</span><span class="p">;</span> <span class="c1">// If input is not &quot;OK&quot;, the state is the same.</span>
+   <span class="p">},</span>
+
+   <span class="nx">action2</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">input</span> <span class="o">===</span> <span class="s1">&#39;OK&#39;</span> <span class="p">)</span> <span class="p">{</span>
+         <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">().</span><span class="nx">action1</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+         <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({</span> <span class="cm">/*...*/</span> <span class="p">});</span>
+   <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal"><span class="pre">action1</span></code> the state is only changed if the input is the string <code class="docutils literal"><span class="pre">&quot;OK&quot;</span></code>. In <code class="docutils literal"><span class="pre">action2</span></code>
+another action is only called if the input has a certain value. In that case the state is left
+unchanged and altered within <code class="docutils literal"><span class="pre">action1</span></code>. If the value is not <code class="docutils literal"><span class="pre">&quot;OK&quot;</span></code>, the state is changed in place.</p>
+</div>
+<div class="section" id="special-case-throwing-an-exception-in-an-action-callback">
+<h3>Special case: Throwing an exception in an action callback<a class="headerlink" href="#special-case-throwing-an-exception-in-an-action-callback" title="Permalink to this headline">¶</a></h3>
+<p>If an exception occurs within an action callback, the action&#8217;s promise is rejected with that exception. No
+subscriber is notified and the state is left unchanged.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+   <span class="nx">action</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Error within action.&#39;</span><span class="p">);</span>
+   <span class="p">}</span>
+
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>  <span class="c1">// &#39;Error: Error within action.&#39;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="special-case-dead-state">
+<h3>Special case: Dead state<a class="headerlink" href="#special-case-dead-state" title="Permalink to this headline">¶</a></h3>
+<p>If an <code class="docutils literal"><span class="pre">Error</span></code> instance is returned as the new state, the model goes into the &#8220;dead state&#8221;. If a model enters the &#8220;dead state&#8221;,
+it cannot leave that state and will reject every action call with the <code class="docutils literal"><span class="pre">Error</span></code> instance. Additionally all subscribers are
+unsubscribed and are never notified again.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
+
+   <span class="nx">action</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{};</span>
+   <span class="p">},</span>
+
+   <span class="nx">kill</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Model entered dead state at &#39;</span> <span class="o">+</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">);</span>
+   <span class="p">}</span>
+
+<span class="p">});</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">kill</span><span class="p">();</span>
+
+<span class="c1">// Later...</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">action</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span> <span class="c1">// &#39;Model entered dead state at 2017-03-05T22:30:33Z.&#39;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Note that this is slightly different than <cite>throwing</cite> an exception within an action callback. If an exception
+is thrown (or just <strong>occurs</strong>), the model rejects the action but is not in the &#8220;dead state&#8221;. Further actions execute
+as if nothing happened, while once in &#8220;dead state&#8221; the model does not &#8220;react&#8221; to state
+changes any more. This subtle difference has been introduced to prevent the model from being sent into dead state
+by accident. Returning an error is an intentional decision by the developer while exceptions can be thrown for
+various reason including accidental error conditions.</p>
+</div>
 </div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>This module depends on the Promise module (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>). In AMD-loader scenarios it should go by
-the alias &#8220;cargo.Promise&#8221;:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
-    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span> <span class="s1">&#39;cargo.Promise&#39;</span><span class="o">:</span> <span class="s1">&#39;path/to/promise&#39;</span> <span class="p">}</span>
-<span class="p">});</span>
+<p>This module has no dependencies except a Promise/A+ implementation which is provided by Node.js and most modern browsers.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="state">
+<h3>State<a class="headerlink" href="#state" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="constructor-new-state">
+<h4>constructor: new State()<a class="headerlink" href="#constructor-new-state" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="k">new</span> <span class="nx">State</span><span class="p">(</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>  <span class="c1">// =&gt; Map()</span>
+
+<span class="k">new</span> <span class="nx">State</span><span class="p">(</span> <span class="p">[</span> <span class="sr">/* ... * /</span> <span class="p">};</span> <span class="c1">// =&gt; List()</span>
+
+<span class="k">if</span> <span class="p">(</span> <span class="nx">state</span> <span class="k">instanceof</span> <span class="nx">State</span><span class="p">)</span>
+      <span class="k">new</span> <span class="nx">State</span><span class="p">(</span> <span class="nx">state</span> <span class="p">);</span>  <span class="c1">// =&gt; state</span>
+
+<span class="k">new</span> <span class="nx">State</span><span class="p">(</span> <span class="nx">literal</span> <span class="p">);</span>      <span class="c1">// =&gt; undefined</span>
+
+<span class="k">new</span> <span class="nx">State</span><span class="p">();</span>               <span class="c1">// =&gt; undefined</span>
 </pre></div>
 </div>
+<p>The <code class="docutils literal"><span class="pre">State()</span></code> constructor creates a new instance of <code class="docutils literal"><span class="pre">State</span></code> depending on the input parameter. If the parameter is
+an object, a <code class="docutils literal"><span class="pre">Map</span></code> instance is returned. If the parameter is an array, a <code class="docutils literal"><span class="pre">List</span></code> instance is created. If the paramter
+is a <code class="docutils literal"><span class="pre">List</span></code> or a <code class="docutils literal"><span class="pre">Map</span></code>, the input is returned as is. In any other case the constructor returns <code class="docutils literal"><span class="pre">undefined</span></code>.</p>
+<p>The constructor creates state instances recursively for each object property and each array element.</p>
 </div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="define-state-transitions-actions-as-functions-and-bundle-them-in-an-object">
-<h3>Define state transitions (&#8220;actions&#8221;) as functions and bundle them in an object<a class="headerlink" href="#define-state-transitions-actions-as-functions-and-bundle-them-in-an-object" title="Permalink to this headline">¶</a></h3>
-<p>Model.js exports just one constructor method - <code class="docutils literal"><span class="pre">Model(actions)</span></code>. The parameter <code class="docutils literal"><span class="pre">actions</span></code> is an object defining the
-actions that change the state. Action are defined as methods returning the new state after the action has been performed.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-
-    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">{</span> <span class="nx">state_variable</span><span class="o">:</span> <span class="s2">&quot;...&quot;</span> <span class="p">};</span> <span class="c1">// &lt;- new state</span>
-    <span class="p">},</span>
-
-    <span class="nx">actions2</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">inputs</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="p">...;</span> <span class="c1">// Do something with inputs...</span>
-        <span class="k">return</span> <span class="p">{</span> <span class="nx">state_variable</span><span class="o">:</span> <span class="nx">value</span>  <span class="p">};</span> <span class="c1">// &lt;- new state</span>
-    <span class="p">}</span>
-
-<span class="p">}</span>
+<div class="section" id="state-prototype-map-state-prototype-list">
+<h4>State.prototype.$Map / State.prototype.$List<a class="headerlink" href="#state-prototype-map-state-prototype-list" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">state</span><span class="p">.</span><span class="nx">$Map</span> <span class="o">===</span> <span class="kc">true</span><span class="p">;</span>  <span class="c1">// if the instance is a Map.</span>
+<span class="nx">state</span><span class="p">.</span><span class="nx">$List</span> <span class="o">===</span> <span class="kc">true</span><span class="p">;</span>  <span class="c1">// if the instance is a List.</span>
 </pre></div>
 </div>
+<p>Since all state instances share a common constructor regardless of the state type, the type cannot be determined using
+<code class="docutils literal"><span class="pre">instanceof</span></code>. The <code class="docutils literal"><span class="pre">$Map</span></code> and the <code class="docutils literal"><span class="pre">$List</span></code> properties can be used instead to retrieve the type of the state instance.</p>
 </div>
-<div class="section" id="pass-the-bundled-actions-to-the-constructor-method">
-<h3>Pass the bundled actions to the constructor method.<a class="headerlink" href="#pass-the-bundled-actions-to-the-constructor-method" title="Permalink to this headline">¶</a></h3>
-<p>When called as a constructor it returns an object which exposes the actions as properties. This &#8220;thing&#8221; is very
-similar to the object provided to the constructor. It provides all actions as methods:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+<div class="section" id="state-prototype-type">
+<h4>State.prototype.type()<a class="headerlink" href="#state-prototype-type" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">type</span><span class="p">();</span> <span class="c1">// &#39;LIST&#39; or &#39;MAP&#39;</span>
 </pre></div>
 </div>
+<p>Returns either &#8216;LIST&#8217; or &#8216;MAP&#8217; depending on the type of the state instance.</p>
 </div>
-<div class="section" id="use-actions-to-change-the-state">
-<h3>Use actions to change the state.<a class="headerlink" href="#use-actions-to-change-the-state" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">();</span>
-<span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">(</span><span class="s2">&quot;example input&quot;</span><span class="p">);</span>
+<div class="section" id="state-prototype-tojs">
+<h4>State.prototype.toJS()<a class="headerlink" href="#state-prototype-tojs" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">toJS</span><span class="p">();</span> <span class="c1">// an array which represents the List instance.</span>
+<span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">toJS</span><span class="p">();</span> <span class="c1">// an object which represents the Map instance.</span>
 </pre></div>
 </div>
+<p>Converts the current instance to a plain javascript object or array from either a List or a Map respectively. The
+conversion is recursive, resulting in a full Javascript copy of the current state. Note that this is only a copy
+of the state, which stays immutable.</p>
 </div>
-<div class="section" id="subscribe-to-state-changes">
-<h3>Subscribe to state changes.<a class="headerlink" href="#subscribe-to-state-changes" title="Permalink to this headline">¶</a></h3>
-<p>The methods <code class="docutils literal"><span class="pre">model.action1()</span></code>, <code class="docutils literal"><span class="pre">model.actions2()</span></code> do not return the current state directly. The current state can be
-accessed by &#8220;subscribing&#8221; to the model. A &#8220;subscriber&#8221; is a callback that can be added to the model by calling the model
-as a function and passing the callback as a parameter:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
-<span class="p">...</span>
+<div class="section" id="state-prototype-tojson-indent">
+<h4>State.prototype.toJSON(indent)<a class="headerlink" href="#state-prototype-tojson-indent" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">json</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span> <span class="c1">// a JSON string representing the current state.</span>
+<span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">);</span> <span class="c1">// 1 space for indentation</span>
 </pre></div>
 </div>
+<p>Returns a JSON string representing the current instance. This method is mostly for debugging purposes. The indent
+parameter is copied to <code class="docutils literal"><span class="pre">JSON.stringify(obj,</span> <span class="pre">undefined,</span> <span class="pre">indent)</span></code>.</p>
 </div>
-<div class="section" id="unsubscribe-from-state-changes-later">
-<h3>Unsubscribe from state changes later.<a class="headerlink" href="#unsubscribe-from-state-changes-later" title="Permalink to this headline">¶</a></h3>
-<p>The subscription function itself returns another function which can be used to unsubscribe from the model later:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
-<span class="nx">unsubscribe</span><span class="p">();</span>
+<div class="section" id="list-state-prototype-get-index">
+<h4>List: State.prototype.get(index)<a class="headerlink" href="#list-state-prototype-get-index" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// Returns the fourth element in the list.</span>
 </pre></div>
 </div>
+<p>Returns the list element at the specified numerical index <code class="docutils literal"><span class="pre">index</span></code>. Indices start at 0.
+If the list element is a state instance itself, this instance is returned. Just like with plain arrays, accessing
+an index greater than the list size returns <code class="docutils literal"><span class="pre">undefined</span></code>.</p>
 </div>
-<div class="section" id="useful-helpers">
-<h3>Useful helpers.<a class="headerlink" href="#useful-helpers" title="Permalink to this headline">¶</a></h3>
-<p>Actions are called with a special <code class="docutils literal"><span class="pre">this</span></code> context. <code class="docutils literal"><span class="pre">this</span></code> within actions has a method <code class="docutils literal"><span class="pre">state()</span></code> which provides the
-current state.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">oldState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">();</span>
-        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">oldState</span><span class="p">.</span><span class="nx">x</span> <span class="p">};</span>
-        <span class="k">return</span> <span class="nx">newState</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">};</span>
+<div class="section" id="list-state-prototype-size">
+<h4>List: State.prototype.size()<a class="headerlink" href="#list-state-prototype-size" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">size</span><span class="p">();</span> <span class="c1">// Returns the number of elements in the list.</span>
 </pre></div>
 </div>
-<p>When <code class="docutils literal"><span class="pre">state()</span></code> is called with an object as an argument, the provided object is merged with the new state.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-
-    <span class="c1">// oldState = { a: &#39;b&#39; }</span>
-    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">({</span> <span class="nx">x</span><span class="o">:</span> <span class="s1">&#39;y&#39;</span><span class="p">});</span>
-        <span class="c1">// newState = { a: &#39;b&#39;, x: &#39;y&#39; }</span>
-        <span class="k">return</span> <span class="nx">newState</span><span class="p">;</span>
-    <span class="p">}</span>
-
-<span class="p">};</span>
+<p>Returns the size of the list which is the containing number of elements as a Number.</p>
+</div>
+<div class="section" id="list-state-prototype-add-element">
+<h4>List: State.prototype.add(element)<a class="headerlink" href="#list-state-prototype-add-element" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Creates a new list with an additional element &quot;1&quot;.</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal"><span class="pre">this</span></code> context of an action also exposes the current model object within a propety <code class="docutils literal"><span class="pre">model</span></code>. This can be handy when
-calling another action from within an action.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-
-        <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">;</span>
-            <span class="nx">self</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
-            <span class="k">return</span> <span class="p">{</span> <span class="p">...</span> <span class="p">};</span>
-        <span class="p">}</span>
-
-    <span class="p">};</span>
+<p>Creates a new list from this instance with the element added at its end. The current instance is unchanged. If <code class="docutils literal"><span class="pre">element</span></code>
+is an array or an object, it is converted to a state instance and this instance is added to the new list.</p>
+</div>
+<div class="section" id="list-state-prototype-remove-index">
+<h4>List: State.prototype.remove(index)<a class="headerlink" href="#list-state-prototype-remove-index" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// Creates a new list with the fourth element removed.</span>
 </pre></div>
 </div>
-<p>If an action returns <code class="docutils literal"><span class="pre">undefined</span></code>, the current state of the model keeps unchanged.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-
-    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="cm">/* Do something... */</span>
-        <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span> <span class="c1">// State keeps the same.</span>
-    <span class="p">}</span>
-
-<span class="p">};</span>
+<p>Creates a new list from this instance with the element at <code class="docutils literal"><span class="pre">index</span></code> removed. The current instance is unchanged.</p>
+</div>
+<div class="section" id="list-state-prototype-insert-element-index">
+<h4>List: State.prototype.insert(element, index)<a class="headerlink" href="#list-state-prototype-insert-element-index" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="s2">&quot;INSERT_ME&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="c1">// Creates a new list with &quot;INSERT_ME&quot; at the fourth position.</span>
 </pre></div>
 </div>
-<p>Use <code class="docutils literal"><span class="pre">null</span></code> if you want to clear the state. Of course you can use an empty object <code class="docutils literal"><span class="pre">{}</span></code> as well to clear the state.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
-
-    <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="cm">/* Do something... */</span>
-        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span> <span class="c1">// Clear the state.</span>
-    <span class="p">}</span>
-
-<span class="p">};</span>
+<p>Creates a new list from this instance with <code class="docutils literal"><span class="pre">element</span></code> inserted at <code class="docutils literal"><span class="pre">index</span></code> and moving all following
+elements by one position towards the end. The current instance is unchanged. If <code class="docutils literal"><span class="pre">element</span></code>
+is an array or an object, it is converted to a state instance and this instance is inserted into the new list. If index is
+negativ <code class="docutils literal"><span class="pre">element</span></code> is inserted at the first list position.</p>
+</div>
+<div class="section" id="list-state-prototype-push-element">
+<h4>List: State.prototype.push(element)<a class="headerlink" href="#list-state-prototype-push-element" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;END&quot;</span><span class="p">);</span> <span class="c1">// Creates a new list with an additional element &quot;END&quot; at the end.</span>
 </pre></div>
 </div>
-<p>Calling an action returns a Promise (see <a class="reference internal" href="module_promise.html"><em>Module: Promise</em></a>) which is fulfilled with the new state as the result. If the model is in dead state,
-the promise is rejected with the error which was returned before entering the dead state.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">()</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// ...</span>
-    <span class="p">});</span>
+<p>Creates a new list from this instance with <code class="docutils literal"><span class="pre">element</span></code> added to the list. The current instance is unchanged. If <code class="docutils literal"><span class="pre">element</span></code>
+is an array or an object, it is converted to a state instance and this instance is inserted into the new list.</p>
+</div>
+<div class="section" id="list-state-prototype-pop">
+<h4>List: State.prototype.pop()<a class="headerlink" href="#list-state-prototype-pop" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span> <span class="c1">// Creates a new list with the first element removed.</span>
 </pre></div>
 </div>
-<p>Return an error if you want to destroy the model. If a model is destroyed, it enters the &#8220;dead state&#8221; unsubscribing all
-subscribers and rejecting all further action calls. Note that this is different from throwing an error within the action.
-Throwing an error within the action rejects the action but does not enter the model into dead state.:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span>
-    <span class="nx">action1</span><span class="o">:</span> <span class="p">...,</span>
-    <span class="nx">destroy</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;I am in dead state now.&quot;</span><span class="p">);</span> <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="nx">model</span><span class="p">.</span><span class="nx">destroy</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span> <span class="c1">// prints &quot;I am in dead state now.&quot;</span>
-<span class="p">});</span>
-
-<span class="p">...</span>
-
-<span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">().</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span> <span class="c1">// prints &quot;I am in dead state now.&quot;</span>
-<span class="p">});</span>
+<p>Creates a new list from this instance with the first element removed. The current instance is unchanged.</p>
+</div>
+<div class="section" id="list-state-prototype-shift">
+<h4>List: State.prototype.shift()<a class="headerlink" href="#list-state-prototype-shift" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span> <span class="c1">// Creates a new list with the last element removed.</span>
 </pre></div>
 </div>
+<p>Creates a new list from this instance with the last element removed. The current instance is unchanged.</p>
+</div>
+<div class="section" id="list-state-prototype-unshift-element">
+<h4>List: State.prototype.unshift(element)<a class="headerlink" href="#list-state-prototype-unshift-element" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span><span class="s1">&#39;START&#39;</span><span class="p">);</span> <span class="c1">// Creates a new list &#39;START&#39; added at the beginning.</span>
+</pre></div>
+</div>
+<p>Creates a new list from this instance with the <code class="docutils literal"><span class="pre">element</span></code> added at the beginning. The current instance is unchanged.
+If <code class="docutils literal"><span class="pre">element</span></code> is an array or an object, it is converted to a state instance and this instance is added to the new list.</p>
+</div>
+<div class="section" id="map-state-prototype-get-key">
+<h4>Map: State.prototype.get(key)<a class="headerlink" href="#map-state-prototype-get-key" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// Gets the value of element &#39;a&#39; from the map.</span>
+</pre></div>
+</div>
+<p>Retrieves value of element <code class="docutils literal"><span class="pre">key</span></code> from the map. If the map does not have an element <code class="docutils literal"><span class="pre">key</span></code>, <code class="docutils literal"><span class="pre">undefined</span></code> is returned.</p>
+</div>
+<div class="section" id="map-state-prototype-keys">
+<h4>Map: State.prototype.keys()<a class="headerlink" href="#map-state-prototype-keys" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">keys</span><span class="p">();</span> <span class="c1">// Gets the keys of the map.</span>
+</pre></div>
+</div>
+<p>Returns keys of all elements in the map as an array.</p>
+</div>
+<div class="section" id="map-state-prototype-has-key">
+<h4>Map: State.prototype.has(key)<a class="headerlink" href="#map-state-prototype-has-key" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">map</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// True if the map has an element &quot;a&quot;.</span>
+</pre></div>
+</div>
+<p>Returns <code class="docutils literal"><span class="pre">true</span></code> if the map has an element <code class="docutils literal"><span class="pre">key</span></code>, <code class="docutils literal"><span class="pre">false</span></code> otherwise.</p>
+</div>
+<div class="section" id="map-state-prototype-put-key-value">
+<h4>Map: State.prototype.put(key, value)<a class="headerlink" href="#map-state-prototype-put-key-value" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;OK&#39;</span><span class="p">);</span> <span class="c1">// Returns a new map with element &#39;a&#39; set to &#39;OK&#39;.</span>
+</pre></div>
+</div>
+<p>Returns a new map with an element <code class="docutils literal"><span class="pre">key</span></code> set to <code class="docutils literal"><span class="pre">value</span></code>. The current instance of the map is unchanged.</p>
+<p>If <code class="docutils literal"><span class="pre">value</span></code> is an array or an object, it is converted to a <code class="docutils literal"><span class="pre">State</span></code> instance recursively and that instance
+is added instead.</p>
+</div>
+<div class="section" id="map-state-prototype-remove-key">
+<h4>Map: State.prototype.remove(key)<a class="headerlink" href="#map-state-prototype-remove-key" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// Returns a new map with element &#39;a&#39; removed.</span>
+</pre></div>
+</div>
+<p>Returns a new map with element <code class="docutils literal"><span class="pre">key</span></code> removed. The current instance of the map is unchanged.</p>
+</div>
+<div class="section" id="map-state-prototype-merge-object">
+<h4>Map: State.prototype.merge(object)<a class="headerlink" href="#map-state-prototype-merge-object" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;b&#39;</span><span class="o">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Returns a new map the object merged into the current map.</span>
+</pre></div>
+</div>
+<p>Returns a new map with <code class="docutils literal"><span class="pre">object</span></code> merged into the current state. If <code class="docutils literal"><span class="pre">object</span></code> contains any properties
+already present in the current state, the present properties are replaced with the properties from
+<code class="docutils literal"><span class="pre">object</span></code>. All other properties are identical (i.e. the same instances) in the new and the old state.</p>
+<p><code class="docutils literal"><span class="pre">object</span></code> is converted recursively to state instances before merging. Note that this is a &#8220;shallow&#8221; merge simply
+replacing all properties at the &#8220;upper&#8221; level of the object removing any ramification under the present properties.</p>
+</div>
+</div>
+<div class="section" id="model">
+<h3>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>

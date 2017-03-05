@@ -12,7 +12,7 @@ Usage with requirejs
 
 The modules can be used like any other module with requirejs. They are dependent on each other
 and expected to go by the alias "cargo.MODULENAME" to avoid name collision with other
-libraries - e.g. for Promise.js it's "cargo.Promise".
+libraries - e.g. for Model.js it's "cargo.Model".
 
 Here is a sample path config for requirejs assuming the modules are stored in a sub directory
 ``lib/``::
@@ -20,7 +20,6 @@ Here is a sample path config for requirejs assuming the modules are stored in a 
     require.config({
         paths: {
             // ...
-            'cargo.Promise': 'lib/promise',
             'cargo.Model': 'lib/model'
             // ...
         }
@@ -28,10 +27,9 @@ Here is a sample path config for requirejs assuming the modules are stored in a 
 
 And later in one of your modules::
 
-    define(['cargo.Promise', 'cargo.Model'], function(Promise, Model) {
+    define(['cargo.Model'], function(Model) {
 
         var model = new Model({ /* ... */ });
-        var p = new Promise(function(resolve, reject) { /* ... */ });
 
         // ...
     });
@@ -46,12 +44,10 @@ sure to load the Javascript files and all dependencies in your HTML
 
     <html>
     <body>
-        <script type="text/javascript" src="js/promise.js"></script>
         <script type="text/javascript" src="js/model.js"></script>
         <script type=text/javascript">
 
             var model = new cargo.Model({ /* ... */ });
-            var p = new cargo.Promise(function(resolve, reject) { /* ... */ });
 
             //...
 
@@ -66,7 +62,7 @@ Some modules depend on third-party libraries like jQuery or underscore. All requ
 provided in the ``dist/dependencies`` directory but you are highly encouraged to maintain your own dependency tree (for instance
 with bower or/and npm) and use the modules from there.
 
-All modules fail early if a dependency is missing on initialization. So when in doubt which dependencies to
+All modules fail early if dependencies are missing on initialization. So when in doubt which dependencies to
 provide, just try to use the module and read the errors. Additionally dependencies are documented in the
 respective module documentation.
 

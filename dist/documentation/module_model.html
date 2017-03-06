@@ -35,7 +35,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="cargo-js 0.1 documentation" href="index.html"/>
         <link rel="next" title="Module: Component" href="module_component.html"/>
-        <link rel="prev" title="Module: Promise" href="module_promise.html"/> 
+        <link rel="prev" title="General Usage" href="usage.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -87,7 +87,6 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#introduction-to-state-api">Introduction to State-API</a></li>
@@ -106,28 +105,34 @@
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#state">State</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#constructor-new-state">constructor: new State()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#state-prototype-map-state-prototype-list">State.prototype.$Map / State.prototype.$List</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#state-prototype-type">State.prototype.type()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#state-prototype-tojs">State.prototype.toJS()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#state-prototype-tojson-indent">State.prototype.toJSON(indent)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-get-index">List: State.prototype.get(index)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-size">List: State.prototype.size()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-add-element">List: State.prototype.add(element)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-remove-index">List: State.prototype.remove(index)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-insert-element-index">List: State.prototype.insert(element, index)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-push-element">List: State.prototype.push(element)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-pop">List: State.prototype.pop()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-shift">List: State.prototype.shift()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-state-prototype-unshift-element">List: State.prototype.unshift(element)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-get-key">Map: State.prototype.get(key)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-keys">Map: State.prototype.keys()</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-has-key">Map: State.prototype.has(key)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-put-key-value">Map: State.prototype.put(key, value)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-remove-key">Map: State.prototype.remove(key)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map-state-prototype-merge-object">Map: State.prototype.merge(object)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-map-state-list">state.$Map / state.$List</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-type">state.type()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-tojs">state.toJS()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#state-tojson-indent">state.toJSON(indent)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-get-index">List: state.get(index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-size">List: state.size()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-add-element">List: state.add(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-remove-index">List: state.remove(index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-insert-element-index">List: state.insert(element, index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-push-element">List: state.push(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-pop">List: state.pop()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-shift">List: state.shift()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-state-unshift-element">List: state.unshift(element)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-get-key">Map: state.get(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-keys">Map: state.keys()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-has-key">Map: state.has(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-put-key-value">Map: state.put(key, value)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-remove-key">Map: state.remove(key)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map-state-merge-object">Map: state.merge(object)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#model">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model">Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constructor-new-model">constructor: new Model()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#inside-the-action-callback">Inside the action callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#model-state-arg">Model.state(arg)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#model-subscribe-model-subscriber">Model.subscribe(model, subscriber)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -199,7 +204,7 @@ replaced with a “List” data structure.</p>
 the collection is altered a new instance is created and the old instance is left unchanged. E.g. the
 Map data structure has a method to add new items which returns a new instance of Map which contains the
 added item:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">State</span><span class="p">({});</span>
 <span class="kd">var</span> <span class="nx">map2</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">map</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>  <span class="c1">// map =&gt; {}, i.e. it stays the same after put().</span>
@@ -207,7 +212,7 @@ added item:</p>
 </pre></div>
 </div>
 <p>Lists follow the same idea:</p>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">List</span><span class="p">();</span>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">State</span><span class="p">([]);</span>
 <span class="kd">var</span> <span class="nx">list2</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">list</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>  <span class="c1">// list =&gt; []</span>
@@ -551,8 +556,8 @@ an object, a <code class="docutils literal"><span class="pre">Map</span></code> 
 is a <code class="docutils literal"><span class="pre">List</span></code> or a <code class="docutils literal"><span class="pre">Map</span></code>, the input is returned as is. In any other case the constructor returns <code class="docutils literal"><span class="pre">undefined</span></code>.</p>
 <p>The constructor creates state instances recursively for each object property and each array element.</p>
 </div>
-<div class="section" id="state-prototype-map-state-prototype-list">
-<h4>State.prototype.$Map / State.prototype.$List<a class="headerlink" href="#state-prototype-map-state-prototype-list" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="state-map-state-list">
+<h4>state.$Map / state.$List<a class="headerlink" href="#state-map-state-list" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">state</span><span class="p">.</span><span class="nx">$Map</span> <span class="o">===</span> <span class="kc">true</span><span class="p">;</span>  <span class="c1">// if the instance is a Map.</span>
 <span class="nx">state</span><span class="p">.</span><span class="nx">$List</span> <span class="o">===</span> <span class="kc">true</span><span class="p">;</span>  <span class="c1">// if the instance is a List.</span>
 </pre></div>
@@ -560,15 +565,15 @@ is a <code class="docutils literal"><span class="pre">List</span></code> or a <c
 <p>Since all state instances share a common constructor regardless of the state type, the type cannot be determined using
 <code class="docutils literal"><span class="pre">instanceof</span></code>. The <code class="docutils literal"><span class="pre">$Map</span></code> and the <code class="docutils literal"><span class="pre">$List</span></code> properties can be used instead to retrieve the type of the state instance.</p>
 </div>
-<div class="section" id="state-prototype-type">
-<h4>State.prototype.type()<a class="headerlink" href="#state-prototype-type" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="state-type">
+<h4>state.type()<a class="headerlink" href="#state-type" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">type</span><span class="p">();</span> <span class="c1">// &#39;LIST&#39; or &#39;MAP&#39;</span>
 </pre></div>
 </div>
 <p>Returns either &#8216;LIST&#8217; or &#8216;MAP&#8217; depending on the type of the state instance.</p>
 </div>
-<div class="section" id="state-prototype-tojs">
-<h4>State.prototype.toJS()<a class="headerlink" href="#state-prototype-tojs" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="state-tojs">
+<h4>state.toJS()<a class="headerlink" href="#state-tojs" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">toJS</span><span class="p">();</span> <span class="c1">// an array which represents the List instance.</span>
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">toJS</span><span class="p">();</span> <span class="c1">// an object which represents the Map instance.</span>
 </pre></div>
@@ -577,8 +582,8 @@ is a <code class="docutils literal"><span class="pre">List</span></code> or a <c
 conversion is recursive, resulting in a full Javascript copy of the current state. Note that this is only a copy
 of the state, which stays immutable.</p>
 </div>
-<div class="section" id="state-prototype-tojson-indent">
-<h4>State.prototype.toJSON(indent)<a class="headerlink" href="#state-prototype-tojson-indent" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="state-tojson-indent">
+<h4>state.toJSON(indent)<a class="headerlink" href="#state-tojson-indent" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">json</span> <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span> <span class="c1">// a JSON string representing the current state.</span>
 <span class="nx">state</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">);</span> <span class="c1">// 1 space for indentation</span>
 </pre></div>
@@ -586,8 +591,8 @@ of the state, which stays immutable.</p>
 <p>Returns a JSON string representing the current instance. This method is mostly for debugging purposes. The indent
 parameter is copied to <code class="docutils literal"><span class="pre">JSON.stringify(obj,</span> <span class="pre">undefined,</span> <span class="pre">indent)</span></code>.</p>
 </div>
-<div class="section" id="list-state-prototype-get-index">
-<h4>List: State.prototype.get(index)<a class="headerlink" href="#list-state-prototype-get-index" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-get-index">
+<h4>List: state.get(index)<a class="headerlink" href="#list-state-get-index" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// Returns the fourth element in the list.</span>
 </pre></div>
 </div>
@@ -595,30 +600,30 @@ parameter is copied to <code class="docutils literal"><span class="pre">JSON.str
 If the list element is a state instance itself, this instance is returned. Just like with plain arrays, accessing
 an index greater than the list size returns <code class="docutils literal"><span class="pre">undefined</span></code>.</p>
 </div>
-<div class="section" id="list-state-prototype-size">
-<h4>List: State.prototype.size()<a class="headerlink" href="#list-state-prototype-size" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-size">
+<h4>List: state.size()<a class="headerlink" href="#list-state-size" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">size</span><span class="p">();</span> <span class="c1">// Returns the number of elements in the list.</span>
 </pre></div>
 </div>
 <p>Returns the size of the list which is the containing number of elements as a Number.</p>
 </div>
-<div class="section" id="list-state-prototype-add-element">
-<h4>List: State.prototype.add(element)<a class="headerlink" href="#list-state-prototype-add-element" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-add-element">
+<h4>List: state.add(element)<a class="headerlink" href="#list-state-add-element" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Creates a new list with an additional element &quot;1&quot;.</span>
 </pre></div>
 </div>
 <p>Creates a new list from this instance with the element added at its end. The current instance is unchanged. If <code class="docutils literal"><span class="pre">element</span></code>
 is an array or an object, it is converted to a state instance and this instance is added to the new list.</p>
 </div>
-<div class="section" id="list-state-prototype-remove-index">
-<h4>List: State.prototype.remove(index)<a class="headerlink" href="#list-state-prototype-remove-index" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-remove-index">
+<h4>List: state.remove(index)<a class="headerlink" href="#list-state-remove-index" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// Creates a new list with the fourth element removed.</span>
 </pre></div>
 </div>
 <p>Creates a new list from this instance with the element at <code class="docutils literal"><span class="pre">index</span></code> removed. The current instance is unchanged.</p>
 </div>
-<div class="section" id="list-state-prototype-insert-element-index">
-<h4>List: State.prototype.insert(element, index)<a class="headerlink" href="#list-state-prototype-insert-element-index" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-insert-element-index">
+<h4>List: state.insert(element, index)<a class="headerlink" href="#list-state-insert-element-index" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="s2">&quot;INSERT_ME&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span> <span class="c1">// Creates a new list with &quot;INSERT_ME&quot; at the fourth position.</span>
 </pre></div>
 </div>
@@ -627,59 +632,59 @@ elements by one position towards the end. The current instance is unchanged. If 
 is an array or an object, it is converted to a state instance and this instance is inserted into the new list. If index is
 negativ <code class="docutils literal"><span class="pre">element</span></code> is inserted at the first list position.</p>
 </div>
-<div class="section" id="list-state-prototype-push-element">
-<h4>List: State.prototype.push(element)<a class="headerlink" href="#list-state-prototype-push-element" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-push-element">
+<h4>List: state.push(element)<a class="headerlink" href="#list-state-push-element" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;END&quot;</span><span class="p">);</span> <span class="c1">// Creates a new list with an additional element &quot;END&quot; at the end.</span>
 </pre></div>
 </div>
 <p>Creates a new list from this instance with <code class="docutils literal"><span class="pre">element</span></code> added to the list. The current instance is unchanged. If <code class="docutils literal"><span class="pre">element</span></code>
 is an array or an object, it is converted to a state instance and this instance is inserted into the new list.</p>
 </div>
-<div class="section" id="list-state-prototype-pop">
-<h4>List: State.prototype.pop()<a class="headerlink" href="#list-state-prototype-pop" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span> <span class="c1">// Creates a new list with the first element removed.</span>
-</pre></div>
-</div>
-<p>Creates a new list from this instance with the first element removed. The current instance is unchanged.</p>
-</div>
-<div class="section" id="list-state-prototype-shift">
-<h4>List: State.prototype.shift()<a class="headerlink" href="#list-state-prototype-shift" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span> <span class="c1">// Creates a new list with the last element removed.</span>
+<div class="section" id="list-state-pop">
+<h4>List: state.pop()<a class="headerlink" href="#list-state-pop" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span> <span class="c1">// Creates a new list with the last element removed.</span>
 </pre></div>
 </div>
 <p>Creates a new list from this instance with the last element removed. The current instance is unchanged.</p>
 </div>
-<div class="section" id="list-state-prototype-unshift-element">
-<h4>List: State.prototype.unshift(element)<a class="headerlink" href="#list-state-prototype-unshift-element" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="list-state-shift">
+<h4>List: state.shift()<a class="headerlink" href="#list-state-shift" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span> <span class="c1">// Creates a new list with the first element removed.</span>
+</pre></div>
+</div>
+<p>Creates a new list from this instance with the first element removed. The current instance is unchanged.</p>
+</div>
+<div class="section" id="list-state-unshift-element">
+<h4>List: state.unshift(element)<a class="headerlink" href="#list-state-unshift-element" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newList</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span><span class="s1">&#39;START&#39;</span><span class="p">);</span> <span class="c1">// Creates a new list &#39;START&#39; added at the beginning.</span>
 </pre></div>
 </div>
 <p>Creates a new list from this instance with the <code class="docutils literal"><span class="pre">element</span></code> added at the beginning. The current instance is unchanged.
 If <code class="docutils literal"><span class="pre">element</span></code> is an array or an object, it is converted to a state instance and this instance is added to the new list.</p>
 </div>
-<div class="section" id="map-state-prototype-get-key">
-<h4>Map: State.prototype.get(key)<a class="headerlink" href="#map-state-prototype-get-key" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-get-key">
+<h4>Map: state.get(key)<a class="headerlink" href="#map-state-get-key" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// Gets the value of element &#39;a&#39; from the map.</span>
 </pre></div>
 </div>
 <p>Retrieves value of element <code class="docutils literal"><span class="pre">key</span></code> from the map. If the map does not have an element <code class="docutils literal"><span class="pre">key</span></code>, <code class="docutils literal"><span class="pre">undefined</span></code> is returned.</p>
 </div>
-<div class="section" id="map-state-prototype-keys">
-<h4>Map: State.prototype.keys()<a class="headerlink" href="#map-state-prototype-keys" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-keys">
+<h4>Map: state.keys()<a class="headerlink" href="#map-state-keys" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">keys</span><span class="p">();</span> <span class="c1">// Gets the keys of the map.</span>
 </pre></div>
 </div>
 <p>Returns keys of all elements in the map as an array.</p>
 </div>
-<div class="section" id="map-state-prototype-has-key">
-<h4>Map: State.prototype.has(key)<a class="headerlink" href="#map-state-prototype-has-key" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-has-key">
+<h4>Map: state.has(key)<a class="headerlink" href="#map-state-has-key" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">map</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// True if the map has an element &quot;a&quot;.</span>
 </pre></div>
 </div>
 <p>Returns <code class="docutils literal"><span class="pre">true</span></code> if the map has an element <code class="docutils literal"><span class="pre">key</span></code>, <code class="docutils literal"><span class="pre">false</span></code> otherwise.</p>
 </div>
-<div class="section" id="map-state-prototype-put-key-value">
-<h4>Map: State.prototype.put(key, value)<a class="headerlink" href="#map-state-prototype-put-key-value" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-put-key-value">
+<h4>Map: state.put(key, value)<a class="headerlink" href="#map-state-put-key-value" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;OK&#39;</span><span class="p">);</span> <span class="c1">// Returns a new map with element &#39;a&#39; set to &#39;OK&#39;.</span>
 </pre></div>
 </div>
@@ -687,15 +692,15 @@ If <code class="docutils literal"><span class="pre">element</span></code> is an 
 <p>If <code class="docutils literal"><span class="pre">value</span></code> is an array or an object, it is converted to a <code class="docutils literal"><span class="pre">State</span></code> instance recursively and that instance
 is added instead.</p>
 </div>
-<div class="section" id="map-state-prototype-remove-key">
-<h4>Map: State.prototype.remove(key)<a class="headerlink" href="#map-state-prototype-remove-key" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-remove-key">
+<h4>Map: state.remove(key)<a class="headerlink" href="#map-state-remove-key" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span> <span class="c1">// Returns a new map with element &#39;a&#39; removed.</span>
 </pre></div>
 </div>
 <p>Returns a new map with element <code class="docutils literal"><span class="pre">key</span></code> removed. The current instance of the map is unchanged.</p>
 </div>
-<div class="section" id="map-state-prototype-merge-object">
-<h4>Map: State.prototype.merge(object)<a class="headerlink" href="#map-state-prototype-merge-object" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="map-state-merge-object">
+<h4>Map: state.merge(object)<a class="headerlink" href="#map-state-merge-object" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">newMap</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="p">{</span> <span class="s1">&#39;b&#39;</span><span class="o">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Returns a new map the object merged into the current map.</span>
 </pre></div>
 </div>
@@ -708,6 +713,120 @@ replacing all properties at the &#8220;upper&#8221; level of the object removing
 </div>
 <div class="section" id="model">
 <h3>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="constructor-new-model">
+<h4>constructor: new Model()<a class="headerlink" href="#constructor-new-model" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+   <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">},</span>
+
+   <span class="nx">action2</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+
+   <span class="cm">/* ... */</span>
+
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+
+<span class="nx">model</span><span class="p">.</span><span class="nx">action1</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+   <span class="cm">/* ... */</span>
+<span class="p">});</span>
+
+
+<span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
+<span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">model</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">);</span>
+<span class="nx">unsubscribe</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Creates a new instance of <code class="docutils literal"><span class="pre">Model</span></code>. The constructor takes a Javascript object as its single argument which consists of
+name / value pairs of action callbacks. The action callbacks are wrapped in methods of the instance returned by the
+constructor. Their method names correspond to the names of the name / value pairs from the Javascript object.
+Whenever such a method is called the callback is executed and its return value is stored as the new state
+of the model. The methods return a promise which resolves with the new state.</p>
+<p>The <code class="docutils literal"><span class="pre">Model</span></code> instance can be used as a function to subscribe to state changes by passing a subscriber function. On state
+changes the subscriber function is called with the new state as its first argument. The state is passed as an instance
+of <code class="docutils literal"><span class="pre">State</span></code> and is immutable.</p>
+<p>Calling the <code class="docutils literal"><span class="pre">Model</span></code> instance as a function (i.e. subscribing) returns an unsubscribe function which can be used to
+unsubscribe from the model later.</p>
+</div>
+<div class="section" id="inside-the-action-callback">
+<h4>Inside the action callback<a class="headerlink" href="#inside-the-action-callback" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="p">{</span>
+
+   <span class="nx">action1</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">();</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nx">id</span><span class="p">);</span>
+   <span class="p">};</span>
+
+   <span class="nx">action2</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">().</span><span class="nx">action1</span><span class="p">(</span><span class="mi">2001</span><span class="p">);</span>
+   <span class="p">}</span>
+
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+<span class="nx">model</span><span class="p">.</span><span class="nx">action2</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>The action callbacks - <code class="docutils literal"><span class="pre">action1</span></code> and <code class="docutils literal"><span class="pre">action2</span></code> in the example above - are called whenever an action is called
+on the model (line 15). They are expected to return a <code class="docutils literal"><span class="pre">State</span></code> instance but for simplicity literals, objects and arrays
+are accepted as valid return values and converted conveniently to <code class="docutils literal"><span class="pre">State</span></code> instances. The return value is stored as the new state
+of the model.</p>
+<p>For partial state changes the former state is provided through the method <code class="docutils literal"><span class="pre">this.state()</span></code> within the callback function
+context. The former state can be used to built a new state from and to be returned by the callback.</p>
+<p>Other actions can trigger from within the action through the <code class="docutils literal"><span class="pre">this.model()</span></code> method which exposes the current model
+instance.</p>
+<p>If an action callback returns <code class="docutils literal"><span class="pre">undefined</span></code> (or returns nothing), the current state is left unchanged and no subscriber&#8217;s
+are notified.</p>
+<p>If the return value is an instance of <code class="docutils literal"><span class="pre">Error</span></code>, the model is sent into the &#8220;dead state&#8221;. In &#8220;dead state&#8221; any further
+calls of actions are rejected with the <code class="docutils literal"><span class="pre">Error</span></code> instance and all subscribers are unsubscribed immediately. They
+do not receive a notification about a state change. Note that this is different from <strong>throwing</strong> an exception
+within the callback.</p>
+<p>When an exception is thrown during the action callback execution, the action&#8217;s promise is rejected and the state
+is unchanged. Hence, no subscriber is notified about any state changes.</p>
+<p>Subscribers are only notified about <em>valid</em> state changes ensuring that the state is in a expectable format. The difference
+between returning an <code class="docutils literal"><span class="pre">Error</span></code> instance through <code class="docutils literal"><span class="pre">return</span> <span class="pre">new</span> <span class="pre">Error()</span></code> and throwing an exception <code class="docutils literal"><span class="pre">throw</span> <span class="pre">new</span> <span class="pre">Error()</span></code>
+prevents the model from entering the &#8220;dead state&#8221; by accident. Returning an error is a thoughtful act by the developer
+while exception may happen by various reasons like mistakes or unexpected input values.</p>
+</div>
+<div class="section" id="model-state-arg">
+<h4>Model.state(arg)<a class="headerlink" href="#model-state-arg" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">Model</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>Creates a new <code class="docutils literal"><span class="pre">State</span></code> instance from anything. If an object or an array is passed, it is converted recursively to an
+instance of <code class="docutils literal"><span class="pre">State</span></code> - a map or a list. If a literal is passed, the literal is returned as is while everything else
+resolves to <code class="docutils literal"><span class="pre">undefined</span></code> (including <code class="docutils literal"><span class="pre">undefined</span></code> itself).</p>
+</div>
+<div class="section" id="model-subscribe-model-subscriber">
+<h4>Model.subscribe(model, subscriber)<a class="headerlink" href="#model-subscribe-model-subscriber" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">(</span> <span class="cm">/* ... */</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">subscriber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">Model</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">subscriber</span><span class="p">);</span>
+<span class="nx">unsubscribe</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Syntac sugar for calling the <code class="docutils literal"><span class="pre">Model</span></code> instance as a function. It expects a function as its second argument
+and adds it as a subscriber to state changes of the model from the first argument. It returns an unsubscribe
+function to call later for unsubscribing.</p>
+</div>
 </div>
 </div>
 </div>
@@ -722,7 +841,7 @@ replacing all properties at the &#8220;upper&#8221; level of the object removing
         <a href="module_component.html" class="btn btn-neutral float-right" title="Module: Component" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="module_promise.html" class="btn btn-neutral" title="Module: Promise" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral" title="General Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

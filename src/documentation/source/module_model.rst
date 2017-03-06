@@ -403,7 +403,7 @@ is a ``List`` or a ``Map``, the input is returned as is. In any other case the c
 
 The constructor creates state instances recursively for each object property and each array element.
 
-State.prototype.$Map / State.prototype.$List
+state.$Map / state.$List
 ````````````````````````````````````````````
 
 .. code-block:: js
@@ -414,7 +414,7 @@ State.prototype.$Map / State.prototype.$List
 Since all state instances share a common constructor regardless of the state type, the type cannot be determined using
 ``instanceof``. The ``$Map`` and the ``$List`` properties can be used instead to retrieve the type of the state instance.
 
-State.prototype.type()
+state.type()
 ``````````````````````
 
 .. code-block:: js
@@ -423,7 +423,7 @@ State.prototype.type()
 
 Returns either 'LIST' or 'MAP' depending on the type of the state instance.
 
-State.prototype.toJS()
+state.toJS()
 ``````````````````````
 
 .. code-block:: js
@@ -436,7 +436,7 @@ conversion is recursive, resulting in a full Javascript copy of the current stat
 of the state, which stays immutable.
 
 
-State.prototype.toJSON(indent)
+state.toJSON(indent)
 ``````````````````````````````
 
 .. code-block:: js
@@ -447,8 +447,8 @@ State.prototype.toJSON(indent)
 Returns a JSON string representing the current instance. This method is mostly for debugging purposes. The indent
 parameter is copied to ``JSON.stringify(obj, undefined, indent)``.
 
-List: State.prototype.get(index)
-````````````````````````````````
+List: state.get(index)
+``````````````````````
 
 .. code-block:: js
 
@@ -459,8 +459,8 @@ If the list element is a state instance itself, this instance is returned. Just 
 an index greater than the list size returns ``undefined``.
 
 
-List: State.prototype.size()
-````````````````````````````
+List: state.size()
+``````````````````
 
 .. code-block:: js
 
@@ -468,8 +468,8 @@ List: State.prototype.size()
 
 Returns the size of the list which is the containing number of elements as a Number.
 
-List: State.prototype.add(element)
-``````````````````````````````````
+List: state.add(element)
+````````````````````````
 
 .. code-block:: js
 
@@ -479,8 +479,8 @@ Creates a new list from this instance with the element added at its end. The cur
 is an array or an object, it is converted to a state instance and this instance is added to the new list.
 
 
-List: State.prototype.remove(index)
-```````````````````````````````````
+List: state.remove(index)
+`````````````````````````
 
 .. code-block:: js
 
@@ -488,8 +488,8 @@ List: State.prototype.remove(index)
 
 Creates a new list from this instance with the element at ``index`` removed. The current instance is unchanged.
 
-List: State.prototype.insert(element, index)
-````````````````````````````````````````````
+List: state.insert(element, index)
+``````````````````````````````````
 
 .. code-block:: js
 
@@ -500,8 +500,8 @@ elements by one position towards the end. The current instance is unchanged. If 
 is an array or an object, it is converted to a state instance and this instance is inserted into the new list. If index is
 negativ ``element`` is inserted at the first list position.
 
-List: State.prototype.push(element)
-```````````````````````````````````
+List: state.push(element)
+`````````````````````````
 
 .. code-block:: js
 
@@ -510,28 +510,28 @@ List: State.prototype.push(element)
 Creates a new list from this instance with ``element`` added to the list. The current instance is unchanged. If ``element``
 is an array or an object, it is converted to a state instance and this instance is inserted into the new list.
 
-List: State.prototype.pop()
-```````````````````````````
+List: state.pop()
+`````````````````
 
 .. code-block:: js
 
-   var newList = list.pop(); // Creates a new list with the first element removed.
-
-Creates a new list from this instance with the first element removed. The current instance is unchanged.
-
-
-List: State.prototype.shift()
-`````````````````````````````
-
-.. code-block:: js
-
-   var newList = list.shift(); // Creates a new list with the last element removed.
+   var newList = list.pop(); // Creates a new list with the last element removed.
 
 Creates a new list from this instance with the last element removed. The current instance is unchanged.
 
 
-List: State.prototype.unshift(element)
-``````````````````````````````````````
+List: state.shift()
+```````````````````
+
+.. code-block:: js
+
+   var newList = list.shift(); // Creates a new list with the first element removed.
+
+Creates a new list from this instance with the first element removed. The current instance is unchanged.
+
+
+List: state.unshift(element)
+````````````````````````````
 
 .. code-block:: js
 
@@ -540,32 +540,36 @@ List: State.prototype.unshift(element)
 Creates a new list from this instance with the ``element`` added at the beginning. The current instance is unchanged.
 If ``element`` is an array or an object, it is converted to a state instance and this instance is added to the new list.
 
-Map: State.prototype.get(key)
-`````````````````````````````
+Map: state.get(key)
+```````````````````
+
 .. code-block:: js
 
    var value = map.get('a'); // Gets the value of element 'a' from the map.
 
 Retrieves value of element ``key`` from the map. If the map does not have an element ``key``, ``undefined`` is returned.
 
-Map: State.prototype.keys()
-```````````````````````````
+Map: state.keys()
+`````````````````
+
 .. code-block:: js
 
    var size = map.keys(); // Gets the keys of the map.
 
 Returns keys of all elements in the map as an array.
 
-Map: State.prototype.has(key)
-`````````````````````````````
+Map: state.has(key)
+```````````````````
+
 .. code-block:: js
 
    map.has('a'); // True if the map has an element "a".
 
 Returns ``true`` if the map has an element ``key``, ``false`` otherwise.
 
-Map: State.prototype.put(key, value)
-````````````````````````````````````
+Map: state.put(key, value)
+``````````````````````````
+
 .. code-block:: js
 
    var newMap = map.put('a', 'OK'); // Returns a new map with element 'a' set to 'OK'.
@@ -575,16 +579,18 @@ Returns a new map with an element ``key`` set to ``value``. The current instance
 If ``value`` is an array or an object, it is converted to a ``State`` instance recursively and that instance
 is added instead.
 
-Map: State.prototype.remove(key)
-````````````````````````````````
+Map: state.remove(key)
+``````````````````````
+
 .. code-block:: js
 
    var newMap = map.remove('a'); // Returns a new map with element 'a' removed.
 
 Returns a new map with element ``key`` removed. The current instance of the map is unchanged.
 
-Map: State.prototype.merge(object)
-``````````````````````````````````
+Map: state.merge(object)
+````````````````````````
+
 .. code-block:: js
 
    var newMap = map.merge( { 'b': 2 } ); // Returns a new map the object merged into the current map.
@@ -599,5 +605,120 @@ replacing all properties at the "upper" level of the object removing any ramific
 Model
 ^^^^^
 
+constructor: new Model()
+````````````````````````
 
+.. code-block:: js
+
+   var actions = {
+
+      action1: function() { /* ... */ },
+
+      action2: function() { /* ... */ }
+
+      /* ... */
+
+   };
+
+   var model = new Model(actions);
+
+   model.action1();
+
+   var promise = model.action2();
+   promise.then(function(state) {
+      /* ... */
+   });
+
+
+   var subscriber = function(state) { /* ... */ };
+   var unsubscribe = model(subscriber);
+   unsubscribe();
+
+Creates a new instance of ``Model``. The constructor takes a Javascript object as its single argument which consists of
+name / value pairs of action callbacks. The action callbacks are wrapped in methods of the instance returned by the
+constructor. Their method names correspond to the names of the name / value pairs from the Javascript object.
+Whenever such a method is called the callback is executed and its return value is stored as the new state
+of the model. The methods return a promise which resolves with the new state.
+
+The ``Model`` instance can be used as a function to subscribe to state changes by passing a subscriber function. On state
+changes the subscriber function is called with the new state as its first argument. The state is passed as an instance
+of ``State`` and is immutable.
+
+Calling the ``Model`` instance as a function (i.e. subscribing) returns an unsubscribe function which can be used to
+unsubscribe from the model later.
+
+Inside the action callback
+``````````````````````````
+
+.. code-block:: js
+   :linenos:
+
+   var actions = {
+
+      action1: function(id) {
+         var state = this.state();
+         return state.put('id', id);
+      };
+
+      action2: function() {
+         this.model().action1(2001);
+      }
+
+   };
+
+   var model = new Model(actions);
+   model.action2();
+
+The action callbacks - ``action1`` and ``action2`` in the example above - are called whenever an action is called
+on the model (line 15). They are expected to return a ``State`` instance but for simplicity literals, objects and arrays
+are accepted as valid return values and converted conveniently to ``State`` instances. The return value is stored as the new state
+of the model.
+
+For partial state changes the former state is provided through the method ``this.state()`` within the callback function
+context. The former state can be used to built a new state from and to be returned by the callback.
+
+Other actions can trigger from within the action through the ``this.model()`` method which exposes the current model
+instance.
+
+If an action callback returns ``undefined`` (or returns nothing), the current state is left unchanged and no subscriber's
+are notified.
+
+If the return value is an instance of ``Error``, the model is sent into the "dead state". In "dead state" any further
+calls of actions are rejected with the ``Error`` instance and all subscribers are unsubscribed immediately. They
+do not receive a notification about a state change. Note that this is different from **throwing** an exception
+within the callback.
+
+When an exception is thrown during the action callback execution, the action's promise is rejected and the state
+is unchanged. Hence, no subscriber is notified about any state changes.
+
+Subscribers are only notified about *valid* state changes ensuring that the state is in a expectable format. The difference
+between returning an ``Error`` instance through ``return new Error()`` and throwing an exception ``throw new Error()``
+prevents the model from entering the "dead state" by accident. Returning an error is a thoughtful act by the developer
+while exception may happen by various reasons like mistakes or unexpected input values.
+
+Model.state(arg)
+````````````````
+
+.. code-block:: js
+
+   var state = Model.state( { a: 1 } );
+
+Creates a new ``State`` instance from anything. If an object or an array is passed, it is converted recursively to an
+instance of ``State`` - a map or a list. If a literal is passed, the literal is returned as is while everything else
+resolves to ``undefined`` (including ``undefined`` itself).
+
+Model.subscribe(model, subscriber)
+``````````````````````````````````
+
+.. code-block:: js
+
+   var model = new Model( /* ... */ );
+   var subscriber = function(state) { /* ... */ };
+
+   var unsubscribe = Model.subscribe(model, subscriber);
+   unsubscribe();
+
+Syntac sugar for calling the ``Model`` instance as a function. It expects a function as its second argument
+and adds it as a subscriber to state changes of the model from the first argument. It returns an unsubscribe
+function to call later for unsubscribing.
 

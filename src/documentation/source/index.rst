@@ -13,7 +13,6 @@ Contents:
 
    how_to_build
    usage
-   module_promise
    module_model
    module_component
    module_translation

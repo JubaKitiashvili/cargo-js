@@ -87,7 +87,6 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_promise.html">Module: Promise</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
@@ -756,7 +755,7 @@ details for brevity and a better overview.</p>
 </td></tr></table></div>
 <p>Component.js has a function <code class="docutils literal"><span class="pre">template()</span></code> which receives an URL as argument. The function
 loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
-the function returns a Promise (see <a class="reference internal" href="module_promise.html"><span class="doc">Module: Promise</span></a>) which is fulfilled with the compiled template.
+the function returns a Promise (see <span class="xref doc">module_promise</span>) which is fulfilled with the compiled template.
 The compiled template is then passed to the builder by <code class="docutils literal"><span class="pre">withTemplate()</span></code> and used by the component
 to render the visual representation.</p>
 <p>If we run the code so far, a (rather unstyled) HTML representation of the navigation menu should
@@ -1080,7 +1079,7 @@ Usually only one element should be replaced.</div></blockquote>
 <p>Loads and compiles an HTML file from the specified URL. The result is meant to be
 used as an argument to the method <code class="docutils literal"><span class="pre">builder.withTemplate()</span></code>. Note that this is
 an asynchronous operation which does not return the result directly. Instead
-a promise (see <a class="reference internal" href="module_promise.html"><span class="doc">Module: Promise</span></a>) is returned which is fulfilled with the compiled
+a promise (see <span class="xref doc">module_promise</span>) is returned which is fulfilled with the compiled
 template.</p>
 <p><strong>Parameters</strong></p>
 <p><code class="docutils literal"><span class="pre">URL</span></code></p>

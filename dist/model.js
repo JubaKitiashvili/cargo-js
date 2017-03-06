@@ -24,27 +24,6 @@
  limitations under the License.
  */
 /**
- * Constructor method for Flux data models. "Model" maintains a "state" and provides a simple publish / subscribe pattern
- * for state changes. State changes are performed through "actions".
- *
- * The constructor must be called with an object defining the actions as named properties. Each action must be
- * defined as a function that returns the new state.
- *
- * var actions = {
- *      initialState: function() { return state0; },
- *      action1: function() { return state1; },
- *      actions: function(x) { return { val: x } }
- *      ...
- * };
- * var m = new Model(actions);
- *
- * var subscriber = function(newState) {
- *  console.log(newState);
- * }
- *
- * var unsubscribe = m(subscriber);
- * ...
- * unsubscribe();
  *
  * @param actions
  * @returns {Model}
@@ -60,7 +39,7 @@ var Model = function (actions) {
 
     var lastId = 1;
     var subscribers = {};
-    self = function (subscriber) {
+	self = function (subscriber) {
         var subscriberId = lastId++;
         if (!subscriber || typeof subscriber !== 'function') {
             return;
@@ -165,6 +144,12 @@ Model.stream = function (model) {
     return new Stream(model);
 };
 
+/**
+ *
+ * @param model
+ * @returns {Stream}
+ * @constructor
+ */
 var Stream = function (model) {
 
     var streamState;
@@ -253,6 +238,12 @@ var Stream = function (model) {
     return this;
 };
 
+/**
+ *
+ * @param input
+ * @returns {*}
+ * @constructor
+ */
 var State = function (input) {
 
     var List = function (input) {
@@ -313,11 +304,11 @@ var State = function (input) {
         };
 
         this.pop = function () {
-            return this.remove(0);
+			return this.remove(this.size() - 1);
         };
 
         this.shift = function () {
-            return this.remove(this.size() - 1);
+			return this.remove(0);
         };
 
         this.unshift = function (item) {
@@ -399,6 +390,7 @@ var State = function (input) {
             return Model.state(merged);
         };
 
+        /* This is deprecated...
         this.deepMerge = function (obj) {
             obj = Model.state(obj);
             if (!obj || !obj instanceof State || !obj.$Map) {
@@ -416,7 +408,7 @@ var State = function (input) {
                 merged[key] = newVal;
             });
             return Model.state(merged);
-        };
+        };*/
 
         this.toJS = function () {
             var js = {};
@@ -439,7 +431,12 @@ var State = function (input) {
 		
 		return this;
     };
-    if (_.isArray(input)) {
+    
+    if ( input instanceof State ) {
+        return input;
+    }
+	
+	if (_.isArray(input)) {
         _.extend(this, new List(input));
         return this;
     } else if (_.isObject(input)) {

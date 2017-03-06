@@ -515,6 +515,8 @@ describe('Model.js', function () {
 			});
 			
 			it("with deepMerge({object}) returning a new instance deeply merging two objects.", function () {
+				this.skip('Deep merging not supported any more');
+				return;
 				var map = Model.state({a: 1, b: 2, c: {c1: 3, c2: 4}});
 				var newMap = map.deepMerge({b: {b1: 1, b2: 2}, c: {c3: 3}, d: 'd'});
 				var m = newMap.toJS();
@@ -646,12 +648,12 @@ describe('Model.js', function () {
 				
 			});
 			
-			it("with pop() to return a list with the first item removed.", function () {
+			it("with pop() to return a list with the last item removed.", function () {
 				var list = new Model.state([1, 2, 3, 4]);
 				var newList = list.pop();
-				expect(newList.get(0)).to.be.equal(2);
-				expect(newList.get(1)).to.be.equal(3);
-				expect(newList.get(2)).to.be.equal(4);
+				expect(newList.get(0)).to.be.equal(1);
+				expect(newList.get(1)).to.be.equal(2);
+				expect(newList.get(2)).to.be.equal(3);
 				expect(newList.get(3)).not.to.be.defined;
 				expect(list.size()).to.be.equal(4);
 				
@@ -665,12 +667,12 @@ describe('Model.js', function () {
 				expect(list.size()).to.be.equal(4);
 			});
 			
-			it("with shift() to return a list with the last item removed.", function () {
+			it("with shift() to return a list with the first item removed.", function () {
 				var list = new Model.state([1, 2, 3, 4]);
 				var newList = list.shift();
-				expect(newList.get(0)).to.be.equal(1);
-				expect(newList.get(1)).to.be.equal(2);
-				expect(newList.get(2)).to.be.equal(3);
+				expect(newList.get(0)).to.be.equal(2);
+				expect(newList.get(1)).to.be.equal(3);
+				expect(newList.get(2)).to.be.equal(4);
 				expect(newList.get(3)).not.to.be.defined;
 				expect(list.size()).to.be.equal(4);
 				

@@ -294,11 +294,11 @@ var State = function (input) {
         };
 
         this.pop = function () {
-            return this.remove(0);
+			return this.remove(this.size() - 1);
         };
 
         this.shift = function () {
-            return this.remove(this.size() - 1);
+			return this.remove(0);
         };
 
         this.unshift = function (item) {

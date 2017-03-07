@@ -4,62 +4,50 @@ describe("Component.js", function () {
 		
 		it("returns a Component instance", function () {
 			var comp = new Component("templates/TestComponent.html");
-			expect(comp).to.be.defined;
+			expect(comp).to.exist;
 			expect(comp).to.be.an.instanceOf(Component);
 		});
 		
 		it("returns a Component instance with an attach() method.", function () {
 			var comp = new Component("templates/TestComponent.html");
-			expect(comp.attach).to.be.defined;
+			expect(comp.attach).to.exist;
 			expect(comp.attach).to.be.a('function');
 		});
 		
 	});
 	
 	describe("Component.attach()", function () {
-		it("returns a promise resolving with a Renderer instance.", function (done) {
+		it("returns a Renderer instance.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test').then(function (renderer) {
-				expect(renderer).to.be.defined;
-				expect(renderer).to.be.an.instanceOf(Component.Renderer);
-				done();
-			}).catch(function (e) {
-				done(e);
-			}).finally(function () {
-				$('#test').removeAttr('x-cargo-id');
-			});
+			var renderer = comp.attach('#test');
+			expect(renderer).to.exist;
+			expect(renderer).to.be.an.instanceOf(Component.Renderer);
+			done();
+			$('#test').removeAttr('x-cargo-id');
 		});
 		
 		it("the Renderer instance has a 'detach' property which is a function.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test').then(function (renderer) {
-				expect(renderer.detach).to.be.defined;
-				expect(renderer.detach).to.be.a('function');
-				done();
-			}).catch(function (e) {
-				done(e);
-			}).finally(function () {
-				$('#test').removeAttr('x-cargo-id');
-			});
+			var renderer = comp.attach('#test');
+			expect(renderer.detach).to.exist;
+			expect(renderer.detach).to.be.a('function');
+			done();
+			$('#test').removeAttr('x-cargo-id');
 		});
 		
 		it("the Renderer instance  has a 'render' property which is a function.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test').then(function (renderer) {
-				expect(renderer.render).to.be.defined;
-				expect(renderer.render).to.be.a('function');
-				done();
-			}).catch(function (e) {
-				done(e);
-			}).finally(function () {
-				$('#test').removeAttr('x-cargo-id');
-			});
+			var renderer = comp.attach('#test');
+			expect(renderer.render).to.exist;
+			expect(renderer.render).to.be.a('function');
+			done();
+			$('#test').removeAttr('x-cargo-id');
 		});
 		
 		xit("the Renderer instance  has a 'refresh' property which is a function.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
 			comp.attach('#test').then(function (renderer) {
-				expect(renderer.refresh).to.be.defined;
+				expect(renderer.refresh).to.exist;
 				expect(renderer.refresh).to.be.a('function');
 				done();
 			}).catch(function (e) {
@@ -70,59 +58,41 @@ describe("Component.js", function () {
 		});
 		
 		it("must not work without a selector.", function (done) {
-			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach().then(function (renderFn) {
+			try {
+				var comp = new Component("component/templates/TestComponent.html");
+				comp.attach();
 				done(new Error('Promise was fulfilled unexpectedly.'));
-			}).catch(function (e) {
+			} catch (e) {
 				expect(e).to.be.an.instanceOf(Error);
 				done();
-			}).catch(function(e) {
-				done(e);
-			});
+			}
 		});
 		
-		it("returns promise that is rejected if there are no nodes selected.", function (done) {
-			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test2').then(function (renderFn) {
+		it("throws exception if there are no nodes selected.", function (done) {
+			try {
+				var comp = new Component("component/templates/TestComponent.html");
+				comp.attach('#test2');
 				done(new Error('Promise was fulfilled unexpectedly.'));
-			}).catch(function (e) {
-				expect(e).to.be.defined;
+			} catch (e) {
+				expect(e).to.exist;
 				expect(e).to.be.an.instanceOf(Error);
 				done();
-			}).catch(function(e) {
-				done(e);
-			});
+			}
 		});
 		
-		it("returns promise that is rejected if there are nodes selected that are already attached to a component.", function (done) {
-			var comp = new Component("component/templates/TestComponent.html");
-			$('#test').attr('x-cargo-id', _.uniqueId());
-			comp.attach('#test').then(function (renderFn) {
+		it("throws exception if there are nodes selected that are already attached to a component.", function (done) {
+			try {
+				var comp = new Component("component/templates/TestComponent.html");
+				$('#test').attr('x-cargo-id', _.uniqueId());
+				comp.attach('#test');
 				done(new Error('Promise was fulfilled unexpectedly.'));
-			}).catch(function(e) {
-				expect(e).to.be.defined;
+			} catch (e) {
+				expect(e).to.exist;
 				expect(e).to.be.an.instanceOf(Error);
 				done();
-			}).catch(function(e) {
-				done(e);
-			}).finally(function () {
+			} finally {
 				$('#test').removeAttr('x-cargo-id');
-			});
-		});
-		
-		it("is rejected when the template could not be loaded.", function (done) {
-			var comp = new Component("component/templates/TestComponent.html2");
-			comp.attach('#test').then(function (renderFn) {
-				done(new Error('Promise was fulfilled unexpectedly.'));
-			}).catch(function (e) {
-				expect(e).to.be.defined;
-				expect(e).to.be.an.instanceOf(Error);
-				done();
-			}).catch(function(e) {
-				done(e);
-			}).finally(function () {
-				$('#test').removeAttr('x-cargo-id');
-			});
+			}
 		});
 		
 	});
@@ -131,14 +101,11 @@ describe("Component.js", function () {
 		
 		it("removes the x-cargo-id from target elements.", function (done) {
 			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test').then(function (renderer) {
-				expect($('#test').attr('x-cargo-id')).to.be.defined;
-				renderer.detach();
-				expect($('#test').attr('x-cargo-id')).not.to.be.defined;
-				done();
-			}).catch(function (e) {
-				done(e);
-			});
+			var renderer = comp.attach('#test');
+			expect($('#test').attr('x-cargo-id')).to.exist;
+			renderer.detach();
+			expect($('#test').attr('x-cargo-id')).not.to.exist;
+			done();
 		});
 		
 	});
@@ -158,96 +125,106 @@ describe("Component.js", function () {
 			});
 		});
 		
-		it("renders the state to the target node", function(done) {
-			var comp = new Component("component/templates/TestHeading.html");
-			var renderer;
-			comp.attach('#test-heading').then(function(result) {
-				renderer = result;
-				return renderer.render({ heading: "TEST" });
-			}).then(function(){
+		it("renders the state to the target node as JSON text within a <pre> element if no template is loaded.", function (done) {
+			var comp = new Component();
+			var renderer = comp.attach('#test-heading');
+			renderer.render({heading: "TEST"}).then(function () {
 				var targetNode = $('#test-heading')[0];
-				expect(targetNode.nodeName).to.equal('H1');
-				expect(targetNode.innerHTML).to.equal('TEST');
+				expect(targetNode.nodeName).to.equal('PRE');
+				expect(targetNode.innerHTML).to.equal('{\n "heading": "TEST"\n}');
 				done();
-			}).catch(function(e) {
+			}).catch(function (e) {
 				done(e);
-			}).finally(function() {
+			}).finally(function () {
 				renderer.detach();
 			});
 			
 		});
 		
-		it("updates the state in the target node", function(done) {
-			var comp = new Component("component/templates/TestHeading.html");
-			var renderer;
-			comp.attach('#test-heading').then(function(result) {
-				renderer = result;
-				return renderer.render({ heading: "TEST" });
-			}).then(function() {
-				return renderer.render({heading:"TEST2"});
-			}).then(function() {
+		it("updates the state in the target node", function (done) {
+			var comp = new Component();
+			var renderer = comp.attach('#test-heading');
+			renderer.render({heading: "TEST"}).then(function () {
+				return renderer.render({heading: "TEST2"});
+			}).then(function () {
 				var targetNode = $('#test-heading')[0];
-				expect(targetNode.nodeName).to.equal('H1');
-				expect(targetNode.innerHTML).to.equal('TEST2');
+				expect(targetNode.nodeName).to.equal('PRE');
+				expect(targetNode.innerHTML).to.equal('{\n "heading": "TEST2"\n}');
 				done();
-			}).catch(function(e) {
+			}).catch(function (e) {
 				done(e);
-			}).finally(function() {
+			}).finally(function () {
 				renderer.detach();
+			});
+		});
+		
+		describe('using handlebars support', function () {
+			
+			it("with english translation renders the component with the english heading.", function (done) {
+				var helper = translation.createHandlebarsHelper();
+				var handlebars = Handlebars.create();
+				var comp, renderer;
+				handlebars.registerHelper('i18n', helper);
+				Component.load("component/templates/TestComponent.html", handlebars).then(function (result) {
+					comp = result;
+					return translation.select('en');
+				}).then(function () {
+					return comp.attach('#test');
+				}).then(function (result) {
+					renderer = result;
+					return renderer.render({});
+				}).then(function (state) {
+					var html = $('#test').html().trim();
+					expect(html).to.be.equal('<h1>Test Component</h1>');
+					renderer.detach();
+					done();
+				}).catch(function (err) {
+					done(err);
+				}).finally(function () {
+					renderer.detach();
+				});
 			});
 			
-		});
-		
-		it("with english translation renders the component with the english heading.", function (done) {
-			var helper = translation.createHandlebarsHelper();
-			var handlebars = Handlebars.create();
-			var renderer;
-			handlebars.registerHelper('i18n', helper);
-			var comp = new Component("component/templates/TestComponent.html", {
-				handlebars: handlebars
+			it("with german translation renders the component with the english heading.", function (done) {
+				var helper = translation.createHandlebarsHelper();
+				var handlebars = Handlebars.create();
+				var comp, renderer;
+				handlebars.registerHelper('i18n', helper);
+				Component.load("component/templates/TestComponent.html", handlebars).then(function (result) {
+					comp = result;
+					return translation.select('de');
+				}).then(function () {
+					return comp.attach('#test');
+				}).then(function (result) {
+					renderer = result;
+					return renderer.render({});
+				}).then(function (state) {
+					var html = $('#test').html().trim();
+					expect(html).to.be.equal('<h1>Test Komponente</h1>');
+					renderer.detach();
+					done();
+				}).catch(function (err) {
+					done(err);
+				}).finally(function () {
+					renderer.detach();
+				});
 			});
-			translation.select('en').then(function () {
-				return comp.attach('#test');
-			}).then(function (result) {
-				renderer = result;
-				return renderer.render({});
-			}).then(function (state) {
-				var html = $('#test').html().trim();
-				expect(html).to.be.equal('<h1>Test Component</h1>');
-				renderer.detach();
-				done();
-			}).catch(function (err) {
-				done(err);
-			}).finally(function() {
-				renderer.detach();
-			});
-		});
-		
-		it("with german translation renders the component with the english heading.", function (done) {
-			var helper = translation.createHandlebarsHelper();
-			var handlebars = Handlebars.create();
-			var renderer;
-			handlebars.registerHelper('i18n', helper);
-			var comp = new Component("component/templates/TestComponent.html", {
-				handlebars: handlebars
-			});
-			translation.select('de').then(function () {
-				return comp.attach('#test');
-			}).then(function (result) {
-				renderer = result;
-				return renderer.render({});
-			}).then(function (state) {
-				var html = $('#test').html().trim();
-				expect(html).to.be.equal('<h1>Test Komponente</h1>');
-				done();
-			}).catch(function (err) {
-				done(err);
-			}).finally(function(){
-				renderer.detach();
+			
+			it("is rejected when the handlebars template could not be loaded.", function (done) {
+				Component.load("component/templates/TestComponent.html2").then(function() {
+					done(new Error('Promise was fulfilled unexpectedly.'));
+				}).catch(function (e) {
+					expect(e).to.exist;
+					expect(e).to.be.an.instanceOf(Error);
+					done();
+				}).catch(function (e) {
+					done(e);
+				}).finally(function () {
+					$('#test').removeAttr('x-cargo-id');
+				});
 			});
 		});
 		
 	});
-	
 	
 });

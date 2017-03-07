@@ -8,134 +8,103 @@
         root.cargo.Component = factory(root.cargo.Model, root.cargo.Translation, root.morphdom, root.Handlebars, root.superagent);
     }
 }(this, function(Model, Translation, morphdom, Handlebars, superagent) {
-var Component = function(templateURI, options) {
+var Component = function (options) {
 	'use strict';
 	
 	if (!Promise) throw new Error("Promise API is required.");
-	if (!Model) throw new Error("cargo.Model API is required.");
-	if (!Translation) throw new Error("cargo.Translation API is required.");
 	if (!morphdom) throw new Error("morphdom is required. (https://github.com/patrick-steele-idem/morphdom)");
 	if (!superagent) throw new Error("superagent is required. (https://github.com/visionmedia/superagent)");
-	if (!Handlebars) throw new Error("Handlebars is required. (https://github.com/wycats/handlebars.js/)");
 	if (!_) throw new Error("underscore is required. (https://github.com/jashkenas/underscore)");
 	
 	var $ = window.$;
 	
 	options = options || {};
 	
-	var handlebars = options.handlebars || Handlebars;
-	var attachFn = options.attach || function() {};
-	var updateFn = options.update || function() {};
-	var detachFn = options.detach || function() {};
+	var templateFn = options.template || function (state) {
+			return "<pre>" + JSON.stringify(state, undefined, ' ') + "</pre>";
+		};
 	
-	var templateCache = undefined;
+	var attachFn = options.attach || function () {
+		};
+	var updateFn = options.update || function () {
+		};
+	var detachFn = options.detach || function () {
+		};
 	
 	this.attach = function (selector) {
 		if (!selector) {
-			return Promise.reject(new Error('Need a jquery selector as first argument to attach().'));
+			throw new Error('Need a jquery selector as first argument to attach().');
 		}
 		var nodes = $(selector);
 		var originalNodes = {};
 		if (!nodes || nodes.length == 0) {
-			return Promise.reject(new Error('Selector ' + selector + ' does not select any actual DOM nodes.'));
+			throw new Error('Selector ' + selector + ' does not select any actual DOM nodes.');
 		}
-		try {
-			nodes.each(function (idx, node) {
-				var $node = $(node);
-				var id = $node.attr('x-cargo-id');
-				if (id) {
-					throw new Error('Node ' + node.toString() + ' selected by ' + selector + ' has already been attached to a component.');
-				}
-				var cargoId = _.uniqueId();
-				$node.attr('x-cargo-id', cargoId);
-				originalNodes[cargoId] = node;
-			});
-		} catch (e) {
-			return Promise.reject(e);
-		}
-		if ( handlebars.templates && handlebars.templates[templateURI] ) {
-			var renderer = new Renderer(selector, originalNodes, handlebars.templates[templateURI], attachFn, updateFn, detachFn);
-			return Promise.resolve(renderer);
-		} else {
-			var fns = {
-				attach: attachFn,
-				update: updateFn,
-				detach: detachFn
-			};
-			return _loadTemplate(templateURI, handlebars, fns)
-				.then(function (result) {
-					var renderer = new Renderer(selector, originalNodes, result.template, result.attach, result.update, result.detach);
-					return Promise.resolve(renderer)
-				});
-		}
+		nodes.each(function (idx, node) {
+			var $node = $(node);
+			var id = $node.attr('x-cargo-id');
+			if (id) {
+				throw new Error('Node ' + node.toString() + ' selected by ' + selector + ' has already been attached to a component.');
+			}
+			var cargoId = _.uniqueId();
+			$node.attr('x-cargo-id', cargoId);
+			originalNodes[cargoId] = node;
+		});
+		return new Renderer(selector, originalNodes, templateFn, attachFn, updateFn, detachFn);
 	};
 	
 	return this;
-	
-	function _loadTemplate(templateURL, handlebars, functions) {
-		if (templateCache) {
-			return new Promise(function (resolve) {
-				var result = {};
-				result.template = handlebars.compile(templateCache.template);
-				result.handlebars = handlebars;
-				var fnNames = ['attach', 'update', 'detach'];
-				_.each(fnNames, function (fnName) {
-					result[fnName] = templateCache[fnName];
-				});
-				resolve(result);
-			});
-		}
-		return new Promise(function (resolve, reject) {
-			superagent.get(templateURL).end(function (err, response) {
-				if (err) {
-					reject(new Error("Unable to load template from '" + templateURL + "': " + err));
-					return;
-				}
-				var template;
-				try {
-					var parser = new DOMParser();
-					var dom = parser.parseFromString(response.text, "text/html");
-					template = $(dom).find('template').first();
-					if (!template || !template.length) {
-						reject(new Error("Template '" + templateURL + "' does not contain a <template> element in body."));
-						return;
-					}
-					templateCache = {};
-					templateCache.template = template.html().trim();
-					template = handlebars.compile(templateCache.template);
-				} catch (e) {
-					reject(new Error("Unable to compile rendering function from template '" + templateURL + "': " + e));
-					return;
-				}
-				
-				var result = {};
-				result.template = template;
-				result.handlebars = handlebars;
-				var fnNames = ['attach', 'update', 'detach'];
-				for (var idx = 0; idx < fnNames.length; idx++) {
-					var fnName = fnNames[idx];
-					try {
-						var fnNode = $(dom).find("script." + fnName).first();
-						if (fnNode.length > 0) {
-							var scriptContent = fnNode.text();
-							templateCache[fnName] = result[fnName] = new Function("node", scriptContent);
-						} else {
-							templateCache[fnName] = result[fnName] = functions[fnName];
-						}
-					} catch (e) {
-						reject(new Error("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e));
-						return;
-					}
-				}
-				resolve(result);
-			});
-		});
-	}
-	
 };
+
 Component.prototype.constructor = Component;
 
-var Renderer = function(selector, originalNodes, template, attach, update, detach) {
+Component.load = function (templateURL, handlebars) {
+	handlebars = handlebars || Handlebars;
+	return new Promise(function (resolve, reject) {
+		superagent.get(templateURL).end(function (err, response) {
+			if (err) {
+				reject(new Error("Unable to load template from '" + templateURL + "': " + err));
+				return;
+			}
+			var templateFn;
+			try {
+				var parser = new DOMParser();
+				var dom = parser.parseFromString(response.text, "text/html");
+				var template = $(dom).find('template').first();
+				if (!template || !template.length) {
+					reject(new Error("Template '" + templateURL + "' does not contain a <template> element in body."));
+					return;
+				}
+				template = template.html().trim();
+				templateFn = handlebars.compile(template);
+			} catch (e) {
+				reject(new Error("Unable to compile rendering function from template '" + templateURL + "': " + e));
+				return;
+			}
+			
+			var options = {};
+			options.template = templateFn;
+			var fnNames = ['attach', 'update', 'detach'];
+			for (var idx = 0; idx < fnNames.length; idx++) {
+				var fnName = fnNames[idx];
+				try {
+					var fnNode = $(dom).find("script." + fnName).first();
+					if (fnNode.length > 0) {
+						var scriptContent = fnNode.text();
+						options[fnName] = new Function("node", scriptContent);
+					}
+				} catch (e) {
+					reject(new Error("Unable to install '" + fnName + "' function from template '" + templateURL + "': " + e));
+					return;
+				}
+			}
+			resolve(new Component(options));
+		})
+	});
+	
+};
+
+var Renderer = function (selector, originalNodes, template, attach, update, detach) {
 	
 	var target = $();
 	var firstRender = true;
@@ -187,7 +156,7 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 			firstRender = false;
 			_.each(originalNodes, function (oldNode, cargoId) {
 				var $nodes = $.parseHTML(html);
-				if ( !$nodes || !$nodes.length ) return;
+				if (!$nodes || !$nodes.length) return;
 				var newNode = $nodes[0];
 				var $oldNode = $(oldNode);
 				try {
@@ -227,6 +196,7 @@ var Renderer = function(selector, originalNodes, template, attach, update, detac
 	
 };
 Renderer.prototype.constructor = Renderer;
+
 Component.Renderer = Renderer;
     return Component;
 }));

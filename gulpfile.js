@@ -81,14 +81,7 @@ gulp.task('build_translation', function () {
 		},
 		template: 'umdTemplate.templ',
 		dependencies: function () {
-			return [
-				{
-					name: 'Model',
-					amd: 'cargo.Model',
-					cjs: 'cargo.Model',
-					global: 'cargo.Model',
-					param: 'Model'
-				}, "superagent",
+			return [ "superagent",
 				{
 					name: 'underscore',
 					amd: 'underscore',

@@ -269,7 +269,7 @@ that constitutes the initial state of the component.
 ``js/app.js``
 
 .. code-block:: js
-	:linenos:
+    :linenos:
 	:lineno-start: 28
 
 	/* ... */

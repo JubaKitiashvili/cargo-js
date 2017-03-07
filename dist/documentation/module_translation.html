@@ -94,7 +94,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api-documentation">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#options-baseuri-string">options.baseURI (string)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#options-namespace-string">options.namespace (string)</a></li>
@@ -234,8 +234,8 @@ is selected the default language is selected.</p>
 <p>All dependencies are provided in the <code class="docutils literal"><span class="pre">dist</span></code> directory at <a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a>. Additionally
 <a class="reference internal" href="#"><span class="doc">Module: Translation</span></a> depends on a Promise/A+ implementation with an implementation of the <code class="docutils literal"><span class="pre">Promise.all</span></code> method.</p>
 </div>
-<div class="section" id="api-documentation">
-<h2>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="constructor">
 <h3>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">var</span> <span class="pre">trans</span> <span class="pre">=</span> <span class="pre">new</span> <span class="pre">Translation(options)</span></code></p>
@@ -282,8 +282,8 @@ translation object is empty.</p>
 </div>
 <div class="section" id="the-translation-function">
 <h3>The translation function<a class="headerlink" href="#the-translation-function" title="Permalink to this headline">¶</a></h3>
-<p>All methods changing the configuration of the translation instance return a Promise which resolves with the translation
-function. The translation function receives the key as a mandatory argument selecting the phrase from the JSON object
+<p>All methods changing the configuration of the translation instance return a Promise which resolves with the <strong>translation
+function</strong>. The translation function receives the key as a mandatory argument selecting the phrase from the JSON object
 within the translation files. The second parameter is an optional namespace which maps to the name of the corresponding
 JSON file holding that JSON object. If the second parameter is omitted, the default namespace <code class="docutils literal"><span class="pre">translation</span></code> is used.</p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">trans</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Translation</span><span class="p">(</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">});</span>
@@ -389,6 +389,12 @@ where each file holds one namespace.</p>
 updated with the current translation function for the selected language. Whenever the language changes, the handlebars
 helper renders the text in the new language. The helper receives the same parameters as the translation function (<code class="docutils literal"><span class="pre">key``and</span>
 <span class="pre">optionally</span> <span class="pre">``namespace</span></code>).</p>
+<p>Note that this method does not depend directly on Handlebars. It just creates a function that is compliant with the
+Handlebars API. You may use the function in any other appropriate templating engine or in any other context.</p>
+<p><strong>Parameters</strong></p>
+<p>This function does not have any parameters.</p>
+<p><strong>Return value</strong></p>
+<p>A handlebars compatible helper function which can be registered in your Handlebars environment.</p>
 </div>
 </div>
 </div>

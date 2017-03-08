@@ -491,5 +491,223 @@ Please feel free to check the API documentation for a more in-depth look at our 
 API
 ---
 
+constructor: new Component(options)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+    var component = new Component(
+        {
+            template: function(state) { return "<h1>...</h1>"; },
+            attach: function(node) {},
+            update: function(node) {},
+            detach: function(node) {}
+        }
+    );
+
+Creates a new instance of ``Component``. The first and only argument to the constructor is an object with the follwing
+options.
+
+**Parameter: options**
+
+``options.template``
+
+A template function which receives the current state as input and renders an HTML string as return value. Most template
+engines e.g. Handlebars provide such a function. The HTML must consist of exactly one element which may contain an
+arbitrary number of child nodes. Whitespace before and after this element is removed.
+
+If no ``template`` method is provided, the DOM node is rendered as a ``<PRE>`` element containing a JSON representation
+of the current state.
+
+``options.attach``
+
+A callback function which is called once when the first rendering happened and the original DOM node has been
+replaced with the rendered HTML. The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter
+to ``attach`` is the DOM node which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the ``attach`` callback is called once for each DOM node.
+
+The ``attach`` callback can be used to register event handlers to the DOM node.
+
+``options.update``
+
+A callback function which is called whenever the component's DOM node has been
+rendered and updated within the DOM. This includes the first rendering **after** ``attach`` has been called.
+The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter to ``attach`` is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one DOM node, the ``update`` callback is called once
+for each DOM node whenever the node is updated.
+
+``options.detach``
+
+A callback function which is called once when the component's DOM node has removed from the DOM. The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter to ``attach`` is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the ``detach`` callback is called once for each DOM node.
+
+The ``detach`` callback can be used to remove any event listeners previously registered in the ``attach`` callback.
+
+static: Component.load(templateURL, handlebars)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+    var handlebars = Handlebars.create();
+    handlebars.registerHelper(/*...*/);
+
+    Component.load("template.html", handlebars).then(function(component) {
+
+        comp.attach('#id');
+        /* ... */
+    });
+
+Loads a template file and creates a Component instance based on it. The template file is an HTML file and should
+contain a ``<template id="template">`` element with an Handlebars template enclosed. This template is automatically
+compiled using the (optionally provided) Handlebars environment from the second parameter. If this parameter is omitted,
+the default environment is used. The resulting template function is used for rendering the state of the component.
+
+Additionally the template file may contain ``<script>`` elements containing an ``attach``, ``update`` or ``detach`` callback.
+There must be one ``<script>`` element per callback with a class set to "attach", "update" or "detach" respectively.
+
+.. code-block:: html
+
+    <script class="attach">
+        console.log("Attach callback has been called.");
+    </script>
+
+Since loading the template file is an asynchronous operation, this function returns a Promise which resolves with
+the component instance.
+
+Example template file.
+
+.. code-block:: html
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+    <template id="template">
+        <ul class="dropdown-content blue-grey white-text">
+            <li class="divider"></li>
+            <li><a lang="en" href="javascript:false;" class="white-text">English / English</a></li>
+            <li><a lang="de" href="javascript:false;" class="white-text">German / Deutsch</a></li>
+        </ul>
+    </template>
+    <script class="attach">
+        $('.dropdown-button').filter('[data-activates="language-menu"]').dropdown();
+        $(node).on('click', function(e) {
+            var lang = $(e.target).attr('lang');
+            if ( lang ) this.select(lang);
+        }.bind(this));
+    </script>
+    <script class="detach">
+        $(node).off('click');
+    </script>
+    </body>
+    </html>
+
+**Parameters**
+
+``templateURL``
+
+The URL of the template file which can be absolute or relative to the base URI of the website.
+
+``handlebars`` (optional)
+
+A Handlebars environment to use for compiling the template section of the file. (A separate environment can be retrieved
+from ``Handlebars.create()``.) If this parameter is omitted, the default Handlebars environment is used.
+
+**Return value**
+
+A Promise which resolves with the ``Component``instance, when the template file has been loaded and compiled. If the file
+cannot be loaded or fails compiling, the Promise is rejected with an ``Error`` instance.
+
+component.attach(selector)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+    var component = new Component();
+    var renderer = component.attach('#id');
+
+Attaches the component to one or more DOM nodes and returns an instance of the rendering engine. The ``selector`` parameter
+is an CSS selector which can target one ore more nodes. If more than one node is targeted all nodes are replaced and
+rendered with the HTML from the rendering engine. The ``component.attach()`` method does not replace the DOM node
+and does no rendering yet. It marks the targeted DOM nodes as rendering targets and prevents them from being used as
+targets for other components. The first rendering takes place with the first call of the rendering method by the rendering
+engine.
+
+**Parameters**
+
+``selector``
+
+A CSS selector which determines the target nodes of the DOM tree.
+
+**Return value**
+
+A ``Renderer`` instance which holds the ``render(state)`` method to use for the actual rendering.
+
+**Exceptions**
+
+This method throws an ``Error`` instance in one of the following conditions:
+
+1. The CSS selector is missing.
+2. The CSS selector does not target any DOM nodes.
+3. If one ore more of the targeted nodes are already attached to a component.
+
+Renderer: renderer.render(state)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+    var component = new Component(/* ... */);
+    var renderer = component.attach('#id');
+    renderer.render( { visible: true });
+
+The instance ``renderer`` is the return value of the ``component.attach()`` method and contains a ``render()`` method.
+This method renders an HTML representation of the ``state`` input. The input should be a plain Javascript object or
+anything else which can be used by the ``template`` function passed to the Component constructor.
+
+If the input is an object with a ``this.toJS()`` method, it is called to convert the input to a native Javascript
+data structure. The ``toJS()`` method is available in instances of the ``State`` API from :doc:`module_model` which makes
+them a perfect input for the ``render()`` method.
+
+Because rendering to the DOM tree is an asynchronous operations, the return value is a Promise which resolves with the
+actual Javascript data structure that has been used for rendering (which may be different from the ``state`` input).
+
+**Parameters**
+
+``state``
+
+The state object to render. If this is an object has a ``toJS()`` method, it is called and the return value is used for
+rendering. If ``state`` is omitted or ``undefined``, no rendering takes place. If ``state`` is an instance of ``Error``
+no rendering takes place and the Promise is rejected with that error.
+
+**Return value**
+
+A Promise which resolves with the actual state object that has been used for rendering. The Promise is resolved when
+the rendering completed.
+
+Renderer: renderer.detach()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+    var component = new Component(/* ... */);
+    var renderer = component.attach('#id');
+
+    /* ... */
+
+    renderer.detach();
 
 
+Destroys the component by replacing the DOM nodes with the original DOM nodes from before the first rendering. No more
+rendering takes place after ``detach()`` has been called.
+
+**Parameters**
+
+This method takes no parameters.
+
+**Return value**
+
+This method does not return anything.

@@ -101,7 +101,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructor-new-component-options">constructor: new Component(options)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-component-load-templateurl-handlebars">static: Component.load(templateURL, handlebars)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#component-attach-selector">component.attach(selector)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#renderer-renderer-render-state">Renderer: renderer.render(state)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#renderer-renderer-detach">Renderer: renderer.detach()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_translation.html">Module: Translation</a></li>
@@ -468,6 +475,45 @@ have them at hand when needed.</p>
 <code class="docutils literal"><span class="pre">cargo.Component</span></code> module provides a builder to achieve this. Additionally we need a first action,
 that constitutes the initial state of the component.</p>
 <p><code class="docutils literal"><span class="pre">js/app.js</span></code></p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cm">/* ... */</span>
+
+<span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">language</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">selected</span><span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+                <span class="nx">available</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="nx">menu</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">about</span><span class="o">:</span> <span class="s1">&#39;#about&#39;</span><span class="p">,</span>
+                <span class="nx">contact</span><span class="o">:</span> <span class="s1">&#39;#contact&#39;</span><span class="p">,</span>
+                <span class="nx">register</span><span class="o">:</span> <span class="s1">&#39;#register&#39;</span><span class="p">,</span>
+                <span class="nx">login</span><span class="o">:</span> <span class="s1">&#39;#login&#39;</span>
+        <span class="p">},</span>
+        <span class="nx">translation</span><span class="o">:</span> <span class="nx">TRANSLATIONS</span><span class="p">[</span><span class="s1">&#39;en&#39;</span><span class="p">]</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">component</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+<span class="nx">renderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">state</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
 <p>In line 50-51 we attach the component to the <code class="docutils literal"><span class="pre">&lt;nav</span> <span class="pre">id=&quot;nav&quot;&gt;</span></code> element. Attaching the component to the DOM
 marks the selected nodes - in this case the <code class="docutils literal"><span class="pre">&lt;nav&gt;</span> <span class="pre">``</span> <span class="pre">element</span> <span class="pre">-</span> <span class="pre">as</span> <span class="pre">rendering</span> <span class="pre">targets</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">renderer</span> <span class="pre">which</span> <span class="pre">is</span>
 <span class="pre">returned</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">``attach()</span></code> method. This renderer has a method <code class="docutils literal"><span class="pre">render()</span></code> which receives the current state and
@@ -711,6 +757,175 @@ transformed into a programming model making use of them.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="constructor-new-component-options">
+<h3>constructor: new Component(options)<a class="headerlink" href="#constructor-new-component-options" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="nx">template</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;&lt;h1&gt;...&lt;/h1&gt;&quot;</span><span class="p">;</span> <span class="p">},</span>
+        <span class="nx">attach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
+        <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
+        <span class="nx">detach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>Creates a new instance of <code class="docutils literal"><span class="pre">Component</span></code>. The first and only argument to the constructor is an object with the follwing
+options.</p>
+<p><strong>Parameter: options</strong></p>
+<p><code class="docutils literal"><span class="pre">options.template</span></code></p>
+<p>A template function which receives the current state as input and renders an HTML string as return value. Most template
+engines e.g. Handlebars provide such a function. The HTML must consist of exactly one element which may contain an
+arbitrary number of child nodes. Whitespace before and after this element is removed.</p>
+<p>If no <code class="docutils literal"><span class="pre">template</span></code> method is provided, the DOM node is rendered as a <code class="docutils literal"><span class="pre">&lt;PRE&gt;</span></code> element containing a JSON representation
+of the current state.</p>
+<p><code class="docutils literal"><span class="pre">options.attach</span></code></p>
+<p>A callback function which is called once when the first rendering happened and the original DOM node has been
+replaced with the rendered HTML. The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter
+to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the <code class="docutils literal"><span class="pre">attach</span></code> callback is called once for each DOM node.</p>
+<p>The <code class="docutils literal"><span class="pre">attach</span></code> callback can be used to register event handlers to the DOM node.</p>
+<p><code class="docutils literal"><span class="pre">options.update</span></code></p>
+<p>A callback function which is called whenever the component&#8217;s DOM node has been
+rendered and updated within the DOM. This includes the first rendering <strong>after</strong> <code class="docutils literal"><span class="pre">attach</span></code> has been called.
+The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one DOM node, the <code class="docutils literal"><span class="pre">update</span></code> callback is called once
+for each DOM node whenever the node is updated.</p>
+<p><code class="docutils literal"><span class="pre">options.detach</span></code></p>
+<p>A callback function which is called once when the component&#8217;s DOM node has removed from the DOM. The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the <code class="docutils literal"><span class="pre">detach</span></code> callback is called once for each DOM node.</p>
+<p>The <code class="docutils literal"><span class="pre">detach</span></code> callback can be used to remove any event listeners previously registered in the <code class="docutils literal"><span class="pre">attach</span></code> callback.</p>
+</div>
+<div class="section" id="static-component-load-templateurl-handlebars">
+<h3>static: Component.load(templateURL, handlebars)<a class="headerlink" href="#static-component-load-templateurl-handlebars" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">handlebars</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">create</span><span class="p">();</span>
+<span class="nx">handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="cm">/*...*/</span><span class="p">);</span>
+
+<span class="nx">Component</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;template.html&quot;</span><span class="p">,</span> <span class="nx">handlebars</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="nx">comp</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+    <span class="cm">/* ... */</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Loads a template file and creates a Component instance based on it. The template file is an HTML file and should
+contain a <code class="docutils literal"><span class="pre">&lt;template</span> <span class="pre">id=&quot;template&quot;&gt;</span></code> element with an Handlebars template enclosed. This template is automatically
+compiled using the (optionally provided) Handlebars environment from the second parameter. If this parameter is omitted,
+the default environment is used. The resulting template function is used for rendering the state of the component.</p>
+<p>Additionally the template file may contain <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> elements containing an <code class="docutils literal"><span class="pre">attach</span></code>, <code class="docutils literal"><span class="pre">update</span></code> or <code class="docutils literal"><span class="pre">detach</span></code> callback.
+There must be one <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> element per callback with a class set to &#8220;attach&#8221;, &#8220;update&#8221; or &#8220;detach&#8221; respectively.</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;attach&quot;</span><span class="p">&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Attach callback has been called.&quot;</span><span class="p">);</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Since loading the template file is an asynchronous operation, this function returns a Promise which resolves with
+the component instance.</p>
+<p>Example template file.</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Title<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;template&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;dropdown-content blue-grey white-text&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;divider&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;javascript:false;&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;white-text&quot;</span><span class="p">&gt;</span>English / English<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;de&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;javascript:false;&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;white-text&quot;</span><span class="p">&gt;</span>German / Deutsch<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;attach&quot;</span><span class="p">&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.dropdown-button&#39;</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;[data-activates=&quot;language-menu&quot;]&#39;</span><span class="p">).</span><span class="nx">dropdown</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">node</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">lang</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;lang&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">lang</span> <span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">lang</span><span class="p">);</span>
+    <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;detach&quot;</span><span class="p">&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">node</span><span class="p">).</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">);</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">templateURL</span></code></p>
+<p>The URL of the template file which can be absolute or relative to the base URI of the website.</p>
+<p><code class="docutils literal"><span class="pre">handlebars</span></code> (optional)</p>
+<p>A Handlebars environment to use for compiling the template section of the file. (A separate environment can be retrieved
+from <code class="docutils literal"><span class="pre">Handlebars.create()</span></code>.) If this parameter is omitted, the default Handlebars environment is used.</p>
+<p><strong>Return value</strong></p>
+<p>A Promise which resolves with the <code class="docutils literal"><span class="pre">Component``instance,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">template</span> <span class="pre">file</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">loaded</span> <span class="pre">and</span> <span class="pre">compiled.</span> <span class="pre">If</span> <span class="pre">the</span> <span class="pre">file</span>
+<span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">loaded</span> <span class="pre">or</span> <span class="pre">fails</span> <span class="pre">compiling,</span> <span class="pre">the</span> <span class="pre">Promise</span> <span class="pre">is</span> <span class="pre">rejected</span> <span class="pre">with</span> <span class="pre">an</span> <span class="pre">``Error</span></code> instance.</p>
+</div>
+<div class="section" id="component-attach-selector">
+<h3>component.attach(selector)<a class="headerlink" href="#component-attach-selector" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">component</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Attaches the component to one or more DOM nodes and returns an instance of the rendering engine. The <code class="docutils literal"><span class="pre">selector</span></code> parameter
+is an CSS selector which can target one ore more nodes. If more than one node is targeted all nodes are replaced and
+rendered with the HTML from the rendering engine. The <code class="docutils literal"><span class="pre">component.attach()</span></code> method does not replace the DOM node
+and does no rendering yet. It marks the targeted DOM nodes as rendering targets and prevents them from being used as
+targets for other components. The first rendering takes place with the first call of the rendering method by the rendering
+engine.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">selector</span></code></p>
+<p>A CSS selector which determines the target nodes of the DOM tree.</p>
+<p><strong>Return value</strong></p>
+<p>A <code class="docutils literal"><span class="pre">Renderer</span></code> instance which holds the <code class="docutils literal"><span class="pre">render(state)</span></code> method to use for the actual rendering.</p>
+<p><strong>Exceptions</strong></p>
+<p>This method throws an <code class="docutils literal"><span class="pre">Error</span></code> instance in one of the following conditions:</p>
+<ol class="arabic simple">
+<li>The CSS selector is missing.</li>
+<li>The CSS selector does not target any DOM nodes.</li>
+<li>If one ore more of the targeted nodes are already attached to a component.</li>
+</ol>
+</div>
+<div class="section" id="renderer-renderer-render-state">
+<h3>Renderer: renderer.render(state)<a class="headerlink" href="#renderer-renderer-render-state" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">component</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+<span class="nx">renderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span> <span class="p">{</span> <span class="nx">visible</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+</pre></div>
+</div>
+<p>The instance <code class="docutils literal"><span class="pre">renderer</span></code> is the return value of the <code class="docutils literal"><span class="pre">component.attach()</span></code> method and contains a <code class="docutils literal"><span class="pre">render()</span></code> method.
+This method renders an HTML representation of the <code class="docutils literal"><span class="pre">state</span></code> input. The input should be a plain Javascript object or
+anything else which can be used by the <code class="docutils literal"><span class="pre">template</span></code> function passed to the Component constructor.</p>
+<p>If the input is an object with a <code class="docutils literal"><span class="pre">this.toJS()</span></code> method, it is called to convert the input to a native Javascript
+data structure. The <code class="docutils literal"><span class="pre">toJS()</span></code> method is available in instances of the <code class="docutils literal"><span class="pre">State</span></code> API from <a class="reference internal" href="module_model.html"><span class="doc">Module: Model</span></a> which makes
+them a perfect input for the <code class="docutils literal"><span class="pre">render()</span></code> method.</p>
+<p>Because rendering to the DOM tree is an asynchronous operations, the return value is a Promise which resolves with the
+actual Javascript data structure that has been used for rendering (which may be different from the <code class="docutils literal"><span class="pre">state</span></code> input).</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">state</span></code></p>
+<p>The state object to render. If this is an object has a <code class="docutils literal"><span class="pre">toJS()</span></code> method, it is called and the return value is used for
+rendering. If <code class="docutils literal"><span class="pre">state</span></code> is omitted or <code class="docutils literal"><span class="pre">undefined</span></code>, no rendering takes place. If <code class="docutils literal"><span class="pre">state</span></code> is an instance of <code class="docutils literal"><span class="pre">Error</span></code>
+no rendering takes place and the Promise is rejected with that error.</p>
+<p><strong>Return value</strong></p>
+<p>A Promise which resolves with the actual state object that has been used for rendering. The Promise is resolved when
+the rendering completed.</p>
+</div>
+<div class="section" id="renderer-renderer-detach">
+<h3>Renderer: renderer.detach()<a class="headerlink" href="#renderer-renderer-detach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">component</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+
+<span class="cm">/* ... */</span>
+
+<span class="nx">renderer</span><span class="p">.</span><span class="nx">detach</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Destroys the component by replacing the DOM nodes with the original DOM nodes from before the first rendering. No more
+rendering takes place after <code class="docutils literal"><span class="pre">detach()</span></code> has been called.</p>
+<p><strong>Parameters</strong></p>
+<p>This method takes no parameters.</p>
+<p><strong>Return value</strong></p>
+<p>This method does not return anything.</p>
+</div>
 </div>
 </div>
 

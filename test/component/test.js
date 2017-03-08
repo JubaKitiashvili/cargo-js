@@ -44,19 +44,6 @@ describe("Component.js", function () {
 			$('#test').removeAttr('x-cargo-id');
 		});
 		
-		xit("the Renderer instance  has a 'refresh' property which is a function.", function (done) {
-			var comp = new Component("component/templates/TestComponent.html");
-			comp.attach('#test').then(function (renderer) {
-				expect(renderer.refresh).to.exist;
-				expect(renderer.refresh).to.be.a('function');
-				done();
-			}).catch(function (e) {
-				done(e);
-			}).finally(function () {
-				$('#test').removeAttr('x-cargo-id');
-			});
-		});
-		
 		it("must not work without a selector.", function (done) {
 			try {
 				var comp = new Component("component/templates/TestComponent.html");

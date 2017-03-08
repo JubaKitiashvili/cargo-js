@@ -4,18 +4,14 @@ define(['cargo.Component', 'model/BrowserLanguage'], function (Component, Browse
 	return {
 		initialize: function () {
 			if (instance) return Promise.resolve(instance);
-			new Component("templates/LanguageMenu.html")
-				.attach('#language-menu')
-				.then(function (renderer) {
-					instance = renderer;
-					return renderer.render({}).then(function() {
-						instance.select = function (lang) {
-							if (!lang) return;
-							BrowserLanguage.select(lang);
-						};
-						return instance;
-					});
-				});
+			return Component.load("templates/LanguageMenu.html").then(function(comp) {
+				instance = comp.attach('#language-menu');
+				instance.select = function (lang) {
+					if (!lang) return;
+					BrowserLanguage.select(lang);
+				};
+				return instance.render({});
+			});
 		},
 		show: function() {
 			if ( instance )

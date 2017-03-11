@@ -4,9 +4,7 @@ define(['Handlebars', 'cargo.Component', 'model/BrowserLanguage', '../../templat
 	return {
 		initialize: function () {
 			if (instance) return Promise.resolve(instance);
-			var options = Template;
-			options.template = Handlebars.template(options.template);
-			instance = new Component(options).attach('#language-menu');
+			instance = new Component(Template).attach('#language-menu');
 			instance.select = function (lang) {
 				if (!lang) return;
 				BrowserLanguage.select(lang);

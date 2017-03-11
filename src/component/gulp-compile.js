@@ -6,6 +6,7 @@ var Handlebars = require('Handlebars');
 var path = require('path');
 var camelcase = require('uppercamelcase');
 var umdify = require('libumd');
+var _ = require('underscore');
 
 function compile(umdOptions) {
 	
@@ -37,8 +38,14 @@ function compile(umdOptions) {
 				compileOptions.handlebars = Handlebars;
 				var compiled = Component.compile(window.document, compileOptions);
 				var parts = path.parse(file.path);
-				umdOptions.globalAlias = umdOptions.globalAlias || camelcase(parts.name) || "";
 				compiled = "return " + compiled + ";";
+				// Inject Handlebars into the UMD dependencies.
+				umdOptions.globalAlias = umdOptions.globalAlias || camelcase(parts.name) || "";
+				umdOptions.deps = umdOptions.deps || {};
+				umdOptions.deps.default = umdOptions.deps.default || [];
+				if ( !_.contains(umdOptions.deps.default, "Handlebars") ) {
+					umdOptions.deps.default.push("Handlebars");
+				}
 				compiled = umdify(compiled, umdOptions);
 				file.contents = Buffer.from(compiled);
 				return callback(null, file);

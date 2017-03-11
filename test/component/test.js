@@ -248,7 +248,7 @@ describe("Component.js", function () {
 			result = new Function( "return " + result)();
 			expect(result).to.be.an('object');
 			expect(result.template).to.exist;
-			var template = handlebars.template(result.template);
+			var template = result.template;
 			expect(template).to.be.a('function');
 			var html = template({ heading: "HEADING"});
 			expect(html).to.contain('HEADING');

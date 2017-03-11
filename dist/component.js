@@ -114,6 +114,7 @@ Component.compile = function (dom, options) {
 		templateElement = templateElement[0];
 		var templateString = templateElement.innerHTML.trim();
 		template = handlebars.precompile(templateString);
+		template = "Handlebars.template(" + template + ")";
 	} else {
 		template = "undefined";
 	}
@@ -181,7 +182,7 @@ var Renderer = function (selector, originalNodes, template, attach, update, deta
 			// In any of these cases, Skip rendering and just return a resolving promise.
 			return Promise.resolve(state);
 		}
-		if ( state.toJS && typeof state.toJS === 'function' ) {
+		if (state.toJS && typeof state.toJS === 'function') {
 			state = state.toJS();
 		}
 		var html = template(state);

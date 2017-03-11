@@ -1,13 +1,13 @@
 ;(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['cargo.Model', 'cargo.Translation', 'morphdom', 'Handlebars', 'superagent'], factory);
+        define(['Handlebars', 'morphdom', 'superagent', 'underscore'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('cargo.Model'), require('cargo.Translation'), require('morphdom'), require('Handlebars'), require('superagent'));
+        module.exports = factory(require('Handlebars'), require('morphdom'), require('superagent'), require('underscore'));
     } else {
         root.cargo = root.cargo || {};
-        root.cargo.Component = factory(root.cargo.Model, root.cargo.Translation, root.morphdom, root.Handlebars, root.superagent);
+        root.cargo.Component = factory(root.Handlebars, root.morphdom, root.superagent, root.underscore);
     }
-}(this, function(Model, Translation, morphdom, Handlebars, superagent) {
+}(this, function(Handlebars, morphdom, superagent, _) {
 var Component = function (options) {
 	'use strict';
 	
@@ -104,6 +104,43 @@ Component.load = function (templateURL, handlebars) {
 	
 };
 
+Component.compile = function (dom, options) {
+	
+	options = options || {};
+	var handlebars = options.handlebars || Handlebars;
+	var templateElement = dom.getElementsByTagName('template');
+	var template;
+	if (templateElement && templateElement.length) {
+		templateElement = templateElement[0];
+		var templateString = templateElement.innerHTML.trim();
+		template = handlebars.precompile(templateString);
+	} else {
+		template = "undefined";
+	}
+	var scriptNames = ['attach', 'update', 'detach'];
+	var scripts = {};
+	_.each(scriptNames, function (scriptName) {
+		var scriptElements = dom.getElementsByTagName('script');
+		scripts[scriptName] = _.reduce(scriptElements, function (memo, scriptElement) {
+			if (memo !== 'undefined') return memo;
+			if (scriptElement.hasAttribute('class')) {
+				var classAttr = scriptElement.getAttribute('class');
+				if (_.contains(classAttr.split(/\s+/), scriptName)) {
+					var scriptContent = scriptElement.innerHTML.trim();
+					return "function(node) { " + scriptContent + "}";
+				}
+			}
+			return memo;
+		}, "undefined");
+	});
+	return "{ " +
+		'"template":' + template + ", " +
+		'"attach":' + scripts['attach'] + "," +
+		'"update":' + scripts['update'] + "," +
+		'"detach":' + scripts['detach'] +
+		"}";
+};
+
 var Renderer = function (selector, originalNodes, template, attach, update, detach) {
 	
 	var target = $();
@@ -130,7 +167,6 @@ var Renderer = function (selector, originalNodes, template, attach, update, deta
 	};
 	
 	this.render = function (state) {
-		state = Model.state(state);
 		if (state === undefined) {
 			return Promise.resolve(state);
 		}
@@ -145,7 +181,10 @@ var Renderer = function (selector, originalNodes, template, attach, update, deta
 			// In any of these cases, Skip rendering and just return a resolving promise.
 			return Promise.resolve(state);
 		}
-		var html = template(state.toJS());
+		if ( state.toJS && typeof state.toJS === 'function' ) {
+			state = state.toJS();
+		}
+		var html = template(state);
 		if (!html) {
 			// If no html is returned, skip rendering and just return a resolving promise.
 			return Promise.resolve(state);

@@ -7,7 +7,6 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var exec = require('child_process').exec;
 
-
 gulp.task('doc', function (cb) {
 	exec("make -C src/documentation html", function (err, stdout, stderr) {
 		console.log(stdout);
@@ -42,23 +41,14 @@ gulp.task('build_component', ['deps_morphdom'], function () {
 		},
 		template: 'umdTemplate.templ',
 		dependencies: function () {
-			return [
+			return ["Handlebars", "morphdom", "superagent",
 				{
-					name: 'Model',
-					amd: 'cargo.Model',
-					cjs: 'cargo.Model',
-					global: 'cargo.Model',
-					param: 'Model'
-				},
-				{
-					name: 'Translation',
-					amd: 'cargo.Translation',
-					cjs: 'cargo.Translation',
-					global: 'cargo.Translation',
-					param: 'Translation'
-				},
-				"morphdom", "Handlebars", "superagent"
-			
+					name: 'underscore',
+					amd: 'underscore',
+					cjs: 'underscore',
+					global: 'underscore',
+					param: '_'
+				}
 			];
 		}
 	};
@@ -81,7 +71,7 @@ gulp.task('build_translation', function () {
 		},
 		template: 'umdTemplate.templ',
 		dependencies: function () {
-			return [ "superagent",
+			return ["superagent",
 				{
 					name: 'underscore',
 					amd: 'underscore',
@@ -89,7 +79,6 @@ gulp.task('build_translation', function () {
 					global: 'underscore',
 					param: '_'
 				}
-			
 			];
 		}
 	};
@@ -124,29 +113,16 @@ gulp.task('build_model', function () {
 		.pipe(gulp.dest('dist/'));
 });
 
-gulp.task('build_promise', function () {
-	var umdOptions = {
-		exports: function (file) {
-			return "Promise";
-		},
-		namespace: function () {
-			return "cargo.Promise";
-		},
-		template: 'umdTemplate.templ'
-	};
-	gulp.src('src/promise/Promise.js')
-		.pipe(umd(umdOptions))
-		.pipe(rename("promise.js"))
-		.pipe(gulp.dest('dist/'));
-	gulp.src('src/promise/Promise.js')
-		.pipe(umd(umdOptions))
-		.pipe(uglify())
-		.pipe(rename("promise.min.js"))
-		.pipe(gulp.dest('dist/'));
+gulp.task('build_example', function () {
+	var Component = require('./dist/component');
+	var compileComponent = require('./src/component/gulp-compile');
+	gulp.src('example/component/templates/LanguageMenu.html')
+		.pipe(compileComponent({Component: Component}))
+		.pipe(rename('LanguageMenu.js'))
+		.pipe(gulp.dest('example/component/templates/'));
 });
 
-
-gulp.task('build', ['deps', 'build_model', 'build_promise', 'build_component', 'build_translation'], function () {
+gulp.task('build', ['deps', 'build_model', 'build_component', 'build_translation', 'build_example'], function () {
 });
 
 gulp.task('default', ['build'], function () {

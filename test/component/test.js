@@ -214,4 +214,57 @@ describe("Component.js", function () {
 		
 	});
 	
+	describe("Component.compile()", function() {
+		
+		var dom;
+		var handlebars;
+		
+		beforeEach(function(done) {
+			var templateURL = "component/templates/TestCompiler.html";
+			handlebars = Handlebars.create();
+			handlebars.registerHelper('i18n', function(key) {
+				return key;
+			});
+			superagent.get(templateURL).end(function (err, response) {
+				if (err) {
+					done(new Error("Unable to load template from '" + templateURL + "': " + err));
+					return;
+				}
+				try {
+					var parser = new DOMParser();
+					dom = parser.parseFromString(response.text, "text/html");
+					done();
+				} catch (e) {
+					done(e);
+				}
+			});
+		});
+			
+		it('compiles a template from a DOM tree', function() {
+			var result = Component.compile(dom);
+			
+			expect(result).to.exist;
+			expect(result).to.be.a('string');
+			result = new Function( "return " + result)();
+			expect(result).to.be.an('object');
+			expect(result.template).to.exist;
+			var template = handlebars.template(result.template);
+			expect(template).to.be.a('function');
+			var html = template({ heading: "HEADING"});
+			expect(html).to.contain('HEADING');
+			expect(html).to.contain('<h1>');
+			expect(result.attach).to.exist;
+			expect(result.attach).to.be.a('function');
+			expect(result.attach()).to.equal('12a26c1e0d40c0c6bb6a9206fa2f42db');
+			expect(result.update).to.exist;
+			expect(result.update).to.be.a('function');
+			expect(result.update()).to.equal('01eb2c11c2685e04a0e3b0556549b914');
+			expect(result.detach).to.exist;
+			expect(result.detach).to.be.a('function');
+			expect(result.detach()).to.equal('3f126dc2ab1a9c591605ca54854270e8');
+		});
+		
+		
+	});
+	
 });

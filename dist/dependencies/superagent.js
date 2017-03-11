@@ -177,15 +177,11 @@ exports.unset = function(field){
  * @api public
  */
 exports.field = function(name, val) {
-  if (!this._formData) {
-    var FormData = require('form-data'); // browserify compatible. May throw if FormData is not supported natively.
-    this._formData = new FormData();
-  }
-  this._formData.append(name, val);
+  this._getFormData().append(name, val);
   return this;
 };
 
-},{"./is-object":1,"form-data":5}],3:[function(require,module,exports){
+},{"./is-object":1}],3:[function(require,module,exports){
 // The node and browser modules expose versions of this with the
 // appropriate constructor function bound as first argument
 /**
@@ -225,7 +221,9 @@ module.exports = request;
  * Expose `Emitter`.
  */
 
-module.exports = Emitter;
+if (typeof module !== 'undefined') {
+  module.exports = Emitter;
+}
 
 /**
  * Initialize a new `Emitter`.
@@ -383,8 +381,6 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],5:[function(require,module,exports){
-module.exports = FormData;
-},{}],6:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -409,7 +405,7 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -802,6 +798,9 @@ Response.prototype.setHeaderProperties = function(header){
 
 Response.prototype.parseBody = function(str){
   var parse = request.parse[this.type];
+  if (!parse && isJSON(this.type)) {
+    parse = request.parse['application/json'];
+  }
   return parse && str && (str.length || str instanceof Object)
     ? parse(str)
     : null;
@@ -956,7 +955,7 @@ for (var key in requestBase) {
 Request.prototype.abort = function(){
   if (this.aborted) return;
   this.aborted = true;
-  this.xhr.abort();
+  this.xhr && this.xhr.abort();
   this.clearTimeout();
   this.emit('abort');
   return this;
@@ -1103,9 +1102,15 @@ Request.prototype.query = function(val){
  */
 
 Request.prototype.attach = function(field, file, filename){
-  if (!this._formData) this._formData = new root.FormData();
-  this._formData.append(field, file, filename || file.name);
+  this._getFormData().append(field, file, filename || file.name);
   return this;
+};
+
+Request.prototype._getFormData = function(){
+  if (!this._formData) {
+    this._formData = new root.FormData();
+  }
+  return this._formData;
 };
 
 /**
@@ -1173,6 +1178,22 @@ Request.prototype.send = function(data){
 
   if (!obj || isHost(data)) return this;
   if (!type) this.type('json');
+  return this;
+};
+
+/**
+ * @deprecated
+ */
+Response.prototype.parse = function serialize(fn){
+  if (root.console) {
+    console.warn("Client-side parse() method has been renamed to serialize(). This method is not compatible with superagent v2.0");
+  }
+  this.serialize(fn);
+  return this;
+};
+
+Response.prototype.serialize = function serialize(fn){
+  this._parser = fn;
   return this;
 };
 
@@ -1463,5 +1484,5 @@ request.put = function(url, data, fn){
   return req;
 };
 
-},{"./is-object":1,"./request":3,"./request-base":2,"emitter":4,"reduce":6}]},{},[7])(7)
+},{"./is-object":1,"./request":3,"./request-base":2,"emitter":4,"reduce":5}]},{},[6])(6)
 });

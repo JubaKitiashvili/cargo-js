@@ -13,7 +13,7 @@ function compile(umdOptions) {
 	umdOptions = umdOptions || {};
 	
 	var stream = new Stream.Transform({objectMode: true});
-	var Component = umdOptions.Component || require('cargo.Component');
+	var Compiler = umdOptions.compiler || require('cargo.Template');
 	
 	stream._transform = function (file, _unused_, callback) {
 		
@@ -36,7 +36,7 @@ function compile(umdOptions) {
 			try {
 				var compileOptions = {};
 				compileOptions.handlebars = Handlebars;
-				var compiled = Component.compile(window.document, compileOptions);
+				var compiled = Compiler.compile(window.document, compileOptions);
 				var parts = path.parse(file.path);
 				compiled = "return " + compiled + ";";
 				// Inject Handlebars into the UMD dependencies.

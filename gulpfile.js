@@ -62,6 +62,33 @@ gulp.task('build_component', ['deps_morphdom'], function () {
 		.pipe(rename("component.min.js"))
 		.pipe(gulp.dest('dist/'));
 	
+	umdOptions = {
+		namespace: function () {
+			return "cargo.Template";
+		},
+		template: 'umdTemplate.templ',
+		dependencies: function () {
+			return ["Handlebars", "superagent",
+				{
+					name: 'underscore',
+					amd: 'underscore',
+					cjs: 'underscore',
+					global: 'underscore',
+					param: '_'
+				}
+			];
+		}
+	};
+	gulp.src('src/component/Template.js')
+		.pipe(umd(umdOptions))
+		.pipe(rename("template.handlebars.js"))
+		.pipe(gulp.dest('dist/'));
+	gulp.src('src/component/Template.js')
+		.pipe(umd(umdOptions))
+		.pipe(uglify())
+		.pipe(rename("template.handlebars.min.js"))
+		.pipe(gulp.dest('dist/'));
+	
 });
 
 gulp.task('build_translation', function () {
@@ -113,12 +140,16 @@ gulp.task('build_model', function () {
 		.pipe(gulp.dest('dist/'));
 });
 
-gulp.task('build_example', function () {
-	var Component = require('./dist/component');
+gulp.task('build_example', ['build_component', 'build_model', 'build_translation'], function () {
+	var Template = require('./dist/template.handlebars');
 	var compileComponent = require('./src/component/gulp-compile');
 	gulp.src('example/component/templates/LanguageMenu.html')
-		.pipe(compileComponent({Component: Component}))
+		.pipe(compileComponent({compiler: Template}))
 		.pipe(rename('LanguageMenu.js'))
+		.pipe(gulp.dest('example/component/templates/'));
+	gulp.src('example/component/templates/Signin.html')
+		.pipe(compileComponent({compiler: Template}))
+		.pipe(rename('Signin.js'))
 		.pipe(gulp.dest('example/component/templates/'));
 });
 

@@ -14,12 +14,12 @@
   }
 }(this, function (Handlebars) {
 
-return { "template":Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+return { "renderState":Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<ul class=\"dropdown-content blue-grey white-text\">\n        <li class=\"divider\"></li>\n        <li><a lang=\"en\" href=\"javascript:false;\" class=\"white-text\">English / English</a></li>\n        <li><a lang=\"de\" href=\"javascript:false;\" class=\"white-text\">German / Deutsch</a></li>\n    </ul>";
-},"useData":true}), "attach":function(node) { $('.dropdown-button').filter('[data-activates="language-menu"]').dropdown();
+},"useData":true}), "onAttach":function(node) { $('.dropdown-button').filter('[data-activates="language-menu"]').dropdown();
     $(node).on('click', function(e) {
     	var lang = $(e.target).attr('lang');
     	if ( lang ) this.select(lang);
-    }.bind(this));},"update":undefined,"detach":undefined};
+    }.bind(this));},"onUpdate":undefined,"onDetach":undefined};
 
 }));

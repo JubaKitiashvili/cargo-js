@@ -1,4 +1,4 @@
-define(['cargo.Model'], function (Model) {
+define(['Model'], function (Model) {
 	var instance;
 	
 	function _normalize(target) {

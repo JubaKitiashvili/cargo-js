@@ -9,9 +9,10 @@ requirejs.config({
 		'superagent': '../../../dist/dependencies/superagent',
 		'underscore': '../../../dist/dependencies/underscore',
 		'virtualDom': '../../../dist/dependencies/virtual-dom',
-		'cargo.Model': '../../../dist/model',
-		'cargo.Translation': '../../../dist/translation',
-		'cargo.Component': '../../../dist/component'
+		'Model': '../../../dist/model',
+		'Translation': '../../../dist/translation',
+		'Component': '../../../dist/component',
+		'Template': '../../../dist/template.handlebars'
 	},
 	map: {
 		'*': {
@@ -43,8 +44,6 @@ function main(domReady,
 				SignupForm.initialize(),
 				SigninForm.initialize()
 			]);
-		}).then(function () {
-			console.log('Ready.');
 		}).catch(function (err) {
 			console.log(err);
 		});

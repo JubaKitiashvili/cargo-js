@@ -1,4 +1,4 @@
-define(['cargo.Translation', 'cargo.Model', 'Handlebars', 'cookie'], function (Translation, Model, Handlebars, cookie) {
+define(['Translation', 'Model', 'Handlebars', 'cookie'], function (Translation, Model, Handlebars, cookie) {
 	var instance;
 	
 	var cookieName = 'cargo-js-example-lang';

@@ -1,11 +1,9 @@
-define(['cargo.Component', 'cargo.Model',
-		'Handlebars',
+define(['Component', 'Model',
 		'model/BrowserLanguage', 'model/Router',
-		'../../templates/Signin', '../../templates/Signin.template'],
+		'../../templates/Signin'],
 	function (Component, Model,
-			  Handlebars,
 			  BrowserLanguage, Router,
-			  options) {
+			  template) {
 		
 		var instance;
 		var state = Model.state({
@@ -16,8 +14,7 @@ define(['cargo.Component', 'cargo.Model',
 			
 			initialize: function () {
 				if (instance) return Promise.resolve(instance);
-				options.template = Handlebars.templates['Signin.template.html'];
-				var comp = new Component(options);
+				var comp = new Component(template);
 				instance = comp.attach('#sign-in');
 				instance.submit = function () {
 					var form = $('#sign-in-form')[0];

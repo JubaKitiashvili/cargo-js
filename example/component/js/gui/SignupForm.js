@@ -1,6 +1,6 @@
-define(['cargo.Component', 'cargo.Model',
+define(['Component', 'Template', 'Model',
 		'model/BrowserLanguage', 'model/Router'],
-	function (Component, Model, BrowserLanguage, Router) {
+	function (Component, Template, Model, BrowserLanguage, Router) {
 		
 		var instance;
 		var state = Model.state({
@@ -10,8 +10,8 @@ define(['cargo.Component', 'cargo.Model',
 		return {
 			initialize: function () {
 				if (instance) return Promise.resolve(instance);
-				return Component.load("templates/Signup.html").then(function (comp) {
-					instance = comp.attach("#sign-up");
+				return Template.load("templates/Signup.html").then(function (template) {
+					instance = new Component(template).attach("#sign-up");
 					instance.submit = function () {
 						var form = $('#sign-up-form')[0];
 						// Validate form input and store content in local storage (e.g. cookie)

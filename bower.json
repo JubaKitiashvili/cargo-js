@@ -33,7 +33,6 @@
     "underscore": "^1.8.3",
     "js-cookie": "^2.1.1",
     "jquery": "^3.0.0",
-    "rsvp.js": "rsvp#^3.3.3",
     "morphdom": "^2.3.1"
   },
   "repository": {

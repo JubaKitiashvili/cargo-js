@@ -25,13 +25,12 @@ gulp.task('deps_morphdom', function () {
 
 gulp.task('deps', function () {
 	gulp.src(['bower_components/requirejs/require.js',
-			'bower_components/jquery/dist/jquery.js',
-			'bower_components/handlebars/handlebars.js',
-			'bower_components/underscore/underscore.js',
-			'bower_components/js-cookie/src/js.cookie.js',
-			'node_modules/superagent/superagent.js',
-			'bower_components/rsvp.js/rsvp.js'])
-		.pipe(gulp.dest('dist/dependencies'));
+		'bower_components/jquery/dist/jquery.js',
+		'bower_components/handlebars/handlebars.js',
+		'bower_components/underscore/underscore.js',
+		'bower_components/js-cookie/src/js.cookie.js',
+		'node_modules/superagent/superagent.js'
+	]).pipe(gulp.dest('dist/dependencies'));
 });
 
 gulp.task('build_component', ['deps_morphdom'], function () {
@@ -93,7 +92,7 @@ gulp.task('build_component', ['deps_morphdom'], function () {
 	
 });
 
-gulp.task('build_node_js', ['build_model', 'build_component', 'build_translation'], function() {
+gulp.task('build_node_js', ['build_model', 'build_component', 'build_translation'], function () {
 	
 	gulp.src('dist/component.js')
 		.pipe(rename("cargo-component.js"))

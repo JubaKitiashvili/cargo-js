@@ -379,12 +379,12 @@ Additionally we add a method to the renderer which changes the language.
 		}
 	});
 
-	require(['cargo.Component'], function (Component) {
+	require(['cargo.Component', 'cargo.Template'], function (Component, Template) {
 
 		/* ... */
 
-		Component.load("html/nav.html").then(function(comp) {
-
+		Template.load("html/nav.html").then(function(template) {
+            var comp = new Component(template);
 			var state = { /* ... */ };
 			var renderer = comp.attach('#nav');
 
@@ -402,9 +402,10 @@ Additionally we add a method to the renderer which changes the language.
 
 	});
 
-Component.js has a static function ``load()`` which receives an URL as argument. The function
-loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
-the function returns a Promise which is fulfilled with the component instance connected to the template.
+The ``Template`` module of Component.js has a static function ``load()`` which receives an URL as argument.
+The function loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
+the function returns a Promise which is fulfilled with the template instance which can be used as input
+to the ``Component`` constructor.
 
 If we run the code so far, a (rather unstyled) HTML representation of the navigation menu should
 be displayed in the web page. It consists of two unnumbered lists - one for the menu itself and
@@ -498,10 +499,10 @@ constructor: new Component(options)
 
     var component = new Component(
         {
-            template: function(state) { return "<h1>...</h1>"; },
-            attach: function(node) {},
-            update: function(node) {},
-            detach: function(node) {}
+            renderState: function(state) { return "<h1>...</h1>"; },
+            onAttach: function(node) {},
+            onUpdate: function(node) {},
+            onDetach: function(node) {}
         }
     );
 
@@ -510,41 +511,42 @@ options.
 
 **Parameter: options**
 
-``options.template``
+``options.renderState``
 
 A template function which receives the current state as input and renders an HTML string as return value. Most template
 engines e.g. Handlebars provide such a function. The HTML must consist of exactly one element which may contain an
 arbitrary number of child nodes. Whitespace before and after this element is removed.
 
-If no ``template`` method is provided, the DOM node is rendered as a ``<PRE>`` element containing a JSON representation
+If no ``renderState`` method is provided, the DOM node is rendered as a ``<PRE>`` element containing a JSON representation
 of the current state.
 
-``options.attach``
+``options.onAttach``
 
 A callback function which is called once when the first rendering happened and the original DOM node has been
 replaced with the rendered HTML. The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter
-to ``attach`` is the DOM node which has been rendered. If the CSS selector of the component includes more than one
-DOM node, the ``attach`` callback is called once for each DOM node.
+to ``onAttach`` is the DOM node which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the ``onAttach`` callback is called once for each DOM node.
 
-The ``attach`` callback can be used to register event handlers to the DOM node.
+The ``onAttach`` callback can be used to register event handlers to the DOM node.
 
-``options.update``
+``options.onUpdate``
 
 A callback function which is called whenever the component's DOM node has been
-rendered and updated within the DOM. This includes the first rendering **after** ``attach`` has been called.
-The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter to ``attach`` is the DOM node
-which has been rendered. If the CSS selector of the component includes more than one DOM node, the ``update`` callback is called once
-for each DOM node whenever the node is updated.
+rendered and updated within the DOM. This includes the first rendering **after** ``onAttach`` has been called.
+The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter to ``onUpdate`` is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one DOM node, the ``onUpdate`` callback
+is called once for each DOM node whenever the node is updated.
 
-``options.detach``
+``options.onDetach``
 
-A callback function which is called once when the component's DOM node has removed from the DOM. The ``this`` keyword is the ``Renderer`` instance of the component. The first parameter to ``attach`` is the DOM node
-which has been rendered. If the CSS selector of the component includes more than one
-DOM node, the ``detach`` callback is called once for each DOM node.
+A callback function which is called once when the component's DOM node has removed from the DOM. The ``this`` keyword
+is the ``Renderer`` instance of the component. The first parameter to ``onDetach`` is the DOM node which has been
+rendered. If the CSS selector of the component includes more than one DOM node, the ``onDetach`` callback is called
+once for each DOM node.
 
-The ``detach`` callback can be used to remove any event listeners previously registered in the ``attach`` callback.
+The ``onDetach`` callback can be used to remove any event listeners previously registered in the ``onAttach`` callback.
 
-static: Component.load(templateURL, handlebars)
+static: Template.load(templateURL, options)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: js
@@ -552,8 +554,8 @@ static: Component.load(templateURL, handlebars)
     var handlebars = Handlebars.create();
     handlebars.registerHelper(/*...*/);
 
-    Component.load("template.html", handlebars).then(function(component) {
-
+    Template.load("template.html", handlebars).then(function(template) {
+        var comp = new Component(template);
         comp.attach('#id');
         /* ... */
     });
@@ -612,10 +614,15 @@ Example template file.
 
 The URL of the template file which can be absolute or relative to the base URI of the website.
 
-``handlebars`` (optional)
+``options`` (optional)
+
+An options object to specify further dependencies and parameters for loading and compliling the template.
+
+``options.handlebars`` (optional)
 
 A Handlebars environment to use for compiling the template section of the file. (A separate environment can be retrieved
 from ``Handlebars.create()``.) If this parameter is omitted, the default Handlebars environment is used.
+
 
 **Return value**
 

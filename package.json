@@ -35,5 +35,6 @@
     "jsdom": "^9.11.0",
     "libumd": "^0.7.0",
     "uppercamelcase": "^1.1.0"
-  }
+  },
+  "main": "dist/node/index.js"
 }

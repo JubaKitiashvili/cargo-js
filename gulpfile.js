@@ -35,6 +35,7 @@ gulp.task('deps', function () {
 });
 
 gulp.task('build_component', ['deps_morphdom'], function () {
+	// Build Component.js for bower
 	var umdOptions = {
 		namespace: function () {
 			return "cargo.Component";
@@ -62,6 +63,7 @@ gulp.task('build_component', ['deps_morphdom'], function () {
 		.pipe(rename("component.min.js"))
 		.pipe(gulp.dest('dist/'));
 	
+	// Build Template.js for bower
 	umdOptions = {
 		namespace: function () {
 			return "cargo.Template";
@@ -88,6 +90,29 @@ gulp.task('build_component', ['deps_morphdom'], function () {
 		.pipe(uglify())
 		.pipe(rename("template.handlebars.min.js"))
 		.pipe(gulp.dest('dist/'));
+	
+});
+
+gulp.task('build_node_js', ['build_model', 'build_component', 'build_translation'], function() {
+	
+	gulp.src('dist/component.js')
+		.pipe(rename("cargo-component.js"))
+		.pipe(gulp.dest('dist/node'));
+	gulp.src('dist/template.handlebars.js')
+		.pipe(rename("cargo-template.js"))
+		.pipe(gulp.dest('dist/node'));
+	gulp.src('dist/model.js')
+		.pipe(rename("cargo-model.js"))
+		.pipe(gulp.dest('dist/node'));
+	gulp.src('dist/translation.js')
+		.pipe(rename("cargo-translation.js"))
+		.pipe(gulp.dest('dist/node'));
+	gulp.src('dist/translation.js')
+		.pipe(rename("cargo-translation.js"))
+		.pipe(gulp.dest('dist/node'));
+	gulp.src('src/node/*.js')
+		.pipe(gulp.dest('dist/node/'));
+	
 	
 });
 
@@ -141,8 +166,8 @@ gulp.task('build_model', function () {
 });
 
 gulp.task('build_example', ['build_component', 'build_model', 'build_translation'], function () {
-	var Template = require('./dist/template.handlebars');
-	var compileComponent = require('./src/component/gulp-compile');
+	var Template = require('./dist/node/index').Template;
+	var compileComponent = require('./dist/node/index').templateCompiler;
 	gulp.src('example/component/templates/LanguageMenu.html')
 		.pipe(compileComponent({compiler: Template}))
 		.pipe(rename('LanguageMenu.js'))
@@ -153,7 +178,7 @@ gulp.task('build_example', ['build_component', 'build_model', 'build_translation
 		.pipe(gulp.dest('example/component/templates/'));
 });
 
-gulp.task('build', ['deps', 'build_model', 'build_component', 'build_translation', 'build_example'], function () {
+gulp.task('build', ['deps', 'build_model', 'build_component', 'build_translation', 'build_node_js', 'build_example'], function () {
 });
 
 gulp.task('default', ['build'], function () {

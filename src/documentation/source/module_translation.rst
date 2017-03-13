@@ -296,7 +296,7 @@ Can be used in handlebars templates to inject phrases from the translation.
 
 Creates a function that can be registered as a helper in your Handlebars environment. The helper is automatically
 updated with the current translation function for the selected language. Whenever the language changes, the handlebars
-helper renders the text in the new language. The helper receives the same parameters as the translation function (``key``and
+helper renders the text in the new language. The helper receives the same parameters as the translation function (``key`` and
 optionally ``namespace``).
 
 Note that this method does not depend directly on Handlebars. It just creates a function that is compliant with the

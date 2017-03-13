@@ -763,9 +763,10 @@ Javascript template to use in the constructor of <a class="reference internal" h
 <p>This gulp task reads the template file from &#8220;LanguageMenu.html&#8221; and compiles it to a Javascript file &#8220;LanguageMenu.js&#8221;.
 The generated file is a UMD-wrapped Javascript implementation of the HTML template.</p>
 <p>Please note, that the generated template requires a Handlebars runtime when used. The runtime is a version of Handlebars
-which does not include the compiler and is much smaller in size (about 80% reduced). Additionally the template is
-&#8220;ready to use&#8221; and does not require the compilation step which is necessary when loading a template on the fly with
-<code class="docutils literal"><span class="pre">Template.load()</span></code>. An example how to use the compiled template in the browser with require.js:</p>
+which does not include the compiler and is much smaller in size (about 80% reduced) - see <a class="reference external" href="http://handlebarsjs.com/precompilation.html">here</a>
+for details. Additionally the template is &#8220;ready to use&#8221; and does not require the compilation step which is necessary
+when loading a template on the fly with <code class="docutils literal"><span class="pre">Template.load()</span></code>. An example how to use the compiled template in the browser
+with require.js:</p>
 <div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3

@@ -103,7 +103,7 @@ The action is called to initialize the model.
 
 	model.initialState();
 
-An additional action ``submitted`` is defined in line 7-9. This action changes the submit state to ``true`` or ``false``
+An additional action ``submitted`` is defined in lines 6-8. This action changes the submit state to ``true`` or ``false``
 depending on an input parameter. The return value is a plain Javascript object which converts to a new ``State`` instance
 automatically for convenience.
 
@@ -181,7 +181,7 @@ Use current state within the action callbacks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Within the action callbacks the ``this`` context exposes the current state through a ``state()`` method. The current
-state can be used preserve data which is not effected be the current action. If we had a form validation action which
+state can be used to preserve data which is not effected be the current action. If we had a form validation action which
 stores a ``valid`` attribute in the state, we would have to preserve this attribute in the ``submitted`` action somehow.
 That's what the ``this.state()`` method is for.
 
@@ -200,8 +200,10 @@ That's what the ``this.state()`` method is for.
 
       submitted: function(isSubmitted) {
          var state = this.state();
+
          // Before: { submitted: false, valid: true }
          state = state.put('submitted', isSubmitted);
+
          // After: { submitted: false/true, valid: true }
          // The "valid" property is still there.
          return state;
@@ -704,8 +706,8 @@ Model.state(arg)
    var state = Model.state( { a: 1 } );
 
 Creates a new ``State`` instance from anything. If an object or an array is passed, it is converted recursively to an
-instance of ``State`` - a map or a list. If a literal is passed, the literal is returned as is while everything else
-resolves to ``undefined`` (including ``undefined`` itself).
+instance of ``State`` - a map or a list. If a ``State`` instance is passed, it is returned as is. If a literal is passed,
+the literal is returned as is while everything else resolves to ``undefined`` (including ``undefined`` itself).
 
 Model.subscribe(model, subscriber)
 ``````````````````````````````````
@@ -718,7 +720,7 @@ Model.subscribe(model, subscriber)
    var unsubscribe = Model.subscribe(model, subscriber);
    unsubscribe();
 
-Syntac sugar for calling the ``Model`` instance as a function. It expects a function as its second argument
+Syntactic sugar for calling the ``Model`` instance as a function. It expects a function as its second argument
 and adds it as a subscriber to state changes of the model from the first argument. It returns an unsubscribe
 function to call later for unsubscribing.
 

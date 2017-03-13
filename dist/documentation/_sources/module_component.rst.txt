@@ -497,9 +497,10 @@ This gulp task reads the template file from "LanguageMenu.html" and compiles it 
 The generated file is a UMD-wrapped Javascript implementation of the HTML template.
 
 Please note, that the generated template requires a Handlebars runtime when used. The runtime is a version of Handlebars
-which does not include the compiler and is much smaller in size (about 80% reduced). Additionally the template is
-"ready to use" and does not require the compilation step which is necessary when loading a template on the fly with
-``Template.load()``. An example how to use the compiled template in the browser with require.js:
+which does not include the compiler and is much smaller in size (about 80% reduced) - see `here <http://handlebarsjs.com/precompilation.html>`_
+for details. Additionally the template is "ready to use" and does not require the compilation step which is necessary
+when loading a template on the fly with ``Template.load()``. An example how to use the compiled template in the browser
+with require.js:
 
 .. code-block:: js
     :linenos:

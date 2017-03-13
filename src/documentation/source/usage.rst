@@ -55,12 +55,33 @@ sure to load the Javascript files and all dependencies in your HTML
     </body>
     </html>
 
+Usage in Node.js
+----------------
+
+When used in Node.js, the most convenient way is to ``npm install`` from the Github repository and ``require`` the project.
+All modules are exported in one object with each module in a separate property::
+
+    npm install https://github.com/datenwelt/cargo-js
+
+The project is about to be published on NPM and can be installed through ``npm install cargo-js`` later.
+
+Here is how to use the modules in your source:
+
+.. code-block:: js
+
+    var cargo = require('cargo-js');
+
+    var Model = cargo.Model;
+    var Component = cargo.Component;
+    var Template = cargo.Template;
+    var Translation = cargo.Translation;
+
 Dependencies
 ------------
 
 Some modules depend on third-party libraries like jQuery or underscore. All required third-party modules are
-provided in the ``dist/dependencies`` directory but you are highly encouraged to maintain your own dependency tree (for instance
-with bower or/and npm) and use the modules from there.
+provided in the ``dist/dependencies`` directory but you are highly encouraged to maintain your own dependency tree
+(for instance with bower) and use the modules from there.
 
 All modules fail early if dependencies are missing on initialization. So when in doubt which dependencies to
 provide, just try to use the module and read the errors. Additionally dependencies are documented in the

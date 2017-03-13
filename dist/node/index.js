@@ -1,13 +1,13 @@
 var template = require('./cargo-template');
 var component = require('./cargo-component');
-var templateCompiler = require('./gulp-template-compiler');
+var compileTemplate = require('./gulp-compile-template');
 var model = require('./cargo-model');
 var translation = require('./cargo-translation');
 
 module.exports = {
 	
 	Template: template,
-	templateCompiler: templateCompiler,
+	compileTemplate: compileTemplate,
 	Component: component,
 	Model: model,
 	Translation: translation

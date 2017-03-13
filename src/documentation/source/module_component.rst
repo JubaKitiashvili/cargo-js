@@ -146,8 +146,8 @@ All dependencies are provided in the ``dist`` directory at https://github.com/da
 an implementation of the Promise/A+ specification is needed (which is provided by all modern browsers).
 
 
-Code example
-------------
+Code example / Usage
+--------------------
 
 As a practical example, the navigation menu component from above is built from scratch with
 requirejs for dependency management. Let's start with an empty HTML page and a placeholder
@@ -473,6 +473,50 @@ In the execution context of these scripts, ``this`` is defined as a reference to
 a special variable ``node`` is defined as a reference to the DOM node of the component. You
 can use ``this`` to access all methods of the renderer and trigger some interactive behaviour.
 
+.. _pre-compiling-templates:
+
+Pre-compiling templates
+^^^^^^^^^^^^^^^^^^^^^^^
+
+There is gulp plugin for compiling templates for :doc:`module_component`. It compiles an <HTML> template file to a pure
+Javascript template to use in the constructor of :doc:`module_component`. This is an example how to use it in a
+``gulpfile.js``.
+
+.. code-block:: js
+
+    var compile = require('./dist/node/index').compileTemplate;
+
+    gulp.task('build_example', function () {
+            gulp.src('example/templates/LanguageMenu.html')
+                .pipe(compile())
+                .pipe(rename('LanguageMenu.js'))
+                .pipe(gulp.dest('example/templates/'));
+        });
+
+This gulp task reads the template file from "LanguageMenu.html" and compiles it to a Javascript file "LanguageMenu.js".
+The generated file is a UMD-wrapped Javascript implementation of the HTML template.
+
+Please note, that the generated template requires a Handlebars runtime when used. The runtime is a version of Handlebars
+which does not include the compiler and is much smaller in size (about 80% reduced) - see `here <http://handlebarsjs.com/precompilation.html>`_
+for details. Additionally the template is "ready to use" and does not require the compilation step which is necessary
+when loading a template on the fly with ``Template.load()``. An example how to use the compiled template in the browser
+with require.js:
+
+.. code-block:: js
+    :linenos:
+
+        define(['Component', './templates/LanguageMenu.js'], function(Component, template) {
+
+            var component = new Component(template);
+            component.attach(/* ... */);
+            /* ... */
+
+        });
+
+The template is one of the dependencies in the ``define(...)`` function (line #1) and available from a parameter
+``template`` within the wrapper function. This parameter variable is inserted into the constructor of
+``Component`` at line #3.
+
 Conclusion
 ^^^^^^^^^^
 
@@ -546,8 +590,10 @@ once for each DOM node.
 
 The ``onDetach`` callback can be used to remove any event listeners previously registered in the ``onAttach`` callback.
 
+.. _template-load:
+
 static: Template.load(templateURL, options)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: js
 
@@ -628,6 +674,47 @@ from ``Handlebars.create()``.) If this parameter is omitted, the default Handleb
 
 A Promise which resolves with the ``Component``instance, when the template file has been loaded and compiled. If the file
 cannot be loaded or fails compiling, the Promise is rejected with an ``Error`` instance.
+
+static: Template.compile(dom, options)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Compiles a DOM node with a ``<template>`` element and optional ``<script>`` elements (see :ref:`template-load` for details)
+to a pure Javascript template. The result is a string of Javascript code containing an object. Use ``eval()`` or some similar
+technique to convert this string to an actual Javascript object if needed. Note that this function is not intended to
+be used in that way rather than to create a pre-compiled and transportable version of the template to be saved into
+a file or to be transmitted through e.g. HTTP from server to browser.
+
+Although the template needs a Handlebars runtime to run, the stripped down version from ``handlebars.runtime.js`` can be
+used. That is the version of Handlebars without the compiler, which is shipped with the standard Handlebars distribution.
+
+The DOM node could be created from an HTML string by using the
+`DOMParser()-API <https://developer.mozilla.org/en-US/docs/Web/API/DOMParser>`_ in the browser. The preferred way to
+create the DOM node is to do the compiling on the server with Node.js. There is a complete DOM implementation for
+Node.js from :`jsdom <https://www.npmjs.com/package/jsdom>`_ or from Phantom.js. But the easiest way to compile your
+templates is to use the gulp plugin which ships with this project (see :ref:`pre-compiling-templates`).
+
+**Parameters**
+
+``dom``
+
+The DOM node to compile the template from. The DOM tree beneath that node should at least include one ``<template>``
+element and optionally one ``<script>`` element for each of the lifecycle callbacks ``attach``, ``update`` and ``detach``.
+
+See :ref:`template-load` for details on the HTML structure used by templates.
+
+``options``
+
+This is meant as a placeholder for future compiler options. Currently only the ``handlebars`` option is supported.
+
+``options.handlebars``
+
+The Handlebars environment to use for pre-compiling the template.
+
+**Return Value**
+
+A string with Javascript code to represent the pure Javascript implementation of the template.
+
+
 
 component.attach(selector)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

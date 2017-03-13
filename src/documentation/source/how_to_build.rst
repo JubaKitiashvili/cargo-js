@@ -45,7 +45,7 @@ the appropriate gulp task::
 
     # gulp doc
 
-The resulting HTML documentation can be found under the directory ``doc``.
+The resulting HTML documentation can be found under the directory ``dist/documentation``.
 
 
 

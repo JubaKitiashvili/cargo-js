@@ -166,7 +166,7 @@ gulp.task('build_model', function () {
 
 gulp.task('build_example', ['build_component', 'build_model', 'build_translation'], function () {
 	var Template = require('./dist/node/index').Template;
-	var compileComponent = require('./dist/node/index').templateCompiler;
+	var compileComponent = require('./dist/node/index').compileTemplate;
 	gulp.src('example/component/templates/LanguageMenu.html')
 		.pipe(compileComponent({compiler: Template}))
 		.pipe(rename('LanguageMenu.js'))

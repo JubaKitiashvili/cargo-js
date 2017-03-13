@@ -91,19 +91,21 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Component</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#code-example">Code example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-example-usage">Code example / Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#project-structure">Project structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-boilerplate">Setting up the boilerplate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#defining-and-attaching-a-component">Defining and attaching a component</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#visualizing-state-changes">Visualizing state changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-an-html-template">Adding an HTML template</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-interactivity">Adding interactivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-compiling-templates">Pre-compiling templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor-new-component-options">constructor: new Component(options)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#static-component-load-templateurl-handlebars">static: Component.load(templateURL, handlebars)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-template-load-templateurl-options">static: Template.load(templateURL, options)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-template-compile-dom-options">static: Template.compile(dom, options)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#component-attach-selector">component.attach(selector)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#renderer-renderer-render-state">Renderer: renderer.render(state)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#renderer-renderer-detach">Renderer: renderer.detach()</a></li>
@@ -346,8 +348,8 @@ to match the new representation.</p>
 <p>All dependencies are provided in the <code class="docutils literal"><span class="pre">dist</span></code> directory at <a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a>. Additionally
 an implementation of the Promise/A+ specification is needed (which is provided by all modern browsers).</p>
 </div>
-<div class="section" id="code-example">
-<h2>Code example<a class="headerlink" href="#code-example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="code-example-usage">
+<h2>Code example / Usage<a class="headerlink" href="#code-example-usage" title="Permalink to this headline">¶</a></h2>
 <p>As a practical example, the navigation menu component from above is built from scratch with
 requirejs for dependency management. Let&#8217;s start with an empty HTML page and a placeholder
 for the nav menu. This is pretty much requirejs boilerplate.</p>
@@ -633,12 +635,12 @@ details for brevity and a better overview.</p>
             <span class="p">}</span>
     <span class="p">});</span>
 
-    <span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cargo.Component&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">Component</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">require</span><span class="p">([</span><span class="s1">&#39;cargo.Component&#39;</span><span class="p">,</span> <span class="s1">&#39;cargo.Template&#39;</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">Component</span><span class="p">,</span> <span class="nx">Template</span><span class="p">)</span> <span class="p">{</span>
 
             <span class="cm">/* ... */</span>
 
-            <span class="nx">Component</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;html/nav.html&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">comp</span><span class="p">)</span> <span class="p">{</span>
-
+            <span class="nx">Template</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;html/nav.html&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">comp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
                     <span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">};</span>
                     <span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">comp</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#nav&#39;</span><span class="p">);</span>
 
@@ -657,9 +659,10 @@ details for brevity and a better overview.</p>
     <span class="p">});</span>
 </pre></div>
 </td></tr></table></div>
-<p>Component.js has a static function <code class="docutils literal"><span class="pre">load()</span></code> which receives an URL as argument. The function
-loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
-the function returns a Promise which is fulfilled with the component instance connected to the template.</p>
+<p>The <code class="docutils literal"><span class="pre">Template</span></code> module of Component.js has a static function <code class="docutils literal"><span class="pre">load()</span></code> which receives an URL as argument.
+The function loads and compiles the file from the URL. Because loading the file is an asynchronous operation,
+the function returns a Promise which is fulfilled with the template instance which can be used as input
+to the <code class="docutils literal"><span class="pre">Component</span></code> constructor.</p>
 <p>If we run the code so far, a (rather unstyled) HTML representation of the navigation menu should
 be displayed in the web page. It consists of two unnumbered lists - one for the menu itself and
 another for the language options. The language should change every 3 seconds from English to German
@@ -742,6 +745,46 @@ once when the component is destroyed.</p>
 a special variable <code class="docutils literal"><span class="pre">node</span></code> is defined as a reference to the DOM node of the component. You
 can use <code class="docutils literal"><span class="pre">this</span></code> to access all methods of the renderer and trigger some interactive behaviour.</p>
 </div>
+<div class="section" id="pre-compiling-templates">
+<span id="id1"></span><h3>Pre-compiling templates<a class="headerlink" href="#pre-compiling-templates" title="Permalink to this headline">¶</a></h3>
+<p>There is gulp plugin for compiling templates for <a class="reference internal" href="#"><span class="doc">Module: Component</span></a>. It compiles an &lt;HTML&gt; template file to a pure
+Javascript template to use in the constructor of <a class="reference internal" href="#"><span class="doc">Module: Component</span></a>. This is an example how to use it in a
+<code class="docutils literal"><span class="pre">gulpfile.js</span></code>.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">compile</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./dist/node/index&#39;</span><span class="p">).</span><span class="nx">compileTemplate</span><span class="p">;</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;build_example&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;example/templates/LanguageMenu.html&#39;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">compile</span><span class="p">())</span>
+            <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">rename</span><span class="p">(</span><span class="s1">&#39;LanguageMenu.js&#39;</span><span class="p">))</span>
+            <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;example/templates/&#39;</span><span class="p">));</span>
+    <span class="p">});</span>
+</pre></div>
+</div>
+<p>This gulp task reads the template file from &#8220;LanguageMenu.html&#8221; and compiles it to a Javascript file &#8220;LanguageMenu.js&#8221;.
+The generated file is a UMD-wrapped Javascript implementation of the HTML template.</p>
+<p>Please note, that the generated template requires a Handlebars runtime when used. The runtime is a version of Handlebars
+which does not include the compiler and is much smaller in size (about 80% reduced). Additionally the template is
+&#8220;ready to use&#8221; and does not require the compilation step which is necessary when loading a template on the fly with
+<code class="docutils literal"><span class="pre">Template.load()</span></code>. An example how to use the compiled template in the browser with require.js:</p>
+<div class="highlight-js"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="nx">define</span><span class="p">([</span><span class="s1">&#39;Component&#39;</span><span class="p">,</span> <span class="s1">&#39;./templates/LanguageMenu.js&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Component</span><span class="p">,</span> <span class="nx">template</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
+        <span class="nx">component</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">);</span>
+        <span class="cm">/* ... */</span>
+
+    <span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>The template is one of the dependencies in the <code class="docutils literal"><span class="pre">define(...)</span></code> function (line #1) and available from a parameter
+<code class="docutils literal"><span class="pre">template</span></code> within the wrapper function. This parameter variable is inserted into the constructor of
+<code class="docutils literal"><span class="pre">Component</span></code> at line #3.</p>
+</div>
 <div class="section" id="conclusion">
 <h3>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h3>
 <p>By separating the component&#8217;s behaviour from its visual appearance and by accessing the
@@ -761,10 +804,10 @@ transformed into a programming model making use of them.</p>
 <h3>constructor: new Component(options)<a class="headerlink" href="#constructor-new-component-options" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">component</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span>
     <span class="p">{</span>
-        <span class="nx">template</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;&lt;h1&gt;...&lt;/h1&gt;&quot;</span><span class="p">;</span> <span class="p">},</span>
-        <span class="nx">attach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
-        <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
-        <span class="nx">detach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="nx">renderState</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">&quot;&lt;h1&gt;...&lt;/h1&gt;&quot;</span><span class="p">;</span> <span class="p">},</span>
+        <span class="nx">onAttach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
+        <span class="nx">onUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{},</span>
+        <span class="nx">onDetach</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{}</span>
     <span class="p">}</span>
 <span class="p">);</span>
 </pre></div>
@@ -772,37 +815,38 @@ transformed into a programming model making use of them.</p>
 <p>Creates a new instance of <code class="docutils literal"><span class="pre">Component</span></code>. The first and only argument to the constructor is an object with the follwing
 options.</p>
 <p><strong>Parameter: options</strong></p>
-<p><code class="docutils literal"><span class="pre">options.template</span></code></p>
+<p><code class="docutils literal"><span class="pre">options.renderState</span></code></p>
 <p>A template function which receives the current state as input and renders an HTML string as return value. Most template
 engines e.g. Handlebars provide such a function. The HTML must consist of exactly one element which may contain an
 arbitrary number of child nodes. Whitespace before and after this element is removed.</p>
-<p>If no <code class="docutils literal"><span class="pre">template</span></code> method is provided, the DOM node is rendered as a <code class="docutils literal"><span class="pre">&lt;PRE&gt;</span></code> element containing a JSON representation
+<p>If no <code class="docutils literal"><span class="pre">renderState</span></code> method is provided, the DOM node is rendered as a <code class="docutils literal"><span class="pre">&lt;PRE&gt;</span></code> element containing a JSON representation
 of the current state.</p>
-<p><code class="docutils literal"><span class="pre">options.attach</span></code></p>
+<p><code class="docutils literal"><span class="pre">options.onAttach</span></code></p>
 <p>A callback function which is called once when the first rendering happened and the original DOM node has been
 replaced with the rendered HTML. The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter
-to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node which has been rendered. If the CSS selector of the component includes more than one
-DOM node, the <code class="docutils literal"><span class="pre">attach</span></code> callback is called once for each DOM node.</p>
-<p>The <code class="docutils literal"><span class="pre">attach</span></code> callback can be used to register event handlers to the DOM node.</p>
-<p><code class="docutils literal"><span class="pre">options.update</span></code></p>
+to <code class="docutils literal"><span class="pre">onAttach</span></code> is the DOM node which has been rendered. If the CSS selector of the component includes more than one
+DOM node, the <code class="docutils literal"><span class="pre">onAttach</span></code> callback is called once for each DOM node.</p>
+<p>The <code class="docutils literal"><span class="pre">onAttach</span></code> callback can be used to register event handlers to the DOM node.</p>
+<p><code class="docutils literal"><span class="pre">options.onUpdate</span></code></p>
 <p>A callback function which is called whenever the component&#8217;s DOM node has been
-rendered and updated within the DOM. This includes the first rendering <strong>after</strong> <code class="docutils literal"><span class="pre">attach</span></code> has been called.
-The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node
-which has been rendered. If the CSS selector of the component includes more than one DOM node, the <code class="docutils literal"><span class="pre">update</span></code> callback is called once
-for each DOM node whenever the node is updated.</p>
-<p><code class="docutils literal"><span class="pre">options.detach</span></code></p>
-<p>A callback function which is called once when the component&#8217;s DOM node has removed from the DOM. The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">attach</span></code> is the DOM node
-which has been rendered. If the CSS selector of the component includes more than one
-DOM node, the <code class="docutils literal"><span class="pre">detach</span></code> callback is called once for each DOM node.</p>
-<p>The <code class="docutils literal"><span class="pre">detach</span></code> callback can be used to remove any event listeners previously registered in the <code class="docutils literal"><span class="pre">attach</span></code> callback.</p>
+rendered and updated within the DOM. This includes the first rendering <strong>after</strong> <code class="docutils literal"><span class="pre">onAttach</span></code> has been called.
+The <code class="docutils literal"><span class="pre">this</span></code> keyword is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">onUpdate</span></code> is the DOM node
+which has been rendered. If the CSS selector of the component includes more than one DOM node, the <code class="docutils literal"><span class="pre">onUpdate</span></code> callback
+is called once for each DOM node whenever the node is updated.</p>
+<p><code class="docutils literal"><span class="pre">options.onDetach</span></code></p>
+<p>A callback function which is called once when the component&#8217;s DOM node has removed from the DOM. The <code class="docutils literal"><span class="pre">this</span></code> keyword
+is the <code class="docutils literal"><span class="pre">Renderer</span></code> instance of the component. The first parameter to <code class="docutils literal"><span class="pre">onDetach</span></code> is the DOM node which has been
+rendered. If the CSS selector of the component includes more than one DOM node, the <code class="docutils literal"><span class="pre">onDetach</span></code> callback is called
+once for each DOM node.</p>
+<p>The <code class="docutils literal"><span class="pre">onDetach</span></code> callback can be used to remove any event listeners previously registered in the <code class="docutils literal"><span class="pre">onAttach</span></code> callback.</p>
 </div>
-<div class="section" id="static-component-load-templateurl-handlebars">
-<h3>static: Component.load(templateURL, handlebars)<a class="headerlink" href="#static-component-load-templateurl-handlebars" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="static-template-load-templateurl-options">
+<span id="template-load"></span><h3>static: Template.load(templateURL, options)<a class="headerlink" href="#static-template-load-templateurl-options" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">handlebars</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">create</span><span class="p">();</span>
 <span class="nx">handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="cm">/*...*/</span><span class="p">);</span>
 
-<span class="nx">Component</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;template.html&quot;</span><span class="p">,</span> <span class="nx">handlebars</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">)</span> <span class="p">{</span>
-
+<span class="nx">Template</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;template.html&quot;</span><span class="p">,</span> <span class="nx">handlebars</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">comp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Component</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
     <span class="nx">comp</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
     <span class="cm">/* ... */</span>
 <span class="p">});</span>
@@ -853,12 +897,40 @@ the component instance.</p>
 <p><strong>Parameters</strong></p>
 <p><code class="docutils literal"><span class="pre">templateURL</span></code></p>
 <p>The URL of the template file which can be absolute or relative to the base URI of the website.</p>
-<p><code class="docutils literal"><span class="pre">handlebars</span></code> (optional)</p>
+<p><code class="docutils literal"><span class="pre">options</span></code> (optional)</p>
+<p>An options object to specify further dependencies and parameters for loading and compliling the template.</p>
+<p><code class="docutils literal"><span class="pre">options.handlebars</span></code> (optional)</p>
 <p>A Handlebars environment to use for compiling the template section of the file. (A separate environment can be retrieved
 from <code class="docutils literal"><span class="pre">Handlebars.create()</span></code>.) If this parameter is omitted, the default Handlebars environment is used.</p>
 <p><strong>Return value</strong></p>
 <p>A Promise which resolves with the <code class="docutils literal"><span class="pre">Component``instance,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">template</span> <span class="pre">file</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">loaded</span> <span class="pre">and</span> <span class="pre">compiled.</span> <span class="pre">If</span> <span class="pre">the</span> <span class="pre">file</span>
 <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">loaded</span> <span class="pre">or</span> <span class="pre">fails</span> <span class="pre">compiling,</span> <span class="pre">the</span> <span class="pre">Promise</span> <span class="pre">is</span> <span class="pre">rejected</span> <span class="pre">with</span> <span class="pre">an</span> <span class="pre">``Error</span></code> instance.</p>
+</div>
+<div class="section" id="static-template-compile-dom-options">
+<h3>static: Template.compile(dom, options)<a class="headerlink" href="#static-template-compile-dom-options" title="Permalink to this headline">¶</a></h3>
+<p>Compiles a DOM node with a <code class="docutils literal"><span class="pre">&lt;template&gt;</span></code> element and optional <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> elements (see <a class="reference internal" href="#template-load"><span class="std std-ref">static: Template.load(templateURL, options)</span></a> for details)
+to a pure Javascript template. The result is a string of Javascript code containing an object. Use <code class="docutils literal"><span class="pre">eval()</span></code> or some similar
+technique to convert this string to an actual Javascript object if needed. Note that this function is not intended to
+be used in that way rather than to create a pre-compiled and transportable version of the template to be saved into
+a file or to be transmitted through e.g. HTTP from server to browser.</p>
+<p>Although the template needs a Handlebars runtime to run, the stripped down version from <code class="docutils literal"><span class="pre">handlebars.runtime.js</span></code> can be
+used. That is the version of Handlebars without the compiler, which is shipped with the standard Handlebars distribution.</p>
+<p>The DOM node could be created from an HTML string by using the
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/DOMParser">DOMParser()-API</a> in the browser. The preferred way to
+create the DOM node is to do the compiling on the server with Node.js. There is a complete DOM implementation for
+Node.js from :<a class="reference external" href="https://www.npmjs.com/package/jsdom">jsdom</a> or from Phantom.js. But the easiest way to compile your
+templates is to use the gulp plugin which ships with this project (see <a class="reference internal" href="#pre-compiling-templates"><span class="std std-ref">Pre-compiling templates</span></a>).</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">dom</span></code></p>
+<p>The DOM node to compile the template from. The DOM tree beneath that node should at least include one <code class="docutils literal"><span class="pre">&lt;template&gt;</span></code>
+element and optionally one <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> element for each of the lifecycle callbacks <code class="docutils literal"><span class="pre">attach</span></code>, <code class="docutils literal"><span class="pre">update</span></code> and <code class="docutils literal"><span class="pre">detach</span></code>.</p>
+<p>See <a class="reference internal" href="#template-load"><span class="std std-ref">static: Template.load(templateURL, options)</span></a> for details on the HTML structure used by templates.</p>
+<p><code class="docutils literal"><span class="pre">options</span></code></p>
+<p>This is meant as a placeholder for future compiler options. Currently only the <code class="docutils literal"><span class="pre">handlebars</span></code> option is supported.</p>
+<p><code class="docutils literal"><span class="pre">options.handlebars</span></code></p>
+<p>The Handlebars environment to use for pre-compiling the template.</p>
+<p><strong>Return Value</strong></p>
+<p>A string with Javascript code to represent the pure Javascript implementation of the template.</p>
 </div>
 <div class="section" id="component-attach-selector">
 <h3>component.attach(selector)<a class="headerlink" href="#component-attach-selector" title="Permalink to this headline">¶</a></h3>

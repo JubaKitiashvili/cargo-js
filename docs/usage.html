@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General Usage &mdash; cargo-js 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="cargo-js 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="Module: Model" href="module_model.html"/>
+        <link rel="prev" title="How to Build" href="how_to_build.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cargo-js
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage-with-requirejs">Usage with requirejs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-as-browser-globals">Usage as browser globals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-in-node-js">Usage in Node.js</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_component.html">Module: Component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_translation.html">Module: Translation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">cargo-js</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>General Usage</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-usage">
+<h1>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h1>
+<p>All modules are provided with an UMD-style wrapper and can be used as AMD modules (like with
+requirejs) and as browser globals. When used as globals the modules are installed into a specific namespace
+to not collide with other libraries.</p>
+<div class="section" id="usage-with-requirejs">
+<h2>Usage with requirejs<a class="headerlink" href="#usage-with-requirejs" title="Permalink to this headline">¶</a></h2>
+<p>The modules can be used like any other module with requirejs. They are dependent on each other
+and expected to go by the alias &#8220;cargo.MODULENAME&#8221; to avoid name collision with other
+libraries - e.g. for Model.js it&#8217;s &#8220;cargo.Model&#8221;.</p>
+<p>Here is a sample path config for requirejs assuming the modules are stored in a sub directory
+<code class="docutils literal"><span class="pre">lib/</span></code>:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">require</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="s1">&#39;cargo.Model&#39;</span><span class="o">:</span> <span class="s1">&#39;lib/model&#39;</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>And later in one of your modules:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">define</span><span class="p">([</span><span class="s1">&#39;cargo.Model&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">Model</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">({</span> <span class="cm">/* ... */</span> <span class="p">});</span>
+
+    <span class="c1">// ...</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage-as-browser-globals">
+<h2>Usage as browser globals<a class="headerlink" href="#usage-as-browser-globals" title="Permalink to this headline">¶</a></h2>
+<p>When used in a global context, the modules are installed in a separate namespace called <code class="docutils literal"><span class="pre">cargo</span></code>. Make
+sure to load the Javascript files and all dependencies in your HTML</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/model.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">text/javascript&quot;</span><span class="p">&gt;</span>
+
+        <span class="kd">var</span> <span class="nx">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span> <span class="cm">/* ... */</span> <span class="p">});</span>
+
+        <span class="c1">//...</span>
+
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage-in-node-js">
+<h2>Usage in Node.js<a class="headerlink" href="#usage-in-node-js" title="Permalink to this headline">¶</a></h2>
+<p>When used in Node.js, the most convenient way is to <code class="docutils literal"><span class="pre">npm</span> <span class="pre">install</span></code> from the Github repository and <code class="docutils literal"><span class="pre">require</span></code> the project.
+All modules are exported in one object with each module in a separate property:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">npm</span> <span class="nx">install</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//github.com/datenwelt/cargo-js</span>
+</pre></div>
+</div>
+<p>The project is about to be published on NPM and can be installed through <code class="docutils literal"><span class="pre">npm</span> <span class="pre">install</span> <span class="pre">cargo-js</span></code> later.</p>
+<p>Here is how to use the modules in your source:</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">cargo</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;cargo-js&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Model</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">Component</span> <span class="o">=</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Component</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">Template</span> <span class="o">=</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Template</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">Translation</span> <span class="o">=</span> <span class="nx">cargo</span><span class="p">.</span><span class="nx">Translation</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Some modules depend on third-party libraries like jQuery or underscore. All required third-party modules are
+provided in the <code class="docutils literal"><span class="pre">dist/dependencies</span></code> directory but you are highly encouraged to maintain your own dependency tree
+(for instance with bower) and use the modules from there.</p>
+<p>All modules fail early if dependencies are missing on initialization. So when in doubt which dependencies to
+provide, just try to use the module and read the errors. Additionally dependencies are documented in the
+respective module documentation.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="module_model.html" class="btn btn-neutral float-right" title="Module: Model" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="how_to_build.html" class="btn btn-neutral" title="How to Build" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Jan Obladen.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

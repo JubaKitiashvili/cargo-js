@@ -13,6 +13,8 @@ gulp.task('doc', function (cb) {
 		console.log(stderr);
 		cb(err);
 	});
+	gulp.src('src/documentation/build/html/**/*.*')
+		.pipe(gulp.dest('docs'));
 });
 
 gulp.task('deps_morphdom', function () {

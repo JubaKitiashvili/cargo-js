@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module: Translation &mdash; cargo-js 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="cargo-js 1.0.0 documentation" href="index.html"/>
+        <link rel="prev" title="Module: Component" href="module_component.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cargo-js
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="how_to_build.html">How to Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_model.html">Module: Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_component.html">Module: Component</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Translation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#translation-files">Translation files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#options-baseuri-string">options.baseURI (string)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#options-namespace-string">options.namespace (string)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#options-languages-array">options.languages (array)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#options-defaultlang-string">options.defaultLang (string)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-translation-function">The translation function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-select-lang">Method: select(lang)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-select-lang">trans.select(lang)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-setdefaultlanguage-lang">trans.setDefaultLanguage(lang)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-setnamespace-namespace">trans.setNamespace(namespace)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-addnamespace-namespace">trans.addNamespace(namespace)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-translate-key-namespace">trans.translate(key, namespace)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-i18n">trans.i18n()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trans-createhandlebarshelper">trans.createHandlebarsHelper()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">cargo-js</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Module: Translation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/module_translation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-translation">
+<h1>Module: Translation<a class="headerlink" href="#module-translation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This module provides I18N features and automates loading translations from language
+files. The translation is organized as a directory tree under a configurable base URI. Translation files are loaded
+upfront and guaranteed to be ready before the first translation happens.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">trans</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Translation</span><span class="p">();</span>
+<span class="nx">trans</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The example above loads the translation from <code class="docutils literal"><span class="pre">locales/en/translation.json</span></code> relative to the current HTML file. The
+translation file should be a file with a JSON object.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;GREETING&quot;</span><span class="o">:</span> <span class="s2">&quot;Hello World!&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>All methods are asynchronous operations and return a <code class="docutils literal"><span class="pre">Promise</span></code> which resolves with a translation function. The translation
+function can be used to translate keywords to a phrase in the according language.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="nx">trans</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_t</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">str</span> <span class="o">=</span> <span class="nx">_t</span><span class="p">(</span><span class="s2">&quot;GREETING&quot;</span><span class="p">);</span> <span class="c1">// &quot;Hello World!&quot;</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<div class="section" id="translation-files">
+<h3>Translation files<a class="headerlink" href="#translation-files" title="Permalink to this headline">¶</a></h3>
+<p>Organize your translation files in a hierarchical manner under <code class="docutils literal"><span class="pre">locales</span></code>. Each languages should go into a separate
+directory. Each translation can go by a unique filename called a <code class="docutils literal"><span class="pre">namespace</span></code>. Default namespace is <code class="docutils literal"><span class="pre">translation</span></code>.</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>locales/
+     en/
+         translation.js
+         login.js
+     en_us/
+         login.js
+     de/
+         translation.js
+         login.js
+</pre></div>
+</div>
+<p>In this example we have two namespaces - &#8220;translation&#8221; and &#8220;login&#8221; - and three languages &#8220;en&#8221;, &#8220;en_us&#8221; and &#8220;de&#8221;. The language
+&#8220;en_us&#8221; is a more specific version of the language &#8220;en&#8221;. Note that there is no file for the &#8220;translation&#8221; namespace for
+US English. That&#8217;s ok because <a class="reference internal" href="#"><span class="doc">Module: Translation</span></a> uses the less specific variant if there is no suitable language file.
+If &#8220;en_us&#8221; is selected for the &#8220;translation&#8221; namespace, &#8220;en&#8221; is used instead. Additionally, if a non-existent or unimplemented language
+is selected the default language is selected.</p>
+<p>Namespaces, base URI and default languages are configurable through the constructor.</p>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This module uses the following libraries and modules:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="61%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Module</th>
+<th class="head">Repository</th>
+<th class="head">AMD module alias</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>superagent</td>
+<td><a class="reference external" href="https://github.com/visionmedia/superagent">https://github.com/visionmedia/superagent</a></td>
+<td>superagent</td>
+</tr>
+<tr class="row-odd"><td>underscore</td>
+<td><a class="reference external" href="https://github.com/jashkenas/underscore">https://github.com/jashkenas/underscore</a></td>
+<td>_</td>
+</tr>
+</tbody>
+</table>
+<p>All dependencies are provided in the <code class="docutils literal"><span class="pre">dist</span></code> directory at <a class="reference external" href="https://github.com/datenwelt/cargo-js.git">https://github.com/datenwelt/cargo-js.git</a>. Additionally
+<a class="reference internal" href="#"><span class="doc">Module: Translation</span></a> depends on a Promise/A+ implementation with an implementation of the <code class="docutils literal"><span class="pre">Promise.all</span></code> method.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="constructor">
+<h3>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">trans</span> <span class="pre">=</span> <span class="pre">new</span> <span class="pre">Translation(options)</span></code></p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">options</span></code></p>
+<blockquote>
+<div>An object which configures the current instance of the translation. The following options are supported:</div></blockquote>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nx">baseURI</span><span class="o">:</span> <span class="s1">&#39;locales/&#39;</span><span class="p">,</span>
+    <span class="nx">namespace</span><span class="o">:</span> <span class="s1">&#39;translation&#39;</span><span class="p">,</span>
+    <span class="nx">languages</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;en&#39;</span><span class="p">],</span>
+    <span class="nx">defaultLang</span><span class="o">:</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="options-baseuri-string">
+<h4>options.baseURI (string)<a class="headerlink" href="#options-baseuri-string" title="Permalink to this headline">¶</a></h4>
+<p>The base URI where the translation files are located. The default location is &#8220;locales/&#8221; relative
+to the current HTML file. If the current document location ends with a file extension (like .html
+.php) it is assumed that the current location is a file and the corresponding folder is used as
+base for the &#8220;locales/&#8221; folder. Example: <code class="docutils literal"><span class="pre">http://localhost/index.html</span></code> resolves to <code class="docutils literal"><span class="pre">http://localhost/locales/</span></code>.</p>
+</div>
+<div class="section" id="options-namespace-string">
+<h4>options.namespace (string)<a class="headerlink" href="#options-namespace-string" title="Permalink to this headline">¶</a></h4>
+<p>Determines the filename for the translation files. A namespace of &#8220;login&#8221; would result in translation files
+to be expected at <code class="docutils literal"><span class="pre">{baseURI}/{lang}/login.json</span></code>.</p>
+</div>
+<div class="section" id="options-languages-array">
+<h4>options.languages (array)<a class="headerlink" href="#options-languages-array" title="Permalink to this headline">¶</a></h4>
+<p>An array with languages to load. Languages can be unspecific like &#8220;en&#8221; or more specific like &#8220;en_us&#8221;. The latter
+form describes the language English in its US American variant. If there is no unspecific variant for a language,
+the first specific variant takes its place. Note that this module does not fail if one or more of the languages
+don&#8217;t load. The best guess is used in place which is the unspecific language if a specific variant is missing and
+the default language if the unspecific variant is missing too. If the default language fails to load, the resulting
+translation object is empty.</p>
+</div>
+<div class="section" id="options-defaultlang-string">
+<h4>options.defaultLang (string)<a class="headerlink" href="#options-defaultlang-string" title="Permalink to this headline">¶</a></h4>
+<p>The default language to use when loading or selecting a language fails and no unspecific variant is available.</p>
+<p><strong>Return value</strong></p>
+<blockquote>
+<div>A new translation instance with the following methods.</div></blockquote>
+</div>
+</div>
+<div class="section" id="the-translation-function">
+<h3>The translation function<a class="headerlink" href="#the-translation-function" title="Permalink to this headline">¶</a></h3>
+<p>All methods changing the configuration of the translation instance return a Promise which resolves with the <strong>translation
+function</strong>. The translation function receives the key as a mandatory argument selecting the phrase from the JSON object
+within the translation files. The second parameter is an optional namespace which maps to the name of the corresponding
+JSON file holding that JSON object. If the second parameter is omitted, the default namespace <code class="docutils literal"><span class="pre">translation</span></code> is used.</p>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">trans</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Translation</span><span class="p">(</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">});</span>
+<span class="nx">trans</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_t</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">str</span> <span class="o">=</span> <span class="nx">_t</span><span class="p">(</span><span class="s2">&quot;submit&quot;</span><span class="p">,</span> <span class="s2">&quot;login&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>In this example the language &#8220;en&#8221; is selected and the Promise resolves with the translation function <code class="docutils literal"><span class="pre">_t()</span></code>. That
+function is called with the key <code class="docutils literal"><span class="pre">&quot;submit&quot;</span></code> from the namespace <code class="docutils literal"><span class="pre">&quot;login&quot;</span></code>. The corresponding JSON object is loaded from
+the file <code class="docutils literal"><span class="pre">./locales/en/login.json</span></code> and the value of its property <code class="docutils literal"><span class="pre">&quot;submit&quot;</span></code> is used as the translated phrase.</p>
+</div>
+<div class="section" id="method-select-lang">
+<h3>Method: select(lang)<a class="headerlink" href="#method-select-lang" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">trans.select(lang)</span></code></p>
+<p>Selects a language. If the language is a specific variant like &#8220;en_US&#8221; or &#8220;de_AT&#8221; the next unspecific variant is
+tried (&#8220;en&#8221; or &#8220;de&#8221;). If the unspecific variant is unavailable, the default language is used. If the default
+language is unavailable, an empty translation is used.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">lang</span></code></p>
+<p>A string with the language code like &#8220;en&#8221; or &#8220;en_us&#8221;.</p>
+<p><strong>Return value</strong></p>
+<p>A promise which resolves with a translation function.</p>
+</div>
+<div class="section" id="trans-select-lang">
+<h3>trans.select(lang)<a class="headerlink" href="#trans-select-lang" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">trans.select(lang)</span></code></p>
+<p>Selects a language. If the language is a specific variant like &#8220;en_US&#8221; or &#8220;de_AT&#8221; the next unspecific variant is
+tried (&#8220;en&#8221; or &#8220;de&#8221;). If the unspecific variant is unavailable, the default language is used. If the default
+language is unavailable, an empty translation is used.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">lang</span></code></p>
+<p>A string with the language code like &#8220;en&#8221; or &#8220;en_us&#8221;.</p>
+<p><strong>Return value</strong></p>
+<p>A promise which resolves with a translation function.</p>
+</div>
+<div class="section" id="trans-setdefaultlanguage-lang">
+<h3>trans.setDefaultLanguage(lang)<a class="headerlink" href="#trans-setdefaultlanguage-lang" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">trans.setDefaultLanguage(lang)</span></code></p>
+<p>Sets the default language to be used if there is neither a translation available for the selected language nor for its
+more general language variant (as &#8220;en&#8221; is for &#8220;en_us&#8221;).</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">lang</span></code></p>
+<p>A string with the language code like &#8220;en&#8221; or &#8220;en_us&#8221;.</p>
+<p><strong>Return value</strong></p>
+<p>A promise which resolves with a translation function.</p>
+</div>
+<div class="section" id="trans-setnamespace-namespace">
+<h3>trans.setNamespace(namespace)<a class="headerlink" href="#trans-setnamespace-namespace" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">trans.setNamespace(namespace)</span></code></p>
+<p>Sets the namespace to be used for translations. Translations can be split up into different translation files
+where each file holds one namespace. All previously loaded namespaces are removed leaving <code class="docutils literal"><span class="pre">namespace</span></code> as the
+only (and default) namespace.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">namespace</span></code></p>
+<p>The namespace to set.</p>
+<p><strong>Return value</strong></p>
+<p>A promise which resolves with a translation function.</p>
+</div>
+<div class="section" id="trans-addnamespace-namespace">
+<h3>trans.addNamespace(namespace)<a class="headerlink" href="#trans-addnamespace-namespace" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">trans.addNamespace(namespace)</span></code></p>
+<p>Adds a namespace to be used for translations. Translations can be split up into different translation files
+where each file holds one namespace.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">namespace</span></code></p>
+<p>The namespace to add.</p>
+<p><strong>Return value</strong></p>
+<p>A promise which resolves with a translation function.</p>
+</div>
+<div class="section" id="trans-translate-key-namespace">
+<h3>trans.translate(key, namespace)<a class="headerlink" href="#trans-translate-key-namespace" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">trans.translate(key,</span> <span class="pre">namespace)</span></code></p>
+<p>Uses the currently selected language and returns the phrase corresponding to <code class="docutils literal"><span class="pre">key</span></code> from <code class="docutils literal"><span class="pre">namespace</span></code>.</p>
+<p><strong>Parameters</strong></p>
+<p><code class="docutils literal"><span class="pre">key</span></code></p>
+<p>The key of the phrase within the namespace.</p>
+<p><code class="docutils literal"><span class="pre">namespace</span></code> (optional)</p>
+<p>The namespace to load the phrase from. If omitted, the default namespace is used.</p>
+<p><strong>Return value</strong></p>
+<p>The phrase belonging to <code class="docutils literal"><span class="pre">key</span></code> in the namespace <code class="docutils literal"><span class="pre">namespace</span></code>.</p>
+</div>
+<div class="section" id="trans-i18n">
+<h3>trans.i18n()<a class="headerlink" href="#trans-i18n" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">var</span> <span class="pre">_t</span> <span class="pre">=</span> <span class="pre">trans.i18n()</span></code></p>
+<p>Returns the translation function for the currently selected language.</p>
+<p><strong>Parameters</strong></p>
+<p>This function does not have any parameters.</p>
+<p><strong>Return value</strong></p>
+<p>The current translation function.</p>
+</div>
+<div class="section" id="trans-createhandlebarshelper">
+<h3>trans.createHandlebarsHelper()<a class="headerlink" href="#trans-createhandlebarshelper" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-js"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">helper</span> <span class="o">=</span> <span class="nx">trans</span><span class="p">.</span><span class="nx">createHandlebarsHelper</span><span class="p">();</span>
+<span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s2">&quot;i18n&quot;</span><span class="p">,</span> <span class="nx">helper</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Can be used in handlebars templates to inject phrases from the translation.</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>{{i18n GREETING LOGIN}}<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Creates a function that can be registered as a helper in your Handlebars environment. The helper is automatically
+updated with the current translation function for the selected language. Whenever the language changes, the handlebars
+helper renders the text in the new language. The helper receives the same parameters as the translation function (<code class="docutils literal"><span class="pre">key</span></code> and
+optionally <code class="docutils literal"><span class="pre">namespace</span></code>).</p>
+<p>Note that this method does not depend directly on Handlebars. It just creates a function that is compliant with the
+Handlebars API. You may use the function in any other appropriate templating engine or in any other context.</p>
+<p><strong>Parameters</strong></p>
+<p>This function does not have any parameters.</p>
+<p><strong>Return value</strong></p>
+<p>A handlebars compatible helper function which can be registered in your Handlebars environment.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="module_component.html" class="btn btn-neutral" title="Module: Component" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Jan Obladen.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

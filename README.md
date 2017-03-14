@@ -18,6 +18,6 @@ A GUI component base class
 
 ## Documentation
 
-Documentation is available at [http://cargohub.io/cargo-js](http://cargohub.io/cargo-js).
+Documentation is available at [https://datenwelt.github.io/cargo-js/](https://datenwelt.github.io/cargo-js/).
 
 
